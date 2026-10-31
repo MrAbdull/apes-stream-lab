@@ -32,6 +32,12 @@ Students need internet access while working (the 3D engine and PDF tool load fro
   (Notebook → Team) to make a combined group report with credit for each person.
 - The report logs active time, an activity timeline, ID attempts and how many times the student left the lab page.
 
+## The 3D world
+- Students pick a character (5 outfits, 5 skin tones) and explore in third person.
+- Scenery comes from free CC0 packs by flo-bit, Quaternius and KayKit (see [CREDITS.md](CREDITS.md)).
+- About 4–5 MB loads once per student. Distant trees switch to simple shapes, and older iPads automatically drop
+  to a lower resolution if they run slowly.
+
 ## Science notes
 - Water-quality index modeled on the Izaak Walton League "Save Our Streams" method (count TYPES per tolerance group,
   weight ×3 / ×2 / ×1; Excellent >22, Good 17–22, Fair 11–16, Poor ≤10).

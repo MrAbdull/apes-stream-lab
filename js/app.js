@@ -8,6 +8,7 @@ import { barChart } from './charts.js';
 import { saveKey, readSave, writeSave, removeSave, requestPersistence, downloadFile, readFileAsText } from './storage.js';
 import { summarize, buildPDF, buildCSV, mailtoLink, fmtTest } from './report.js';
 import { checkTeammateFile, mergeTeam } from './team.js';
+import { AVATARS, SKIN_TONES, DEFAULT_AVATAR } from './avatars.js';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -46,7 +47,8 @@ function log(msg) {
 
 function persist() {
   if (!S) return;
-  if (world) S.pose = world.getPose();
+  const pose = world?.getPose();
+  if (pose) S.pose = pose;
   S.updatedAt = Date.now();
   const ok = writeSave(KEY, S);
   $('#save-warning')?.classList.toggle('hidden', ok);
@@ -348,9 +350,14 @@ function renderBrief() {
           <p class="hint">Your Lab ID: <strong>${labFingerprint(S.seedKey)}</strong>. Your stream's data is unique to you${S.group ? 'r group' : ''}.</p>
         </div>
       </div>
+      <h3>Choose your field scientist</h3>
+      <div id="b-avatar"></div>
       <button class="primary big" id="b-go">Enter the field site →</button>
     </div>`;
+  let avatar = S.avatar || DEFAULT_AVATAR;
+  avatarPicker($('#b-avatar'), avatar, (p) => { avatar = p; });
   $('#b-go').onclick = () => {
+    S.avatar = avatar;
     S.briefed = true;
     log('Read the briefing');
     persist();
@@ -373,24 +380,62 @@ async function startWorld() {
   show('screen-lab');
   $('#joystick').classList.toggle('hidden', !isTouch);
   if (!world) {
+    const loading = $('#world .world-loading');
     try {
       const { StreamWorld } = await import('./world.js');
-      world = new StreamWorld($('#world'), {
+      const w = new StreamWorld($('#world'), {
         chems: LAB.sites.map((s) => s.chem),
         mystery: LAB.mystery,
         onNear,
         minimap: $('#minimap'),
         joystick: isTouch ? $('#joystick') : null,
         siteStatus,
+        avatar: S.avatar || DEFAULT_AVATAR,
+        onProgress: (f) => { if (loading) loading.textContent = `Loading the field site… ${Math.round(f * 100)}%`; },
       });
-      $('#world .world-loading')?.remove();
+      await w.ready;
+      world = w;
+      loading?.remove();
       if (S.pose) world.setPose(S.pose);
+      if (panel) world.setInputEnabled(false);
     } catch (e) {
       console.error(e);
       $('#world').innerHTML = '<div class="world-error card"><h3>The 3D field site couldn\'t load.</h3><p>Check your internet connection and reload the page. Meanwhile, you can open each site station from the site buttons at the top.</p></div>';
     }
   }
   refreshHUD();
+}
+
+// ---------- character picker ----------
+
+function avatarPicker(el, current, onChange) {
+  let pick = { ...current };
+  const draw = () => {
+    el.innerHTML = `
+      <div class="avatar-grid">${AVATARS.map((a) => `
+        <button class="avatar ${pick.id === a.id ? 'sel' : ''}" data-id="${a.id}" aria-pressed="${pick.id === a.id}">
+          <img src="assets/characters/thumbs/${a.id}.jpg" alt="${esc(a.label)}" width="90" height="120"><span>${esc(a.label)}</span>
+        </button>`).join('')}</div>
+      <div class="skin-row"><span>Skin tone</span>${SKIN_TONES.map((c) => `<button class="skin ${pick.skin === c ? 'sel' : ''}" data-skin="${c}" style="background:${c}" aria-label="Skin tone" aria-pressed="${pick.skin === c}"></button>`).join('')}</div>`;
+    $$('.avatar', el).forEach((b) => (b.onclick = () => { pick = { ...pick, id: b.dataset.id }; onChange(pick); draw(); }));
+    $$('.skin', el).forEach((b) => (b.onclick = () => { pick = { ...pick, skin: b.dataset.skin }; onChange(pick); draw(); }));
+  };
+  draw();
+}
+
+function openCharacter() {
+  openPanel('Change my character', (body) => {
+    let choice = S.avatar || DEFAULT_AVATAR;
+    body.innerHTML = '<div id="pick"></div><div class="row"><button class="primary big" id="pick-save">Use this character</button></div>';
+    avatarPicker($('#pick', body), choice, (p) => { choice = p; });
+    $('#pick-save', body).onclick = async (e) => {
+      e.target.disabled = true;
+      S.avatar = choice;
+      persist();
+      await world?.setAvatar(choice);
+      closePanel();
+    };
+  });
 }
 
 function onNear(id) {
@@ -899,12 +944,14 @@ function openHelp() {
   openPanel('Controls and tips', (body) => {
     body.innerHTML = `
       <h3>Moving around</h3>
-      <p><strong>Laptop:</strong> W A S D or the arrow keys to move (Left and Right arrows turn). Hold Shift to run. Click and drag to look around. Press E at a site.</p>
-      <p><strong>iPad:</strong> use the joystick in the bottom left to move, and drag anywhere else to look around. Tap the green button at a site.</p>
+      <p><strong>Laptop:</strong> W A S D or the arrow keys to move (Left and Right arrows turn the camera). Hold Shift to run. Click and drag to look around; scroll to zoom. Press E at a site.</p>
+      <p><strong>iPad:</strong> use the joystick in the bottom left to move (push it all the way to run), and drag anywhere else to look around. Tap the green button at a site.</p>
+      <button class="secondary" id="h-char">🧑‍🔬 Change my character</button>
       <h3>Finding sites</h3>
       <p>Follow the stream downhill. Yellow beacons mark the sites and turn green when a site is complete. The map in the top right shows where you are (red arrow). After you've visited a site, tap its number at the top to travel back.</p>
       <h3>Saving</h3>
       <p>Progress saves automatically in this browser. To switch devices, use 💾 Save file, then choose "Continue from a save file" on the new device.</p>`;
+    $('#h-char', body).onclick = openCharacter;
   });
 }
 
