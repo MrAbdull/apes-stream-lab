@@ -64,7 +64,7 @@ export async function createWorld(ctx) {
   land.scale.set(1, 0.85, 1);
   scene.add(basin, water, column, globe, land);
 
-  const scatter = new Scatter(scene, models, ground);
+  const scatter = new Scatter(scene, models, ground, ctx.colliders);
   const rnd = mulberry32(2024);
   const pick = (a) => a[Math.floor(rnd() * a.length)];
   const nearPortal = (x, z, r) => portals.some((p) => Math.hypot(x - p.x, z - p.z) < r);
@@ -75,29 +75,35 @@ export async function createWorld(ctx) {
     const x = Math.cos(a) * r, z = Math.sin(a) * r;
     if (onPath(x, z) || nearPortal(x, z, 7) || Math.abs(r - PORTAL_R) < 5) continue;
     const u = rnd();
-    if (r > 58 && u < 0.32) put(pick(['oak1', 'oak2', 'oak3', 'pine1', 'pine2']), { x, z, rot: rnd() * 6.28, scale: 1.2 + rnd() * 0.7 });
-    else if (r < 58 && r > 36 && u < 0.03) put(pick(['oak1', 'oak3']), { x, z, rot: rnd() * 6.28, scale: 1.1 + rnd() * 0.4 });
-    else if (u < 0.55) put(pick(['grass2', 'grass3']), { x, z, rot: rnd() * 6.28, scale: 1 + rnd() });
-    else if (u < 0.7) put(pick(['flower1', 'flower2', 'flower3']), { x, z, rot: rnd() * 6.28, scale: 0.8 + rnd() * 0.4 });
-    else if (u < 0.78) put(pick(['bush1', 'bush3', 'berries']), { x, z, rot: rnd() * 6.28, scale: 1 + rnd() });
+    // Heights in meters: oaks 8–12, pines 9–14, shrubs ~1, grass and wildflowers knee height or lower.
+    if (r > 58 && u < 0.32) { const k = pick(['oak1', 'oak2', 'oak3', 'pine1', 'pine2']); put(k, { x, z, rot: rnd() * 6.28, height: k.startsWith('pine') ? 9 + rnd() * 5 : 8 + rnd() * 4 }); }
+    else if (r < 58 && r > 36 && u < 0.03) put(pick(['oak1', 'oak3']), { x, z, rot: rnd() * 6.28, height: 8 + rnd() * 3 });
+    else if (u < 0.55) put(pick(['grass2', 'grass3']), { x, z, rot: rnd() * 6.28, height: 0.3 + rnd() * 0.35 });
+    else if (u < 0.7) put(pick(['flower1', 'flower2', 'flower3']), { x, z, rot: rnd() * 6.28, height: 0.35 + rnd() * 0.25 });
+    else if (u < 0.78) put(pick(['bush1', 'bush3', 'berries']), { x, z, rot: rnd() * 6.28, height: 0.7 + rnd() * 0.7 });
   }
   for (const [k, list] of Object.entries(bag)) {
     const tree = /oak|pine/.test(k);
-    scatter.add(k, list, tree ? { near: 80, lod: k.startsWith('pine') ? 'pine' : 'oak', occludes: true } : { near: 50 });
+    scatter.add(k, list, tree ? { near: 80, lod: k.startsWith('pine') ? 'pine' : 'oak', occludes: true, collide: 0.04 } : { near: 50, collide: /bush|berries/.test(k) ? 0.35 : 0 });
   }
 
   // Campus buildings behind the portals, lamps and benches around the plaza.
   const place = (key, x, z, scale, rot) => { const o = models[key].scene.clone(); o.position.set(x, ground(x, z), z); o.scale.setScalar(scale); o.rotation.y = rot; scene.add(o); return o; };
   const bkeys = ['bA', 'bC', 'bD', 'bE', 'bF', 'bG'];
+  const col = ctx.colliders;
   portals.forEach((p, i) => {
-    const r = PORTAL_R + 15;
-    place(bkeys[i % bkeys.length], Math.cos(p.angle) * r, Math.sin(p.angle) * r, 6, -p.angle - Math.PI / 2);
+    const r = PORTAL_R + 15, x = Math.cos(p.angle) * r, z = Math.sin(p.angle) * r, rot = -p.angle - Math.PI / 2;
+    place(bkeys[i % bkeys.length], x, z, 6, rot);
+    col.addBox(x, z, 5.4, 5.4, rot); // KayKit tiles are 2×2 units → 12 m buildings at scale 6
   });
   for (let i = 0; i < 8; i++) {
     const a = (i / 8) * Math.PI * 2 + Math.PI / 8;
     place('lamp', Math.cos(a) * 15.5, Math.sin(a) * 15.5, 5, -a + Math.PI / 2);
+    col.addCircle(Math.cos(a) * 15.5, Math.sin(a) * 15.5, 0.25);
     place('bench', Math.cos(a) * 12, Math.sin(a) * 12, 3.6, -a - Math.PI / 2);
+    col.addBox(Math.cos(a) * 12, Math.sin(a) * 12, 0.9, 0.35, -a - Math.PI / 2);
   }
+  col.addCircle(0, 0, 4.4); // fountain basin
   for (let i = 0; i < 10; i++) {
     const o = models[i % 2 ? 'cloud1' : 'cloud2'].scene.clone();
     o.scale.setScalar(5 + rnd() * 4); o.position.set(-160 + rnd() * 320, 70 + rnd() * 30, -160 + rnd() * 320);
@@ -121,6 +127,11 @@ export async function createWorld(ctx) {
     const surface = new THREE.Mesh(new THREE.CircleGeometry(2.0, 40), new THREE.MeshBasicMaterial({ color: open ? p.color : '#c9ced2', transparent: true, opacity: open ? 0.55 : 0.25, side: THREE.DoubleSide, depthWrite: false }));
     surface.position.y = 2.6;
     g.add(ring, base, pillarL, pillarR, surface);
+    // Solid pillars on either side of the portal opening
+    for (const side of [-1, 1]) {
+      const lx = side * 1.6, c = Math.cos(g.rotation.y), s = Math.sin(g.rotation.y);
+      ctx.colliders.addCircle(p.x + lx * c, p.z - lx * s, 0.3);
+    }
     const label = ctx.makeLabel([p.title, open ? p.subject : 'Coming soon'], { accent: open ? p.color : '#9aa1a6', scale: 0.75 });
     label.position.y = 5.6;
     g.add(label);
@@ -131,7 +142,7 @@ export async function createWorld(ctx) {
 
   const world = {
     ground,
-    clamp: (pos) => { const r = Math.hypot(pos.x, pos.z); if (r > 135) { pos.x *= 135 / r; pos.z *= 135 / r; } if (r < 4.6) { const k = 4.6 / (r || 1); pos.x *= k; pos.z *= k; } },
+    clamp: (pos) => { const r = Math.hypot(pos.x, pos.z); if (r > 135) { pos.x *= 135 / r; pos.z *= 135 / r; } },
     start: { x: 0, z: 22, facing: Math.PI },
     occluders: () => scatter.occluders(),
     update(dt, t, frame) {
@@ -188,6 +199,7 @@ export async function createWorld(ctx) {
 
   // ---------- portals ----------
   function missionStatusHTML(p) {
+    if (p.type === 'external') return '<p class="muted">Progress in this lab is saved on its own site.</p>';
     if (p.id === 'stream') {
       const s = streamLabStatus(ctx.profile?.email);
       return s ? `<p class="muted">${s.finished ? '✅ Finished' : `⏳ In progress: ${s.sites} of 4 sites complete`}</p>` : '<p class="muted">Not started</p>';
@@ -205,9 +217,10 @@ export async function createWorld(ctx) {
           <p>${esc(p.blurb)}</p>
           ${p.status === 'open' ? missionStatusHTML(p) : '<p class="callout">This field station is still being built. Check back soon!</p>'}
         </div>
-        ${p.status === 'open' ? '<div class="row"><button class="primary big" id="pf-enter">Enter field station →</button></div>' : ''}`;
+        ${p.status === 'open' ? `<div class="row"><button class="primary big" id="pf-enter">${p.type === 'external' ? 'Open in a new tab ↗' : 'Enter field station →'}</button></div>` : ''}`;
       body.querySelector('#pf-enter')?.addEventListener('click', () => {
         world.savePose?.();
+        if (p.type === 'external') { window.open(p.url, '_blank', 'noopener'); return; }
         location.href = p.type === 'app' ? p.url : `world.html?w=${p.id}`;
       });
     });
@@ -268,7 +281,7 @@ export async function createWorld(ctx) {
   function openPassport() {
     const p = ctx.profile;
     ctx.hud.openPanel('My Passport', (body) => {
-      const rows = portals.filter((w) => w.status === 'open').map((w) => {
+      const rows = portals.filter((w) => w.status === 'open' && w.type !== 'external').map((w) => {
         if (w.id === 'stream') {
           const s = streamLabStatus(p.email);
           return `<tr><td>${esc(w.title)}</td><td>Stream Health Lab</td><td>${s ? (s.finished ? 'Finished' : `${s.sites}/4 sites`) : 'Not started'}</td><td>See PDF report</td></tr>`;

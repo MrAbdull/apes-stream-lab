@@ -123,7 +123,8 @@ export async function createWorld(ctx) {
   }));
 
   // Scenery (kept away from the plots so quadrats contain only the survey organisms)
-  const scatter = new Scatter(scene, models, ground);
+  const scatter = new Scatter(scene, models, ground, ctx.colliders);
+  const col = ctx.colliders;
   const rnd = mulberry32(77);
   const pick = (a) => a[Math.floor(rnd() * a.length)];
   const nearPlot = (x, z, r) => Object.values(PLOTS).some((p) => Math.hypot(x - p.x, z - p.z) < r);
@@ -135,27 +136,32 @@ export async function createWorld(ctx) {
     if (r > 140 || r < 14 || onPath(x, z) || Math.abs(x + 74) < 5) continue;
     const zone = zoneOf(x, z), u = rnd();
     const treeOK = !nearPlot(x, z, 8);
+    // Real-world heights (m), so plants in the survey plots match the scenery around them.
+    const H = { flower1: [0.4, 0.65], flower2: [0.4, 0.65], flower3: [0.45, 0.7], grass1: [0.25, 0.45], grass2: [0.3, 0.55], grass3: [0.3, 0.55],
+      plant1: [0.45, 0.8], plant2: [0.4, 0.75], plant3: [0.3, 0.55], mush: [0.15, 0.25], berries: [0.5, 0.9], bush1: [0.8, 1.4], bush3: [0.8, 1.3] };
+    const h = (k) => H[k][0] + rnd() * (H[k][1] - H[k][0]);
+    const plant = (k) => put(k, { x, z, rot: rnd() * 6.28, height: h(k) });
     if (!nearPlot(x, z, 3.5)) {
-      if (zone === 'forest' && treeOK && u < 0.06) put(pick(['oak1', 'oak2', 'oak3', 'pine1', 'pine2']), { x, z, rot: rnd() * 6.28, scale: 1.2 + rnd() * 0.7 });
-      else if (r > 100 && treeOK && u < 0.05) put(pick(['oak1', 'oak2', 'pine1', 'pine2', 'pine3']), { x, z, rot: rnd() * 6.28, scale: 1.3 + rnd() * 0.8 });
-      else if (zone === 'meadow' && u < 0.18) put(pick(['flower1', 'flower2', 'flower3', 'flower3', 'flower2', 'grass2', 'grass3']), { x, z, rot: rnd() * 6.28, scale: 0.7 + rnd() * 0.5 });
-      else if (zone === 'forest' && u < 0.16) put(pick(['plant2', 'plant1', 'mush', 'berries', 'bush1', 'grass1']), { x, z, rot: rnd() * 6.28, scale: 0.8 + rnd() * 0.7 });
-      else if (zone === 'disturbed' && u < 0.07) put(pick(['plant3', 'plant3', 'grass1', 'grass2']), { x, z, rot: rnd() * 6.28, scale: 0.7 + rnd() * 0.5 });
-      else if ((zone === 'edge' || zone === 'station') && u < 0.06) put(pick(['grass2', 'grass3', 'bush3', 'flower2']), { x, z, rot: rnd() * 6.28, scale: 0.8 + rnd() * 0.6 });
+      if (zone === 'forest' && treeOK && u < 0.06) { const k = pick(['oak1', 'oak2', 'oak3', 'pine1', 'pine2']); put(k, { x, z, rot: rnd() * 6.28, height: k.startsWith('pine') ? 10 + rnd() * 6 : 9 + rnd() * 5 }); }
+      else if (r > 100 && treeOK && u < 0.05) { const k = pick(['oak1', 'oak2', 'pine1', 'pine2', 'pine3']); put(k, { x, z, rot: rnd() * 6.28, height: k.startsWith('pine') ? 10 + rnd() * 6 : 9 + rnd() * 5 }); }
+      else if (zone === 'meadow' && u < 0.18) plant(pick(['flower1', 'flower2', 'flower3', 'flower3', 'flower2', 'grass2', 'grass3']));
+      else if (zone === 'forest' && u < 0.16) plant(pick(['plant2', 'plant1', 'mush', 'berries', 'bush1', 'grass1']));
+      else if (zone === 'disturbed' && u < 0.07) plant(pick(['plant3', 'plant3', 'grass1', 'grass2']));
+      else if ((zone === 'edge' || zone === 'station') && u < 0.06) plant(pick(['grass2', 'grass3', 'bush3', 'flower2']));
     }
   }
   for (const [k, list] of Object.entries(bag)) {
     const tree = /oak|pine/.test(k);
-    scatter.add(k, list, tree ? { near: 75, lod: k.startsWith('pine') ? 'pine' : 'oak', occludes: true } : { near: 45 });
+    scatter.add(k, list, tree ? { near: 75, lod: k.startsWith('pine') ? 'pine' : 'oak', occludes: true, collide: 0.04 } : { near: 45, collide: /bush/.test(k) ? 0.35 : 0 });
   }
 
   const place = (key, x, z, scale, rot = 0) => { const o = models[key].scene.clone(); o.position.set(x, ground(x, z), z); o.scale.setScalar(scale); o.rotation.y = rot; scene.add(o); return o; };
-  place('station', 0, -6, 5.5, 0);
-  for (const [x, z, rot] of [[-62, 20, 0.4], [-50, 26, 2.1]]) place('stump', x, z, 1.2, rot);
-  place('deadtree', -38, -26, 1.6, 1.2);
-  place('car', -70, 2, 4.3, 0);
-  place('dumpster', -66, -6, 4, Math.PI / 2);
-  for (const z of [-30, 0, 30]) place('lamp', -70.5, z, 5, -Math.PI / 2);
+  place('station', 0, -6, 5.5, 0); col.addBox(0, -6, 5.1, 5.1);
+  for (const [x, z, rot] of [[-62, 20, 0.4], [-50, 26, 2.1]]) { place('stump', x, z, 1.2, rot); col.addCircle(x, z, 0.45); }
+  place('deadtree', -38, -26, 1.6, 1.2); col.addCircle(-38, -26, 0.4);
+  place('car', -70, 2, 4.3, 0); col.addBox(-70, 2, 0.95, 2.05);
+  place('dumpster', -66, -6, 4, Math.PI / 2); col.addBox(-66, -6, 1.2, 0.8, Math.PI / 2);
+  for (const z of [-30, 0, 30]) { place('lamp', -70.5, z, 5, -Math.PI / 2); col.addCircle(-70.5, z, 0.25); }
   for (let i = 0; i < 8; i++) {
     const o = models[i % 2 ? 'cloud1' : 'cloud2'].scene.clone();
     o.scale.setScalar(5 + rnd() * 4); o.position.set(-150 + rnd() * 300, 70 + rnd() * 30, -150 + rnd() * 300); scene.add(o);
@@ -169,11 +175,13 @@ export async function createWorld(ctx) {
   table.add(top);
   for (const [lx, lz] of [[-0.9, -0.4], [0.9, -0.4], [-0.9, 0.4], [0.9, 0.4]]) { const l = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.9, 0.08), wood); l.position.set(lx, 0.45, lz); table.add(l); }
   const kit = new THREE.Group();
-  for (const [w, d, x, z] of [[0.7, 0.04, 0, -0.33], [0.7, 0.04, 0, 0.33], [0.04, 0.7, -0.33, 0], [0.04, 0.7, 0.33, 0]]) { const b = new THREE.Mesh(new THREE.BoxGeometry(w, 0.04, d), white); b.position.set(x - 0.4, 0.97, z); kit.add(b); }
-  const board = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.03, 0.45), new THREE.MeshStandardMaterial({ color: '#6b4f2e' })); board.position.set(0.55, 0.97, 0); kit.add(board);
+  for (const [w, d, x, z] of [[0.7, 0.04, 0, -0.33], [0.7, 0.04, 0, 0.33], [0.04, 0.7, -0.33, 0], [0.04, 0.7, 0.33, 0]]) { const b = new THREE.Mesh(new THREE.BoxGeometry(w, 0.04, d), white); b.position.set(x - 0.4, 0, z); kit.add(b); }
+  const board = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.03, 0.45), new THREE.MeshStandardMaterial({ color: '#6b4f2e' })); board.position.set(0.55, 0, 0); kit.add(board);
+  kit.position.y = 0.97; // resting on the table top
   table.add(kit);
   table.position.set(4.5, ground(4.5, 4), 4);
   scene.add(table);
+  col.addBox(4.5, 4, 1.05, 0.55);
 
   // Plots: flag, sign, hidden quadrat frame and the survey organisms
   const flagMat = new THREE.MeshStandardMaterial({ color: '#f57c00', side: THREE.DoubleSide });
@@ -239,19 +247,19 @@ export async function createWorld(ctx) {
 
     // Mission effects (named in mission files)
     effects: {
-      giveKit() { state.kit = true; kit.visible = false; refreshPrompts(); },
+      giveKit() { state.kit = true; if (ctx.carrier.held !== kit) ctx.carrier.pickUp(kit); refreshPrompts(); },
       placeQuadrat({ plot }) { state.placed.add(plot); plots[plot].frame.visible = true; refreshPrompts(); },
     },
 
     resetForMission() {
-      state.kit = false; kit.visible = true; state.placed.clear(); state.counted = {}; state.partial = {};
+      state.kit = false; returnKit(); state.placed.clear(); state.counted = {}; state.partial = {};
       for (const p of Object.values(plots)) p.frame.visible = false;
       refreshPrompts();
     },
     snapshot: () => ({ kit: state.kit, placed: [...state.placed], counted: state.counted, partial: state.partial }),
     restore(s) {
       if (!s) return;
-      state.kit = s.kit; kit.visible = !s.kit;
+      state.kit = s.kit; if (s.kit) world.effects.giveKit(); else returnKit();
       state.placed = new Set(s.placed || []);
       for (const p of Object.values(plots)) p.frame.visible = state.placed.has(p.id);
       state.counted = s.counted || {}; state.partial = s.partial || {};
@@ -272,9 +280,16 @@ export async function createWorld(ctx) {
     },
 
     dataHTML,
-    openNotebook() { hud.openPanel('Field data', (body) => { body.innerHTML = dataHTML() + fieldGuideHTML(); }, { wide: true }); },
+    openNotebook() { hud.openPanel('Field data', (body) => { body.innerHTML = world.dataHTML() + fieldGuideHTML(); }, { wide: true }); },
     labelFor: (id) => (plots[id] ? `Plot ${id}` : null),
   };
+
+  // Put the kit back on the field table (new mission or restart).
+  function returnKit() {
+    if (ctx.carrier?.held === kit) { ctx.carrier.held = null; ctx.player.carrying = null; }
+    table.add(kit);
+    kit.position.set(0, 0.97, 0); kit.rotation.set(0, 0, 0);
+  }
 
   // ---------- plots ----------
   function refreshPrompts() {

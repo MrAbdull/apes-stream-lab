@@ -7,16 +7,34 @@ import * as THREE from 'three';
 const CHUNK = 60;
 
 export class Scatter {
-  constructor(scene, models, ground) {
+  constructor(scene, models, ground, colliders) {
     this.scene = scene;
     this.models = models;
     this.ground = ground;
+    this.colliders = colliders;
     this.chunks = [];
     this.proxies = {};
+    this.native = {};
   }
 
-  add(key, placements, { near = 60, lod = null, occludes = false } = {}) {
+  // Height of a model as authored, so scenery can be placed at real-world sizes.
+  nativeHeight(key) {
+    if (!this.native[key]) {
+      const box = new THREE.Box3().setFromObject(this.models[key].scene, true);
+      this.native[key] = Math.max(0.01, box.max.y - Math.max(0, box.min.y));
+    }
+    return this.native[key];
+  }
+
+  // placements: { x, z, rot, height (meters) | scale, y? }
+  // collide: radius in meters per meter of height (e.g. 0.035 for tree trunks), or 0.
+  add(key, placements, { near = 60, lod = null, occludes = false, collide = 0 } = {}) {
     if (!placements.length) return;
+    const nh = this.nativeHeight(key);
+    for (const p of placements) {
+      if (p.height) p.scale = p.height / nh;
+      if (collide && this.colliders) this.colliders.addCircle(p.x, p.z, Math.max(0.15, collide * (p.height ?? nh * (p.scale ?? 1))));
+    }
     const root = this.models[key].scene;
     root.updateMatrixWorld(true);
     const parts = [];

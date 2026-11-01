@@ -1,0 +1,29 @@
+{
+  "id": "lifescience",
+  "title": "Life Science Lab",
+  "subtitle": "Experiments · APES Units 1, 2, 9",
+  "stage": { "fogNear": 40, "fogFar": 90 },
+  "intro": "Dr. Hale runs three live experiments: energy flow in a food web, natural selection by camouflage, and photosynthesis under different light. Pick any mission.",
+  "missions": [
+    { "id": "foodweb", "file": "missions/foodweb.json", "title": "Energy Flow & Trophic Cascades", "time": "About 15 minutes",
+      "summary": "Run a model habitat, remove the apex predators, and explain the trophic cascade using the 10% rule." },
+    { "id": "selection", "file": "missions/selection.json", "title": "Natural Selection: Camouflage", "time": "About 12 minutes",
+      "summary": "Watch birds hunt green and brown beetles on different ground, and explain how a changing environment changes a population." },
+    { "id": "photosynthesis", "file": "missions/photosynthesis.json", "title": "Photosynthesis & Light", "time": "About 15 minutes",
+      "summary": "Count oxygen bubbles from Elodea at different lamp distances, find the limiting factor, and connect it to the carbon cycle." }
+  ],
+  "glossary": [
+    { "term": "Trophic level", "aliases": ["trophic", "level", "producer", "consumer", "herbivore", "carnivore", "apex"], "answer": "An organism's position in a food chain: producers (plants) make food from sunlight; primary consumers (herbivores) eat producers; secondary consumers (carnivores) eat herbivores; apex predators sit at the top." },
+    { "term": "10% rule", "aliases": ["ten percent", "energy transfer", "energy pyramid", "efficiency", "lost"], "answer": "Only about 10% of the energy at one trophic level becomes new biomass at the next level. The other ~90% is used for life processes (respiration, movement) and lost as heat. That's why food chains rarely have more than 4–5 levels." },
+    { "term": "Trophic cascade", "aliases": ["cascade", "remove predator", "wolves", "yellowstone", "top-down"], "answer": "When a change at the top of a food web ripples down. Removing apex predators lets carnivores increase, which reduces herbivores, which lets plants grow back. Wolves returning to Yellowstone reduced elk browsing, and willows and aspens recovered." },
+    { "term": "Overgrazing", "aliases": ["overgraze", "too many herbivores", "no predators", "desertification"], "answer": "Without predators to control them, herbivore populations grow and eat plants faster than the plants regrow. This can strip vegetation and lead to erosion or desertification." },
+    { "term": "Resilience", "aliases": ["resilient", "bounce back", "recover", "stable", "balance", "equilibrium"], "answer": "An ecosystem's ability to return to balance after a disturbance. In the model, a temporary spike in herbivores returns to normal because predators and plant supply push it back." },
+    { "term": "Natural selection", "aliases": ["selection", "evolution", "survive", "fittest", "adapt", "adaptation"], "answer": "Individuals with traits better suited to their environment survive and reproduce more, so those traits become more common over generations. The environment selects; individuals don't change on purpose." },
+    { "term": "Camouflage", "aliases": ["color", "colour", "hidden", "visible", "predation", "birds"], "answer": "Coloring that matches the background, making prey harder for predators to see. Beetles that match the ground are eaten less, so their color becomes more common." },
+    { "term": "Mutation", "aliases": ["mutations", "variation", "new trait", "dna"], "answer": "A random change in DNA that can create new variations (like a different color). Mutations supply variation; natural selection then decides which variations become common." },
+    { "term": "Photosynthesis", "aliases": ["photosynthesize", "chlorophyll", "glucose", "sugar", "oxygen bubbles"], "answer": "Plants, algae and phytoplankton use light energy to turn CO2 and water into sugar, releasing oxygen: 6CO2 + 6H2O + light → C6H12O6 + 6O2." },
+    { "term": "Limiting factor", "aliases": ["limiting", "limits", "slowest", "bottleneck", "co2", "carbon dioxide", "bicarbonate"], "answer": "The resource in shortest supply that controls the rate of a process. If CO2 is scarce, adding more light won't speed up photosynthesis much: CO2 is limiting." },
+    { "term": "Inverse square law (light)", "aliases": ["distance", "lamp", "inverse square", "intensity", "farther"], "answer": "Light intensity falls with the square of distance: twice as far gives 1/4 the light; three times as far gives 1/9." },
+    { "term": "Carbon sink", "aliases": ["carbon cycle", "climate", "phytoplankton", "forests", "sequestration", "co2 removal"], "answer": "A system that absorbs more CO2 than it releases. Forests and ocean phytoplankton remove CO2 through photosynthesis, which slows climate change. Deforestation and warmer, more acidic oceans weaken these sinks." }
+  ]
+}

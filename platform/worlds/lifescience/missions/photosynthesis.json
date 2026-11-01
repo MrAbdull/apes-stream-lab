@@ -1,0 +1,50 @@
+{
+  "id": "photosynthesis",
+  "title": "Photosynthesis & Light",
+  "objectives": [
+    "Measure the rate of photosynthesis by counting oxygen bubbles",
+    "Use the inverse square law to explain how light intensity changes with distance",
+    "Identify a limiting factor and connect photosynthesis to the carbon cycle (APES 1.5, 9.4)"
+  ],
+  "badge": { "id": "life-photo", "name": "Light Harvester", "icon": "☀️" },
+  "steps": [
+    { "title": "Briefing", "sequence": [
+      { "target": "hale", "gesture": "talk", "points": 5, "instruction": "Talk to Dr. Hale.",
+        "npcLines": [
+          "Every bubble rising from this Elodea plant is oxygen made by photosynthesis. More bubbles per minute means faster photosynthesis.",
+          "Use the bench on the right. Keep the bicarbonate at 1% and the water at 25 °C, and change only the lamp distance. That's a fair test."
+        ] }
+    ] },
+    { "title": "Vary the light", "sequence": [
+      { "target": "photo", "gesture": "measure", "points": 6, "instruction": "Run a 1-minute trial with the lamp at 10 cm (1% bicarbonate, 25 °C).",
+        "validator": { "preset": "custom", "fn": "photoTrial", "args": { "distance": 10, "co2": 1, "temp": 25 } }, "feedback": { "correct": "10 cm trial recorded." } },
+      { "target": "photo", "gesture": "measure", "points": 6, "instruction": "Run a trial with the lamp at 20 cm.",
+        "validator": { "preset": "custom", "fn": "photoTrial", "args": { "distance": 20, "co2": 1, "temp": 25 } }, "feedback": { "correct": "20 cm trial recorded." } },
+      { "target": "photo", "gesture": "measure", "points": 6, "instruction": "Run a trial with the lamp at 30 cm.",
+        "validator": { "preset": "custom", "fn": "photoTrial", "args": { "distance": 30, "co2": 1, "temp": 25 } }, "feedback": { "correct": "30 cm trial recorded." } },
+      { "target": "photo", "gesture": "measure", "points": 6, "instruction": "Run a trial with the lamp at 40 cm.",
+        "validator": { "preset": "custom", "fn": "photoTrial", "args": { "distance": 40, "co2": 1, "temp": 25 } }, "feedback": { "correct": "40 cm trial recorded. You now have a data set." } }
+    ] },
+    { "title": "Analyze", "sequence": [
+      { "gesture": "answer", "points": 10, "instruction": "Read your data.",
+        "question": { "type": "numeric", "showData": true, "unit": "bubbles/min", "prompt": "How many bubbles per minute did you count with the lamp at 20 cm?" },
+        "validator": { "preset": "value_within", "expected": { "fn": "trialCount", "args": { "distance": 20, "co2": 1 } }, "tolerance": 0 },
+        "feedback": { "correct": "Correct.", "incorrect": "Check the 20 cm row of your trials table." } },
+      { "gesture": "answer", "points": 10, "instruction": "Light and distance.",
+        "question": { "type": "numeric", "prompt": "Light intensity follows the inverse square law. At 20 cm, what fraction of the 10 cm light intensity reaches the plant? (Give a decimal.)" },
+        "validator": { "preset": "value_within", "expected": { "fn": "relIntensity", "args": { "distance": 20 } }, "tolerance": 0.01 },
+        "hint": "Doubling the distance gives (1/2)² of the light.",
+        "feedback": { "correct": "Yes: (10/20)² = 0.25.", "incorrect": "Use (10 ÷ distance)².", "reveal": "(10/20)² = 0.25." } },
+      { "target": "photo", "gesture": "measure", "points": 8, "instruction": "Now run a trial at 10 cm with 0% bicarbonate (no added CO₂).",
+        "validator": { "preset": "custom", "fn": "photoTrial", "args": { "distance": 10, "co2": 0, "temp": 25 } }, "feedback": { "correct": "Trial recorded. Compare it with your 10 cm, 1% trial." } },
+      { "gesture": "answer", "points": 10, "instruction": "Find the limiting factor.",
+        "question": { "type": "choice", "showData": true, "prompt": "With the lamp at 10 cm but no added bicarbonate, the rate dropped sharply. What was limiting photosynthesis?",
+          "options": [{ "value": "co2", "label": "Carbon dioxide" }, { "value": "light", "label": "Light" }, { "value": "water", "label": "Water" }, { "value": "oxygen", "label": "Oxygen" }] },
+        "validator": { "preset": "choice", "answer": "co2" },
+        "feedback": { "correct": "Right: plenty of light, but not enough CO₂ to build sugar.", "incorrect": "Light was at its strongest. What did you remove?" } },
+      { "gesture": "answer", "points": 15, "instruction": "Connect to climate.",
+        "question": { "type": "text", "prompt": "Ocean phytoplankton and forests do the same photosynthesis as Elodea. Explain how they act as carbon sinks, and describe one human activity that weakens them." },
+        "validator": { "preset": "free_text", "minWords": 25 } }
+    ] }
+  ]
+}

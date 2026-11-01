@@ -12,6 +12,8 @@ import { clone as cloneSkinned } from 'three/addons/utils/SkeletonUtils.js';
 import { SITES } from './model.js';
 import { mulberry32 } from './rng.js';
 import { DEFAULT_AVATAR } from './avatars.js';
+import { Walker } from '../platform/engine/player.js';
+import { Colliders } from '../platform/engine/physics.js';
 
 const ASSET = (p) => new URL(`../assets/${p}`, import.meta.url).href;
 
@@ -111,65 +113,6 @@ function makeWaterNormals(size = 256) {
   return tex;
 }
 
-// ---------- the student character ----------
-
-// Animates the Quaternius modular rig in code: bones are turned about WORLD axes
-// (x = swing forward/back, z = raise/lower sideways), so one walk cycle fits every outfit.
-class Walker {
-  constructor(root) {
-    this.root = root;
-    this.bones = {};
-    root.traverse((o) => { if (o.isBone) this.bones[o.name] = o; });
-    root.updateMatrixWorld(true);
-    this.rest = {};
-    this.axes = {};
-    for (const [n, b] of Object.entries(this.bones)) {
-      this.rest[n] = b.quaternion.clone();
-      const inv = b.parent.getWorldQuaternion(new THREE.Quaternion()).invert();
-      this.axes[n] = {
-        x: new THREE.Vector3(1, 0, 0).applyQuaternion(inv),
-        y: new THREE.Vector3(0, 1, 0).applyQuaternion(inv),
-        z: new THREE.Vector3(0, 0, 1).applyQuaternion(inv),
-      };
-    }
-    this.q = new THREE.Quaternion();
-    this.phase = 0;
-    this.blend = 0; // 0 = idle, 1 = full stride
-  }
-
-  turn(name, axis, angle) {
-    const b = this.bones[name];
-    if (!b || !angle) return;
-    this.q.setFromAxisAngle(this.axes[name][axis], angle);
-    b.quaternion.premultiply(this.q);
-  }
-
-  update(dt, speed, t) {
-    const moving = speed > 0.2;
-    this.blend += ((moving ? 1 : 0) - this.blend) * Math.min(1, dt * 8);
-    this.phase += dt * speed * 2.1;
-    const p = this.phase, k = this.blend, run = Math.min(1, Math.max(0, (speed - WALK) / (RUN - WALK)));
-    const A = (0.45 + 0.25 * run) * k;
-    for (const [n, b] of Object.entries(this.bones)) b.quaternion.copy(this.rest[n]);
-
-    this.turn('UpperArmL', 'z', -1.3);
-    this.turn('UpperArmR', 'z', 1.3);
-    this.turn('LowerArmL', 'x', -(0.15 + 0.6 * run * k));
-    this.turn('LowerArmR', 'x', -(0.15 + 0.6 * run * k));
-    this.turn('UpperLegL', 'x', -A * Math.sin(p));
-    this.turn('UpperLegR', 'x', A * Math.sin(p));
-    this.turn('LowerLegL', 'x', (0.9 + 0.5 * run) * k * Math.max(0, -Math.cos(p)));
-    this.turn('LowerLegR', 'x', (0.9 + 0.5 * run) * k * Math.max(0, Math.cos(p)));
-    this.turn('UpperArmL', 'x', A * 0.8 * Math.sin(p));
-    this.turn('UpperArmR', 'x', -A * 0.8 * Math.sin(p));
-    this.turn('Abdomen', 'x', 0.12 * run * k);
-    // idle breathing and a slight look around
-    this.turn('Chest', 'x', (1 - k) * 0.025 * Math.sin(t * 1.6));
-    this.turn('Head', 'y', (1 - k) * 0.25 * Math.sin(t * 0.35));
-    return Math.abs(Math.sin(p)) * 0.05 * k; // vertical bob
-  }
-}
-
 export class StreamWorld {
   constructor(container, opts) {
     this.container = container;
@@ -183,6 +126,8 @@ export class StreamWorld {
     this.frame = 0;
     this.mixers = [];
     this.lodChunks = [];
+    this.colliders = new Colliders();
+    this.native = {};
     if (new URLSearchParams(location.search).has('debug')) window.streamWorld = this; // for checking render stats
     this.ready = this.init(opts);
   }
@@ -449,8 +394,21 @@ export class StreamWorld {
   // Many copies of one model as instanced meshes, grouped in a grid of chunks.
   // The GPU skips off-screen chunks, and each frame chunks far from the student
   // are hidden (small plants) or swapped for a simple stand-in shape (trees).
-  addInstances(key, placements, { near = 75, lod = null } = {}) {
+  nativeHeight(key) {
+    if (!this.native[key]) {
+      const box = new THREE.Box3().setFromObject(this.models[key].scene, true);
+      this.native[key] = Math.max(0.01, box.max.y - Math.max(0, box.min.y));
+    }
+    return this.native[key];
+  }
+
+  addInstances(key, placements, { near = 75, lod = null, collide = 0 } = {}) {
     if (!placements.length) return;
+    const nh = this.nativeHeight(key);
+    for (const p of placements) {
+      if (p.height) p.scale = p.height / nh;
+      if (collide) this.colliders.addCircle(p.x, p.z, Math.max(0.15, collide * nh * (p.scale ?? 1)));
+    }
     const root = this.models[key].scene;
     root.updateMatrixWorld(true);
     const parts = [];
@@ -570,7 +528,7 @@ export class StreamWorld {
       else if (zone === 'town' && d > 9 && rnd() < 0.025 && Math.abs(x - (sx + 30)) > 14 && !(x < sx && Math.abs(z - PIPE_Z) < 24)) type = pick(['oak1', 'oak3']);
       if (!type || blocked(x, z, 22)) continue;
       const big = type.startsWith('pine') ? 1.5 + rnd() * 1.1 : 1.1 + rnd() * 0.6;
-      put(type, { x, z, y: groundY(x, z) - 0.2, rot: rnd() * 6.28, scale: big });
+      put(type, { x, z, y: groundY(x, z) - 0.2, rot: rnd() * 6.28, height: type.startsWith('pine') ? 10 + rnd() * 6 : 9 + rnd() * 5 });
     }
 
     // Ground cover near the stream and in natural areas
@@ -586,10 +544,10 @@ export class StreamWorld {
       if (blocked(x, z, 3)) continue;
       const natural = zone === 'forest' || zone === 'buffer';
       const r = rnd() * (natural ? 1 : 0.62); // farm and town get grass only
-      if (r < 0.55) put(pick(['grass1', 'grass2', 'grass3']), { x, z, rot: rnd() * 6.28, scale: 1.2 + rnd() * 1.2 });
-      else if (r < 0.65 && natural) put(pick(['flower1', 'flower2', 'flower3']), { x, z, rot: rnd() * 6.28, scale: 0.8 + rnd() * 0.5 });
-      else if (r < 0.78 && natural && !blocked(x, z, 13)) put(pick(['bush1', 'bush3', 'berries', 'plant1', 'plant2']), { x, z, rot: rnd() * 6.28, scale: 1 + rnd() * 1.2 });
-      else if (r < 0.8 && natural) put(pick(['stump', 'deadtree']), { x, z, rot: rnd() * 6.28, scale: 1 + rnd() * 0.5 });
+      if (r < 0.55) put(pick(['grass1', 'grass2', 'grass3']), { x, z, rot: rnd() * 6.28, height: 0.3 + rnd() * 0.35 });
+      else if (r < 0.65 && natural) put(pick(['flower1', 'flower2', 'flower3']), { x, z, rot: rnd() * 6.28, height: 0.35 + rnd() * 0.3 });
+      else if (r < 0.78 && natural && !blocked(x, z, 13)) put(pick(['bush1', 'bush3', 'berries', 'plant1', 'plant2']), { x, z, rot: rnd() * 6.28, height: 0.6 + rnd() * 0.7 });
+      else if (r < 0.8 && natural) { const k = pick(['stump', 'deadtree']); put(k, { x, z, rot: rnd() * 6.28, height: k === 'stump' ? 0.5 + rnd() * 0.3 : 4 + rnd() * 2 }); }
     }
 
     // Rocks along the banks and riffles in the stream
@@ -604,9 +562,9 @@ export class StreamWorld {
     }
 
     for (const [key, list] of Object.entries(bag)) {
-      if (key.startsWith('pine')) this.addInstances(key, list, { near: 70, lod: 'pine' });
-      else if (key.startsWith('oak')) this.addInstances(key, list, { near: 70, lod: 'oak' });
-      else this.addInstances(key, list, { near: key.startsWith('stone') ? 60 : 45 });
+      if (key.startsWith('pine')) this.addInstances(key, list, { near: 70, lod: 'pine', collide: 0.04 });
+      else if (key.startsWith('oak')) this.addInstances(key, list, { near: 70, lod: 'oak', collide: 0.04 });
+      else this.addInstances(key, list, { near: key.startsWith('stone') ? 60 : 45, collide: /stump|deadtree/.test(key) ? 0.12 : 0 });
     }
   }
 
@@ -626,6 +584,8 @@ export class StreamWorld {
     this.scene.add(roof);
     const silo = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 2.6, 14, 18), new THREE.MeshStandardMaterial({ color: '#c9c9c4', roughness: 0.6, metalness: 0.2 }));
     silo.position.set(bx + 10, groundY(bx + 10, bz - 4) + 7, bz - 4);
+    this.colliders.addBox(bx, bz, 6, 9);
+    this.colliders.addCircle(bx + 10, bz - 4, 2.6);
     this.scene.add(silo);
 
     // Crop fields planted right up to the stream bank (no buffer: a nonpoint source!)
@@ -651,6 +611,7 @@ export class StreamWorld {
       const cow = cloneSkinned(cowSrc.scene);
       cow.scale.setScalar(0.36);
       cow.position.set(x, Math.max(groundY(x, z), waterY(z) - 0.6), z);
+      this.colliders.addCircle(x, z, 0.9);
       cow.rotation.y = rnd() * Math.PI * 2;
       this.scene.add(cow);
       const mixer = new THREE.AnimationMixer(cow);
@@ -671,12 +632,14 @@ export class StreamWorld {
         if (side < 0 && Math.abs(z - 45) < 20) continue; // keep open ground around the Site 3 station
         const x = rx + side * 11;
         this.placeModel(types[Math.floor(rnd() * types.length)], x, z, { scale: 5.2, rot: side > 0 ? -Math.PI / 2 : Math.PI / 2 });
+        this.colliders.addBox(x, z, 4.8, 4.8);
       }
     }
     for (let z = 8; z <= 96; z += 16) {
       const rx = streamX(z) + 30;
       this.placeModel('lamp', rx + 4.2, z, { scale: 5, rot: Math.PI });
       this.placeModel('lamp', rx - 4.2, z + 8, { scale: 5 });
+      this.colliders.addCircle(rx + 4.2, z, 0.25); this.colliders.addCircle(rx - 4.2, z + 8, 0.25);
     }
     const cars = ['carA', 'carB', 'carC', 'carD'];
     for (let i = 0; i < 7; i++) {
@@ -684,6 +647,7 @@ export class StreamWorld {
       const rx = streamX(z) + 30;
       const side = rnd() < 0.5 ? -1 : 1;
       this.placeModel(cars[i % cars.length], rx + side * 2.2, z, { scale: 4.3, rot: side > 0 ? 0 : Math.PI, y: groundY(rx, z) + 0.25 });
+      this.colliders.addBox(rx + side * 2.2, z, 0.95, 2.05);
     }
     this.placeModel('bench', streamX(60) + 12, 60, { scale: 4, rot: -Math.PI / 2 });
 
@@ -692,10 +656,12 @@ export class StreamWorld {
     const mat = (color, metal = 0.2) => new THREE.MeshStandardMaterial({ color, roughness: 0.6, metalness: metal });
     const building = new THREE.Mesh(new THREE.BoxGeometry(16, 6, 12), mat('#9ea7ad'));
     building.position.set(fx, groundY(fx, fz) + 3, fz);
+    this.colliders.addBox(fx, fz, 8, 6);
     this.scene.add(building);
     for (const [ox, oz] of [[-4, 12], [6, 12]]) {
       const tank = new THREE.Mesh(new THREE.CylinderGeometry(4, 4, 3, 24), mat('#b9c2c7', 0.4));
       tank.position.set(fx + ox, groundY(fx + ox, fz + oz) + 1.5, fz + oz);
+      this.colliders.addCircle(fx + ox, fz + oz, 4);
       this.scene.add(tank);
     }
     const sx = streamX(fz);
@@ -720,6 +686,7 @@ export class StreamWorld {
       const gy = groundY(p.x, p.z);
       const post = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 2.4, 8), postMat);
       post.position.set(p.x, gy + 1.2, p.z);
+      this.colliders.addCircle(p.x, p.z, 0.2);
       this.scene.add(post);
       const label = makeLabel([`SITE ${s.id}`, s.landUse]);
       label.position.set(p.x, gy + 3.6, p.z);
@@ -826,7 +793,8 @@ export class StreamWorld {
     let len = Math.hypot(f, s);
     if (len > 1) { f /= len; s /= len; len = 1; }
     const running = this.keys.has('ShiftLeft') || this.keys.has('ShiftRight') || Math.hypot(this.joy.x, this.joy.y) > 0.95;
-    const targetSpeed = len * (running ? RUN : WALK);
+    const wading = waterY(this.player.z) - groundY(this.player.x, this.player.z) > 0.15;
+    const targetSpeed = len * (running ? RUN : WALK) * (wading ? 0.55 : 1);
     const pl = this.player;
     pl.speed += (targetSpeed - pl.speed) * Math.min(1, dt * 10);
 
@@ -837,17 +805,24 @@ export class StreamWorld {
       const want = Math.atan2(mx, mz);
       let diff = want - pl.facing;
       diff = Math.atan2(Math.sin(diff), Math.cos(diff));
-      pl.facing += diff * Math.min(1, dt * 10);
+      const step = diff * Math.min(1, dt * 10);
+      pl.facing += step;
+      this.turnRate = dt > 0 ? step / dt : 0;
       const ml = Math.hypot(mx, mz);
-      pl.x += (mx / ml) * pl.speed * dt;
-      pl.z += (mz / ml) * pl.speed * dt;
-    }
+      const nx = pl.x + (mx / ml) * pl.speed * dt, nz = pl.z + (mz / ml) * pl.speed * dt;
+      const rise = groundY(nx, nz) - groundY(pl.x, pl.z), run2d = Math.hypot(nx - pl.x, nz - pl.z);
+      if (run2d < 1e-6 || rise / run2d < 0.85) { pl.x = nx; pl.z = nz; } // too steep (about 40°) to climb
+    } else this.turnRate = 0;
+    if (this.colliders.resolve(pl, 0.35)) pl.speed *= 0.92;
     pl.z = Math.max(-235, Math.min(235, pl.z));
     const sx = streamX(pl.z);
     pl.x = Math.max(sx - 160, Math.min(sx + 160, pl.x));
 
-    const footY = Math.max(groundY(pl.x, pl.z), waterY(pl.z) - 0.6);
-    const bob = this.walker.update(dt, pl.speed, t);
+    const floorY = Math.max(groundY(pl.x, pl.z), waterY(pl.z) - 0.6);
+    pl.y = pl.y === undefined ? floorY : pl.y + (floorY - pl.y) * Math.min(1, dt * 18);
+    const footY = pl.y;
+    const inWater = waterY(pl.z) - groundY(pl.x, pl.z) > 0.15;
+    const bob = this.walker.update(dt, pl.speed * (inWater ? 0.85 : 1), t, { turnRate: this.turnRate });
     this.character.position.set(pl.x, footY + bob, pl.z);
     this.character.rotation.y = pl.facing;
 
@@ -930,7 +905,7 @@ export class StreamWorld {
 
   setPose(p) {
     if (!p || !this.player) return;
-    this.player.x = p.x; this.player.z = p.z;
+    this.player.x = p.x; this.player.z = p.z; this.player.y = undefined;
     this.camYaw = p.yaw ?? this.camYaw;
     this.camPitch = Math.max(-0.15, Math.min(1.1, p.facing === undefined ? 0.32 : p.pitch)); // old saves stored first-person pitch
     this.player.facing = p.facing ?? this.camYaw + Math.PI;
@@ -941,6 +916,7 @@ export class StreamWorld {
   teleport(siteId) {
     const p = SITE_POS.find((q) => q.id === siteId);
     this.player.x = p.x + 4; this.player.z = p.z - 9;
+    this.player.y = undefined; // snap to the ground at the new spot
     const dx = p.x - this.player.x, dz = p.z - this.player.z;
     this.camYaw = Math.atan2(-dx, -dz);
     this.player.facing = Math.atan2(dx, dz);

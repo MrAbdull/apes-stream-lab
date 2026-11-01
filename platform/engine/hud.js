@@ -54,7 +54,7 @@ export class HUD {
     return b;
   }
 
-  busy() { return !this.backdrop.classList.contains('hidden') || !this.dlg.classList.contains('hidden'); }
+  busy() { return !this.backdrop.classList.contains('hidden') || !this.dlg.classList.contains('hidden') || !!this.dock?.classList.contains('open'); }
   notify() { this.onBusyChange?.(this.busy()); }
 
   setPrompt(text) {
@@ -141,6 +141,44 @@ export class HUD {
     body.innerHTML = '';
     this.panelRender(body, this);
     body.scrollTop = top;
+  }
+
+  // A side panel that leaves the 3D view visible (used at experiment stations).
+  openDock(title, render, { onClose } = {}) {
+    if (!this.dock) {
+      this.dock = document.createElement('aside');
+      this.dock.className = 'pf-dock';
+      this.dock.innerHTML = '<header><h2></h2><button class="secondary pf-dock-close">Leave station</button></header><div class="pf-dock-body"></div>';
+      this.root.appendChild(this.dock);
+      this.dock.querySelector('.pf-dock-close').onclick = () => this.closeDock();
+    }
+    this.dockRender = render;
+    this.onDockClose = onClose;
+    this.dock.querySelector('h2').textContent = title;
+    this.dock.classList.add('open');
+    this.root.classList.add('docked');
+    this.promptBtn.classList.add('hidden');
+    this.redock();
+    this.notify();
+  }
+
+  redock() {
+    const body = this.dock.querySelector('.pf-dock-body');
+    const top = body.scrollTop;
+    body.innerHTML = '';
+    this.dockRender(body, this);
+    body.scrollTop = top;
+  }
+
+  closeDock() {
+    if (!this.dock?.classList.contains('open')) return;
+    this.dock.classList.remove('open');
+    this.root.classList.remove('docked');
+    const fn = this.onDockClose;
+    this.onDockClose = null;
+    fn?.();
+    this.notify();
+    this.setPrompt(this.promptText);
   }
 
   closePanel() {

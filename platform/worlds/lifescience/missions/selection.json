@@ -1,0 +1,54 @@
+{
+  "id": "selection",
+  "title": "Natural Selection: Camouflage",
+  "objectives": [
+    "Model how predation changes trait frequencies over generations (APES 2.5, 2.6)",
+    "Explain natural selection using data, including the role of mutation",
+    "Connect environmental change to evolution in real populations"
+  ],
+  "badge": { "id": "life-selection", "name": "Evolution Explorer", "icon": "🪲" },
+  "steps": [
+    { "title": "Briefing", "sequence": [
+      { "target": "hale", "gesture": "talk", "points": 5, "instruction": "Talk to Dr. Hale.",
+        "npcLines": [
+          "Some beetles are green, some are brown, and birds love to eat them. Which color survives depends on the ground they live on.",
+          "The tray on the middle bench lets us watch many generations in a few seconds. Start with bare soil."
+        ] }
+    ] },
+    { "title": "Bare soil", "sequence": [
+      { "target": "selection", "gesture": "measure", "points": 10, "instruction": "Set the ground to Bare soil, start at 50% green, and run at least 10 generations.",
+        "validator": { "preset": "custom", "fn": "selRun", "args": { "background": "dirt", "minGen": 10 } },
+        "feedback": { "correct": "Run recorded.", "incorrect": "Choose Bare soil and at least 10 generations." } },
+      { "gesture": "answer", "points": 10, "instruction": "Read your result.",
+        "question": { "type": "numeric", "showData": true, "unit": "%", "prompt": "In your bare-soil run, what percentage of beetles were BROWN in the final generation?" },
+        "validator": { "preset": "value_within", "expected": { "fn": "selFinalBrown", "args": { "background": "dirt" } }, "tolerance": 2 },
+        "feedback": { "correct": "Correct, read straight from your data.", "incorrect": "Look at the 'Final brown' column for your bare-soil run." } },
+      { "gesture": "answer", "points": 10, "instruction": "Why did that happen?",
+        "question": { "type": "choice", "prompt": "Why did brown beetles become more common on bare soil?",
+          "options": [
+            { "value": "camo", "label": "Brown beetles blended in, so birds ate fewer of them and they produced more offspring" },
+            { "value": "choose", "label": "Green beetles changed their color to brown to survive" },
+            { "value": "faster", "label": "Brown beetles are faster runners" },
+            { "value": "random", "label": "It was pure chance; color doesn't matter" }] },
+        "validator": { "preset": "choice", "answer": "camo" },
+        "feedback": { "correct": "That's natural selection: the environment favored a trait that already existed.", "incorrect": "Individuals don't change their own color. Think about which beetles the birds could see." } }
+    ] },
+    { "title": "Change the environment", "sequence": [
+      { "target": "selection", "gesture": "measure", "points": 10, "instruction": "Now set the ground to Grassland and run at least 10 generations.",
+        "validator": { "preset": "custom", "fn": "selRun", "args": { "background": "grass", "minGen": 10 } },
+        "feedback": { "correct": "Run recorded: same beetles, different environment, opposite result." } },
+      { "gesture": "answer", "points": 10, "instruction": "The role of mutation.",
+        "question": { "type": "choice", "prompt": "If the mutation rate were set to 0%, what would happen in a population that is already 100% brown when it moves onto grass?",
+          "options": [
+            { "value": "stuck", "label": "It could not become green, because there is no green variation left to select" },
+            { "value": "turn", "label": "The beetles would turn green within a few generations" },
+            { "value": "same", "label": "Exactly the same as with mutation" }] },
+        "validator": { "preset": "choice", "answer": "stuck" },
+        "hint": "Try it: start at 0% green with 0% mutation on Grassland.",
+        "feedback": { "correct": "Right. Selection can only act on variation that exists; mutation supplies new variation.", "incorrect": "Natural selection needs variation to act on. Test it in the tray." } },
+      { "gesture": "answer", "points": 15, "instruction": "Connect to a changing planet.",
+        "question": { "type": "text", "showData": true, "prompt": "Snowshoe hares turn white in winter to match snow. Climate change is shortening snowy seasons. Using what your beetle runs showed, predict what could happen to hare populations and explain why." },
+        "validator": { "preset": "free_text", "minWords": 25 } }
+    ] }
+  ]
+}

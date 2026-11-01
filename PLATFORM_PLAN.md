@@ -76,6 +76,19 @@ Each world registers named *effects* (for example `placeQuadrat`) and *measureme
 **Scoring**: points per action, hint penalties, first-try bonus, mission grade A–F, badges.
 **Progress**: one local profile per student (schema-versioned). Exported as a file and gathered by the teacher into a gradebook. No server.
 
+## 4b. Second pass: taking everything usable from the four repos (2026-11-01)
+
+| Repo | Taken | Not taken (and why) |
+|---|---|---|
+| ScienceLab 3D (MIT) | Ecosystem, natural selection and photosynthesis experiments, ported into the **Life Science Lab** with live 3D benches, sliders and graphs. The food web now uses a population model with real 10% energy transfer, fitted so removing a level gives a correct trophic cascade or overgrazing. | Physics, chemistry and math experiments (out of scope). Its React/Next.js stack (EarthLab has no build step). |
+| Maroon (no license) | Lab-room layout with ring station markers. Its bundled **CC0 ceiling light** and **CC-BY whiteboard** (third-party models with their own licenses). | Everything else: Maroon's own code and models are unlicensed (all rights reserved), and some furniture comes from a commercial Unity asset pack. |
+| VossLab (LGPL / CC-BY) | Mission format and checkpointed saves (re-implemented). **Cell Biology Bench** portal to its published simulator. | Building and bundling its simulator locally: its build runs the project's own scripts, which this environment's permissions blocked. It can be added once those scripts are approved to run. |
+| HandsOn (MIT) | Carrying equipment, gravity on dropped objects, field notes anywhere, an ask-the-assistant feature (offline). | Azure cloud AI (paid, leaked keys, privacy). Android AR. Buoyancy physics (kept for a future ocean/oil-spill station, where it serves environmental science). |
+
+Engine fixes in the same pass: solid collisions (trees, buildings, people, benches), a slope limit, gravity and jumping, smooth
+ground following, a rewritten walk cycle (knees bend in the correct half of the step, stride matched to speed so feet don't slide,
+hip sway, turning lean, carrying pose), and real-world plant and tree sizes in every world.
+
 ## 5. Delivery phases
 
 1. **Now:** engine, campus, NPC teachers, mission engine, scoring and progress, the Biodiversity Field Station world, and the

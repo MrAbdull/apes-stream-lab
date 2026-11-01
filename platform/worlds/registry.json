@@ -1,42 +1,94 @@
 [
   {
-    "id": "stream", "type": "app", "url": "stream.html", "status": "open", "color": "#2f7d96",
-    "title": "Watershed Science", "subject": "Stream health · Water quality", "units": "APES Units 2, 5, 8",
+    "id": "stream",
+    "type": "app",
+    "url": "stream.html",
+    "status": "open",
+    "color": "#2f7d96",
+    "title": "Watershed Science",
+    "subject": "Stream health \u00b7 Water quality",
+    "units": "APES Units 2, 5, 8",
     "blurb": "Walk a stream from forest to farm to town. Kick-net aquatic insects, test the water, calculate a water-quality index and track down a pollution source."
   },
   {
-    "id": "biodiversity", "type": "world", "status": "open", "color": "#2e7d32",
-    "title": "Biodiversity Field Station", "subject": "Biodiversity · Ecology", "units": "APES Unit 2",
+    "id": "biodiversity",
+    "type": "world",
+    "status": "open",
+    "color": "#2e7d32",
+    "title": "Biodiversity Field Station",
+    "subject": "Biodiversity \u00b7 Ecology",
+    "units": "APES Unit 2",
     "blurb": "Survey plants and fungi with quadrats in a meadow, a forest and a disturbed lot. Measure species richness and Simpson's diversity, spot an invasive species and recommend how to protect the habitat."
   },
   {
-    "id": "lake", "type": "world", "status": "soon", "color": "#3a8f6b",
-    "title": "Eutrophication Lake", "subject": "Nutrient pollution · Aquatic ecosystems", "units": "APES Units 8, 1",
+    "id": "lifescience",
+    "type": "world",
+    "status": "open",
+    "color": "#1f8a8a",
+    "title": "Life Science Lab",
+    "subject": "Food webs \u00b7 Evolution \u00b7 Photosynthesis",
+    "units": "APES Units 1, 2, 9",
+    "blurb": "An indoor lab with three live experiments: remove predators from a food web, watch birds drive natural selection, and measure photosynthesis with a lamp and a water plant."
+  },
+  {
+    "id": "cellbio",
+    "type": "external",
+    "url": "https://vosslab.github.io/virtual-lab-protocol-simulation/",
+    "status": "open",
+    "color": "#7b4fa0",
+    "title": "Cell Biology Bench",
+    "subject": "Cell culture \u00b7 Lab technique",
+    "units": "Biology lab skills",
+    "blurb": "Practice real cell-culture lab protocols step by step: feeding cells, drug treatment, counting cells under the microscope. Built by the Voss Lab (opens in a new tab; content CC-BY 4.0, code LGPL-3.0)."
+  },
+  {
+    "id": "lake",
+    "type": "world",
+    "status": "soon",
+    "color": "#3a8f6b",
+    "title": "Eutrophication Lake",
+    "subject": "Nutrient pollution \u00b7 Aquatic ecosystems",
+    "units": "APES Units 8, 1",
     "blurb": "Sample a lake as fertilizer runoff triggers an algal bloom, then trace the dissolved-oxygen crash and fish kill."
   },
   {
-    "id": "reef", "type": "world", "status": "soon", "color": "#1f6fb2",
-    "title": "Coral Reef & Ocean Lab", "subject": "Oceanography · Ocean acidification", "units": "APES Units 8, 9",
+    "id": "reef",
+    "type": "world",
+    "status": "soon",
+    "color": "#1f6fb2",
+    "title": "Coral Reef & Ocean Lab",
+    "subject": "Oceanography \u00b7 Ocean acidification",
+    "units": "APES Units 8, 9",
     "blurb": "Dive a reef to measure bleaching, water temperature and pH, and connect them to rising CO2."
   },
   {
-    "id": "climate", "type": "world", "status": "soon", "color": "#c0582b",
-    "title": "Climate & Carbon Center", "subject": "Climate change · Carbon cycle", "units": "APES Units 1, 4, 9",
+    "id": "climate",
+    "type": "world",
+    "status": "soon",
+    "color": "#c0582b",
+    "title": "Climate & Carbon Center",
+    "subject": "Climate change \u00b7 Carbon cycle",
+    "units": "APES Units 1, 4, 9",
     "blurb": "Track carbon through the atmosphere, oceans and forests, and test how policies change future warming."
   },
   {
-    "id": "farm", "type": "world", "status": "soon", "color": "#8a6a3c",
-    "title": "Soil & Sustainable Farm", "subject": "Agriculture · Soil science", "units": "APES Units 4, 5",
+    "id": "farm",
+    "type": "world",
+    "status": "soon",
+    "color": "#8a6a3c",
+    "title": "Soil & Sustainable Farm",
+    "subject": "Agriculture \u00b7 Soil science",
+    "units": "APES Units 4, 5",
     "blurb": "Dig soil pits, test soil texture and nutrients, and compare conventional and sustainable farming."
   },
   {
-    "id": "energy", "type": "world", "status": "soon", "color": "#d4a017",
-    "title": "Renewable Energy Park", "subject": "Energy resources · Sustainability", "units": "APES Unit 6",
+    "id": "energy",
+    "type": "world",
+    "status": "soon",
+    "color": "#d4a017",
+    "title": "Renewable Energy Park",
+    "subject": "Energy resources \u00b7 Sustainability",
+    "units": "APES Unit 6",
     "blurb": "Site wind turbines and solar arrays, measure output, and weigh land use and wildlife trade-offs."
-  },
-  {
-    "id": "geology", "type": "world", "status": "soon", "color": "#9b6b4a",
-    "title": "Geology Canyon", "subject": "Earth systems · Plate tectonics", "units": "APES Unit 4",
-    "blurb": "Read rock layers, identify rocks and minerals, and connect landforms to plate boundaries."
   }
 ]

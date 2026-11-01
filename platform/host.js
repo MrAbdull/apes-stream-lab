@@ -11,6 +11,8 @@ import { Interactions } from './engine/interact.js';
 import { NPC } from './engine/npc.js';
 import { MissionRunner } from './engine/mission.js';
 import { Assistant } from './engine/assistant.js';
+import { Colliders } from './engine/physics.js';
+import { Carrier, FieldNotes } from './engine/handson.js';
 import { loadProfile, saveProfile, seedFor } from './engine/progress.js';
 import { DEFAULT_AVATAR } from '../js/avatars.js';
 
@@ -39,9 +41,10 @@ export async function boot({ worldId, isCampus = false }) {
 
   const stage = new Stage(document.getElementById('scene'), manifest.stage || {});
   const hud = new HUD(document.getElementById('hud'), { title: manifest.title, subtitle: manifest.subtitle, isTouch });
+  const colliders = new Colliders();
 
   const ctx = {
-    stage, hud, registry, manifest, isTouch, params,
+    stage, hud, registry, manifest, isTouch, params, colliders,
     get profile() { return profile; },
     setProfile(p) { profile = p; saveProfile(p); },
     seed: profile ? seedFor(profile) : 'guest',
@@ -51,16 +54,23 @@ export async function boot({ worldId, isCampus = false }) {
 
   const world = await mod.createWorld(ctx);
   const player = new Player(stage, {
-    ground: world.ground, clamp: world.clamp, start: world.start,
+    ground: world.ground, clamp: world.clamp, start: world.start, colliders,
     occluders: () => world.occluders?.() || [], joystick: hud.joystick,
   });
   await player.setAvatar(profile?.avatar || DEFAULT_AVATAR);
   ctx.player = player;
   const interactions = new Interactions(stage, player, hud);
   ctx.interactions = interactions;
+  ctx.carrier = new Carrier(stage, player, world.ground);
 
   const npcs = [];
-  ctx.addNPC = async (opts) => { const n = new NPC(stage, interactions, hud, world.ground, opts); await n.load(); npcs.push(n); return n; };
+  ctx.addNPC = async (opts) => {
+    const n = new NPC(stage, interactions, hud, world.ground, opts);
+    await n.load();
+    colliders.addCircle(opts.x, opts.z, 0.4); // people are solid too
+    npcs.push(n);
+    return n;
+  };
   await world.populate?.(ctx);
   ctx.npcs = npcs;
 
@@ -120,8 +130,14 @@ export async function boot({ worldId, isCampus = false }) {
   });
 
   if (!isCampus) {
+    ctx.notes = new FieldNotes(stage, player, hud, profile, worldId, interactions);
     hud.addAction('🎯 <span>Missions</span>', openMissions);
-    if (world.openNotebook) hud.addAction('📓 <span>Data</span>', () => world.openNotebook());
+    if (world.openNotebook) {
+      hud.addAction('📓 <span>Data</span>', () => world.openNotebook());
+      const dataHTML = world.dataHTML;
+      world.dataHTML = () => dataHTML() + ctx.notes.html(); // field notes appear with the data
+    }
+    hud.addAction('📝 <span>Note</span>', () => ctx.notes.write());
   }
   hud.addAction('💬 <span>Ask</span>', openAsk);
   world.addActions?.(hud);
@@ -131,6 +147,7 @@ export async function boot({ worldId, isCampus = false }) {
   stage.onFrame((dt, frame) => {
     const t = performance.now() / 1000;
     player.update(dt, t);
+    ctx.carrier.update(dt);
     interactions.update(t);
     for (const n of npcs) n.update(dt, t, player);
     world.update?.(dt, t, frame);

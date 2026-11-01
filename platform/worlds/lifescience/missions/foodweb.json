@@ -1,0 +1,60 @@
+{
+  "id": "foodweb",
+  "title": "Energy Flow & Trophic Cascades",
+  "objectives": [
+    "Apply the 10% rule to energy flow between trophic levels (APES 1.10, 1.11)",
+    "Run a controlled experiment by removing one trophic level",
+    "Explain a trophic cascade using model data and a real example"
+  ],
+  "badge": { "id": "life-energy", "name": "Energy Tracker", "icon": "🌿" },
+  "steps": [
+    { "title": "Briefing", "sequence": [
+      { "target": "hale", "gesture": "talk", "points": 5, "instruction": "Talk to Dr. Hale by the whiteboard.",
+        "npcLines": [
+          "Welcome! Today's question: what happens to a whole ecosystem if we remove the animals at the top?",
+          "The terrarium on the left bench is a model habitat: plants, herbivores, carnivores and apex predators, all at their natural balance.",
+          "First run it unchanged as your control. Then we'll take the apex predators out."
+        ] }
+    ] },
+    { "title": "Control run", "sequence": [
+      { "target": "foodweb", "gesture": "measure", "points": 10, "instruction": "Step on the food web station's ring and run 120 days without changing anything (your control).",
+        "hint": "Use the default starting numbers. If you changed a slider, press Reset to balance first.",
+        "validator": { "preset": "custom", "fn": "fwRun", "args": { "herbivores": "present", "carnivores": "present", "apex": "present" } },
+        "feedback": { "correct": "Control recorded. Notice the populations stay steady: the habitat is in balance.", "incorrect": "That run had a level missing. Reset to balance and run again." } },
+      { "gesture": "answer", "points": 10, "instruction": "Apply the 10% rule.",
+        "question": { "type": "numeric", "unit": "kJ", "prompt": "The plants in a habitat capture 50,000 kJ of energy. Using the 10% rule, how much energy reaches the apex predators (the fourth trophic level)?" },
+        "validator": { "preset": "value_within", "expected": 50, "tolerance": 0.5 },
+        "hint": "Plants → herbivores → carnivores → apex is three transfers. Multiply by 0.1 three times.",
+        "feedback": { "correct": "Right: 50,000 → 5,000 → 500 → 50 kJ.", "incorrect": "Count the transfers: plants → herbivores → carnivores → apex.", "reveal": "50,000 × 0.1 × 0.1 × 0.1 = 50 kJ." } }
+    ] },
+    { "title": "Remove the apex predators", "sequence": [
+      { "target": "foodweb", "gesture": "measure", "points": 10, "instruction": "Set starting apex predators to 0 (keep everything else the same) and run 120 days.",
+        "validator": { "preset": "custom", "fn": "fwRun", "args": { "apex": 0, "carnivores": "present", "herbivores": "present" } },
+        "feedback": { "correct": "Experiment recorded. Compare it with your control in the runs table.", "incorrect": "Set apex predators to exactly 0 and keep carnivores and herbivores above 0." } },
+      { "gesture": "answer", "points": 10, "instruction": "What happened to the plants?",
+        "question": { "type": "choice", "showData": true, "prompt": "Compared with your control, what happened to the PLANT population by day 120 when apex predators were removed?",
+          "options": [{ "value": "increased", "label": "Plants increased" }, { "value": "decreased", "label": "Plants decreased" }, { "value": "same", "label": "Plants stayed about the same" }] },
+        "validator": { "preset": "choice", "expected": { "fn": "fwPlantChange" } },
+        "feedback": { "correct": "Yes. Even though the plants weren't touched, removing animals two levels up changed them.", "incorrect": "Compare day-120 plants in your two runs." } },
+      { "gesture": "answer", "points": 10, "instruction": "Find a real trophic cascade.",
+        "question": { "type": "choice", "prompt": "Which real event is the best example of a trophic cascade?",
+          "options": [
+            { "value": "wolves", "label": "Wolves returned to Yellowstone, elk browsed less, and willows and aspens grew back" },
+            { "value": "drought", "label": "A drought reduced grass growth across a prairie" },
+            { "value": "fire", "label": "A wildfire burned part of a forest" },
+            { "value": "flood", "label": "A flood moved sediment downstream" }] },
+        "validator": { "preset": "choice", "answer": "wolves" },
+        "feedback": { "correct": "Exactly: a change at the top rippled down to the plants.", "incorrect": "A trophic cascade starts with a change in predators and ripples down the food chain." } },
+      { "gesture": "answer", "points": 15, "instruction": "Explain the cascade.",
+        "question": { "type": "text", "showData": true, "prompt": "Explain, step by step, why removing the apex predators changed the plants. Use numbers from your control and experiment runs for at least two trophic levels." },
+        "validator": { "preset": "free_text", "minWords": 25 } }
+    ] },
+    { "title": "Report", "sequence": [
+      { "target": "hale", "gesture": "talk", "points": 5, "instruction": "Report your findings to Dr. Hale.",
+        "npcLines": [
+          "So the predators at the top were quietly protecting the plants at the bottom. That's a trophic cascade.",
+          "This is why ecologists worry about losing top predators to hunting and habitat loss: the effects travel all the way down the food web."
+        ] }
+    ] }
+  ]
+}

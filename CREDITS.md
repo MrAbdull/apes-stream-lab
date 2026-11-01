@@ -11,14 +11,24 @@ All 3D models are released under **CC0 (public domain)**. Credit isn't required,
 
 | NPC teachers (`npc_ranger`, `npc_scientist`) | Quaternius | Ultimate Modular Men (Adventurer) and Women (Suit) | CC0 |
 
+| Lab ceiling light (`assets/lab/ceilinglight.fbx`) | pcraven, via [Blend Swap #6689](http://www.blendswap.com/blends/view/6689); included in [Maroon](https://github.com/GameLabGraz/Maroon) | Ceiling Light | **CC0** |
+| Lab whiteboard (`assets/lab/whiteboard.fbx`) | **Cineca VisitLab**, via [Blend Swap #80963](http://www.blendswap.com/blends/view/80963); included in [Maroon](https://github.com/GameLabGraz/Maroon) | Mobile white marker board | **CC-BY 3.0** (attribution required) |
+
+License texts for the two Maroon models are kept beside them in `assets/lab/`.
+
 Code libraries: [three.js](https://threejs.org) (MIT) and [jsPDF](https://github.com/parallax/jsPDF) (MIT).
 
-## Design influences
-EarthLab's architecture was informed by studying these projects. **No code was copied from any of them**; see [PLATFORM_PLAN.md](PLATFORM_PLAN.md).
-- **VossLab virtual-lab-protocol-simulation** (Neil Voss; code LGPL-3.0, content CC-BY-4.0): the idea of data-authored protocols
-  (steps → target, gesture, instruction, hint, validator, feedback) and checkpointed, schema-versioned progress.
-- **Maroon** (TU Graz Game Lab): a central lab hub with stations leading to experiment rooms.
-- **ScienceLab 3D** (Rudra Sarker, MIT): slider-driven simulations with live data panels.
-- **HandsOn** (VietTung0801, MIT): a lab assistant students can talk to (EarthLab's version runs fully offline).
+## What came from the four reference projects
+- **ScienceLab 3D** (Rudra Sarker, MIT): the Life Science Lab's food web, natural selection and photosynthesis experiments
+  are ported from its ecosystem, natural-selection and photosynthesis scenes, including its trophic color scheme and its
+  photosynthesis explanation text. Fixed in the port: frame-rate-dependent motion, unseeded randomness, and an energy model
+  that didn't follow the 10% rule.
+- **Maroon** (TU Graz Game Lab): the lab-room layout with circular station markers. Maroon's own code and models have **no license**,
+  so only the two third-party models above (which carry their own CC licenses) were used.
+- **VossLab virtual-lab-protocol-simulation** (Neil Voss; code LGPL-3.0, content CC-BY-4.0): EarthLab's mission format
+  (steps → target, gesture, instruction, hint, validator, feedback) and checkpointed, schema-versioned saving are re-implemented
+  from its design. The campus's **Cell Biology Bench** portal opens VossLab's published simulator.
+- **HandsOn** (VietTung0801, MIT): carrying equipment (its grab system), dropped objects falling under gravity, field notes
+  placed anywhere in the world, and a lab assistant students can ask questions (EarthLab's runs offline, with no cloud keys).
 
 Character animation, water, sky, terrain, organism drawings and all science content were made for this lab.
