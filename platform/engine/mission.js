@@ -4,7 +4,7 @@
 // (re-implemented here; no code copied). Progress checkpoints after every action.
 
 import { esc } from './hud.js';
-import { fingerprint, saveCheckpoint, getCheckpoint, recordResult, gradeFor } from './progress.js';
+import { fingerprint, saveCheckpoint, getCheckpoint, recordResult, gradeFor, exportProfile } from './progress.js';
 
 const MAX_TRIES = { numeric: 3, choice: 2, text: 99 };
 
@@ -238,7 +238,10 @@ export class MissionRunner {
         <h3>What you practiced</h3><ul>${(this.m.objectives || []).map((o) => `<li>${esc(o)}</li>`).join('')}</ul>
         <table class="data"><thead><tr><th>Step</th><th>Points</th></tr></thead><tbody>${rows}</tbody></table>
         <p class="hint">Hints cost 30% of a task's points; each wrong try costs 25%; each misidentified organism costs 10%.</p>
+        <div class="callout"><strong>Turning this in?</strong> Download your progress file and hand it in the way your teacher asked.
+          <div class="row"><button class="primary" id="pf-dl">💾 Download my progress file</button></div></div>
         <div class="row"><button class="primary big" id="pf-campus">Back to campus</button><button class="secondary" id="pf-stay">Keep exploring</button><button class="secondary" id="pf-replay">Replay mission</button></div>`;
+      body.querySelector('#pf-dl').onclick = () => exportProfile(this.profile);
       body.querySelector('#pf-campus').onclick = () => this.onExit?.('campus');
       body.querySelector('#pf-stay').onclick = () => this.hud.closePanel();
       body.querySelector('#pf-replay').onclick = () => this.onExit?.('replay');

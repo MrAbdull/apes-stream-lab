@@ -5,9 +5,10 @@ It works on laptops and iPads, with no installs, no accounts and no server.
 
 ## Pages
 - `index.html`: **EarthLab Campus**, the hub. Students create a profile, meet Dr. Rivera, and walk through portals to field stations.
-- `world.html?w=<id>`: a field station built on the shared engine (currently `biodiversity`).
+- `world.html?w=<id>`: a field station built on the shared engine (`biodiversity`, `lifescience`).
 - `stream.html`: the Stream Health Lab, with class codes, groups and PDF reports. Old `index.html?class=…` links redirect here.
-- `teacher.html`: Stream Lab teacher tools (class codes, groups, answer keys). **Don't share this link with students.**
+- `teacher.html`: **EarthLab teacher console** (password on this computer). Classes with rosters and 4-digit PINs, lab locks, a timer, the class link/QR code, lab codes, and the gradebook. **Don't share this link with students.**
+- `stream-teacher.html`: Stream Lab tools (class codes, groups, answer keys).
 
 ## Field stations
 | Station | Status | What students do |
@@ -35,9 +36,17 @@ E (or tap the green button) to interact. 📝 Note leaves a field note at your s
 2. Add one entry to `platform/worlds/registry.json` with `"type": "world", "status": "open"`. A portal appears on the campus automatically.
 No build step is needed. The engine in `platform/engine/` handles the character, camera, NPCs, missions, scoring and saving.
 
+## Classes without a server
+- The **class link** (`index.html#join=…`) carries the class name, the roster (first name + last initial, plus a check value for each PIN), open labs and the timer. Students open it once; it's saved on their device and removed from the address bar.
+- A **lab code** (8 characters) changes which labs are open and sets a timer for today. Students type it with 🔑 Lab code on the campus.
+- PINs are checked on the student's device. They stop casual sign-ins as a classmate but aren't strong security; nothing secret is protected by them.
+- Students without a class link can still practice on their own, with every lab open.
+- Live views of students (who's online, spectating) would need a relay such as Firebase and are not built.
+
 ## Progress and grading
 - Students open **Passport** on the campus to see scores and badges and to download a progress file (to hand in or to move devices).
 - Stream Lab students still download their PDF report at the end of that lab.
+- The teacher drops progress files into the console **Gradebook**: overview grid, per-task heatmap, most-missed questions, written answers to mark (marks replace the automatic points), and a CSV export.
 
 ## Hosting
 Any static host works (currently GitHub Pages). Students need internet while working, because the 3D engine and PDF tool load from public CDNs.

@@ -13,7 +13,9 @@ import { MissionRunner } from './engine/mission.js';
 import { Assistant } from './engine/assistant.js';
 import { Colliders } from './engine/physics.js';
 import { Carrier, FieldNotes } from './engine/handson.js';
-import { loadProfile, saveProfile, seedFor } from './engine/progress.js';
+import { loadProfile, saveProfile, seedFor, exportProfile } from './engine/progress.js';
+import { decodeClassLink, saveClass, loadClass, labOpen, timeLeft } from '../js/classlink.js';
+import { controlsHTML, controlsSeen, markControlsSeen } from '../js/controls.js';
 import { DEFAULT_AVATAR } from '../js/avatars.js';
 
 const isTouch = navigator.maxTouchPoints > 0 || matchMedia('(pointer: coarse)').matches;
@@ -24,8 +26,13 @@ export async function boot({ worldId, isCampus = false }) {
   const loading = document.getElementById('loading');
   const setLoading = (t) => { if (loading) loading.querySelector('span').textContent = t; };
 
+  // A class link (index.html#join=…) saves the class on this device, then is removed from the address bar.
+  const joined = decodeClassLink(location.hash);
+  if (joined) { saveClass({ ...joined, joinedAt: Date.now() }); history.replaceState(null, '', location.pathname + location.search); }
+
   let profile = loadProfile();
   if (!profile && !isCampus) { location.href = 'index.html'; return; }
+  if (!isCampus && !labOpen(worldId)) { location.href = `index.html?locked=${encodeURIComponent(worldId)}`; return; }
 
   const registry = await (await fetch(new URL('./worlds/registry.json', import.meta.url))).json();
   let manifest, mod;
@@ -140,6 +147,15 @@ export async function boot({ worldId, isCampus = false }) {
     hud.addAction('📝 <span>Note</span>', () => ctx.notes.write());
   }
   hud.addAction('💬 <span>Ask</span>', openAsk);
+  const showControls = () => new Promise((resolve) => {
+    hud.openPanel('How to move', (body) => {
+      body.innerHTML = controlsHTML(isTouch) + '<div class="row"><button class="primary big" id="pf-ctl-ok">Got it</button></div>';
+      body.querySelector('#pf-ctl-ok').onclick = () => hud.closePanel();
+    });
+    hud.onPanelClose = () => { markControlsSeen(worldId || 'campus'); resolve(); };
+  });
+  ctx.showControls = showControls;
+  hud.addAction('❔ <span>Controls</span>', showControls);
   world.addActions?.(hud);
   if (!isCampus) hud.addAction('🏛️ <span>Campus</span>', () => { location.href = 'index.html'; }, { primary: true });
 
@@ -162,6 +178,8 @@ export async function boot({ worldId, isCampus = false }) {
   stage.start();
   loading?.remove();
 
+  startClassTimer(hud, () => profile);
+  if (!isCampus && !controlsSeen(worldId)) await showControls(); // the campus shows it after sign-in
   await world.onReady?.(ctx);
   if (!isCampus) {
     const m = params.get('m');
@@ -171,4 +189,39 @@ export async function boot({ worldId, isCampus = false }) {
   window.addEventListener('pagehide', () => world.savePose?.(player.getPose()));
   if (params.has('debug')) window.earthlab = { ctx, world, player, interactions, stage, get runner() { return runner; } };
   return ctx;
+}
+
+// Class timer: shown under the world title; a warning at 5 minutes and a reminder to turn in work at the end.
+function startClassTimer(hud, getProfile) {
+  const box = hud.root.querySelector('.pf-title');
+  const el = document.createElement('em');
+  el.className = 'pf-timer hidden';
+  box.appendChild(el);
+  let warned = false;
+  const tick = () => {
+    const left = timeLeft();
+    el.classList.toggle('hidden', left === null);
+    if (left === null) return;
+    const end = loadClass().end;
+    if (left > 0) {
+      const m = Math.floor(left / 60000), sec = Math.floor((left % 60000) / 1000);
+      el.textContent = `⏱ ${m}:${String(sec).padStart(2, '0')} left`;
+      el.classList.toggle('low', left < 5 * 60000);
+      if (left < 5 * 60000 && !warned) { warned = true; hud.toast('⏱ 5 minutes left. Finish your task and download your progress file from 🪪 Passport.'); }
+      return;
+    }
+    el.textContent = "⏱ Time's up";
+    el.classList.add('low');
+    if (sessionStorage.getItem('earthlab:timeup') === String(end) || !getProfile()) return;
+    sessionStorage.setItem('earthlab:timeup', String(end));
+    hud.openPanel("⏰ Time's up!", (body) => {
+      body.innerHTML = `<p class="lead">Lab time is over. Your work is saved on this device.</p>
+        <p>Download your progress file and turn it in the way your teacher asked.</p>
+        <div class="row"><button class="primary big" id="pf-tu-dl">💾 Download my progress file</button><button class="secondary" id="pf-tu-ok">Close</button></div>`;
+      body.querySelector('#pf-tu-dl').onclick = () => exportProfile(getProfile());
+      body.querySelector('#pf-tu-ok').onclick = () => hud.closePanel();
+    });
+  };
+  tick();
+  setInterval(tick, 1000);
 }

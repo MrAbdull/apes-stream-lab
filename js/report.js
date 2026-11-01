@@ -106,8 +106,8 @@ export function buildPDF(S, LAB) {
   font('normal', 10, '#4a5a50'); doc.text('AP Environmental Science · Virtual field investigation', L, y + 4); y += 18;
 
   const who = S.group
-    ? `${S.student.name} (${S.student.email}) · Group ${S.group.code} · Role: ${ROLES[S.group.role]?.name || S.group.role}`
-    : `${S.student.name} (${S.student.email})`;
+    ? `${who(S)} · Group ${S.group.code} · Role: ${ROLES[S.group.role]?.name || S.group.role}`
+    : who(S);
   table(['Student', 'Class', 'Lab ID'], [[who, `${S.classCode} · ${describeClass(S.settings)}`, labFingerprint(S.seedKey)]], [3, 2.4, 0.8]);
   table(['Started', 'Finished', 'Active time', 'Left the lab page'],
     [[fmtTime(S.createdAt), fmtTime(S.finishedAt), `${minutes(S.activeMs)} min`, `${S.tabSwitches} time(s)`]], [1.4, 1.4, 0.8, 0.9]);
@@ -218,11 +218,15 @@ export function buildCSV(S, LAB) {
     rows.push(['question', '', `Q${q.number}: ${q.prompt}`, val, q.unit || '', a && q.type !== 'text' ? (a.correct ? 'correct' : 'incorrect') : '', a?.attempts || '', a?.by || '']);
   }
   const head = [
-    `# Stream Health Lab · ${S.student.name} <${S.student.email}> · class ${S.classCode}${S.group ? ` · group ${S.group.code}` : ''} · Lab ID ${labFingerprint(S.seedKey)}`,
+    `# Stream Health Lab · ${who(S)} · class ${S.classCode}${S.group ? ` · group ${S.group.code}` : ''} · Lab ID ${labFingerprint(S.seedKey)}`,
   ];
   // The BOM tells Excel the file is UTF-8 (so "°C" displays correctly).
   return '﻿' + head.concat(rows.map((r) => r.map(csvCell).join(','))).join('\r\n');
 }
+
+// Roster students (EarthLab class sign-in) have an internal ID instead of an email; don't print it.
+const ROSTER = /@class\.earthlab$/;
+const who = (S) => (ROSTER.test(S.student.email) ? S.student.name : `${S.student.name} (${S.student.email})`);
 
 export function mailtoLink(S, LAB) {
   const sum = summarize(S, LAB);
@@ -237,5 +241,5 @@ export function mailtoLink(S, LAB) {
     '',
     'Remember to turn in your PDF report too. This email is only a summary.',
   ];
-  return `mailto:${encodeURIComponent(S.student.email)}?subject=${encodeURIComponent('Stream Health Lab results: ' + S.student.name)}&body=${encodeURIComponent(lines.join('\r\n'))}`;
+  return `mailto:${ROSTER.test(S.student.email) ? '' : encodeURIComponent(S.student.email)}?subject=${encodeURIComponent('Stream Health Lab results: ' + S.student.name)}&body=${encodeURIComponent(lines.join('\r\n'))}`;
 }

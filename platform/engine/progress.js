@@ -18,10 +18,13 @@ export function saveProfile(p) {
   try { localStorage.setItem(KEY, JSON.stringify(p)); return true; } catch { return false; }
 }
 
-export function newProfile({ name, email, avatar }) {
+export function newProfile({ name, email, avatar, classId = null, rosterIdx = null }) {
   const id = Array.from(crypto.getRandomValues(new Uint8Array(8)), (b) => b.toString(16).padStart(2, '0')).join('');
-  return { schema: SCHEMA, id, name, email: (email || '').trim().toLowerCase(), avatar, createdAt: Date.now(), worlds: {}, badges: [], log: [] };
+  return { schema: SCHEMA, id, name, email: (email || '').trim().toLowerCase(), avatar, classId, rosterIdx, createdAt: Date.now(), worlds: {}, badges: [], log: [] };
 }
+
+// Roster students have no email, so the Stream Lab knows them by class and roster place.
+export const streamIdFor = (p) => p?.email || (p?.classId ? `${p.classId.toLowerCase()}.${p.rosterIdx}@class.earthlab` : '');
 
 // Seed for a student's own data, so every student's field data differs but stays the same for them.
 export const seedFor = (p) => p.email || p.id;
@@ -62,7 +65,7 @@ export function recordResult(p, worldId, missionId, result) {
 }
 
 export function exportProfile(p) {
-  const blob = new Blob([JSON.stringify(p, null, 1)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify({ ...p, exportedAt: Date.now(), stream: streamLabStatus(streamIdFor(p)) }, null, 1)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = `EarthLab-progress-${p.name.replace(/[^a-z0-9]+/gi, '-')}-${new Date().toISOString().slice(0, 10)}.json`;

@@ -9,6 +9,10 @@ import { saveKey, readSave, writeSave, removeSave, requestPersistence, downloadF
 import { summarize, buildPDF, buildCSV, mailtoLink, fmtTest } from './report.js';
 import { checkTeammateFile, mergeTeam } from './team.js';
 import { AVATARS, SKIN_TONES, DEFAULT_AVATAR } from './avatars.js';
+import { labOpen, loadClass, timeLeft } from './classlink.js';
+
+// The teacher locked this lab for the student's EarthLab class.
+if (!labOpen('stream')) location.replace('index.html?locked=stream');
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -159,6 +163,13 @@ function campusProfile() {
   try { return JSON.parse(localStorage.getItem('earthlab:profile:v1') || 'null'); } catch { return null; }
 }
 
+// Students who signed in from a class roster have no email; the lab knows them by class and roster place.
+function rosterStudent() {
+  const p = campusProfile(), cls = loadClass();
+  return p?.classId && cls?.id === p.classId ? { name: p.name, email: `${p.classId.toLowerCase()}.${p.rosterIdx}@class.earthlab` } : null;
+}
+
+
 function renderJoin(prefill = '') {
   $('#screen-join').innerHTML = `
     <div class="join-card card">
@@ -206,8 +217,13 @@ function renderJoin(prefill = '') {
   $('#j-class').addEventListener('input', update);
   update();
   // Students arriving from the EarthLab campus don't retype their name and email.
-  const campus = campusProfile();
-  if (campus) {
+  const campus = campusProfile(), roster = rosterStudent();
+  if (roster) {
+    $('#j-name').value = roster.name;
+    $('#j-name').readOnly = true;
+    $('#j-email').value = roster.email;
+    $('#j-email').closest('label').classList.add('hidden');
+  } else if (campus) {
     $('#j-name').value = campus.name || '';
     $('#j-email').value = campus.email || '';
   }
@@ -286,7 +302,7 @@ function askResume(existing, f) {
 function askFirstTime(f) {
   openPanel('Have you started this lab before?', (body) => {
     body.innerHTML = `
-      <p class="lead">We didn't find saved progress for <strong>${esc(f.email)}</strong> on this device.</p>
+      <p class="lead">We didn't find saved progress for <strong>${esc(rosterStudent() ? f.name : f.email)}</strong> on this device.</p>
       <div class="row">
         <button class="primary big" id="f-new">No, this is my first time</button>
         <button class="secondary big" id="f-before">Yes, I started before</button>
@@ -355,7 +371,33 @@ async function loadOwnSaveFile(file, expectedEmail) {
 
 // ---------- briefing ----------
 
+// Class timer from the teacher's lab code, shown under the lab title.
+let timerStarted = false;
+function startTimer() {
+  if (timerStarted) return;
+  timerStarted = true;
+  const el = document.createElement('em');
+  el.className = 'pf-timer hidden';
+  $('.hud-title').appendChild(el);
+  let warned = false, ended = false;
+  setInterval(() => {
+    const left = timeLeft();
+    el.classList.toggle('hidden', left === null);
+    if (left === null) return;
+    if (left > 0) {
+      el.textContent = `⏱ ${Math.floor(left / 60000)}:${String(Math.floor((left % 60000) / 1000)).padStart(2, '0')} left`;
+      el.classList.toggle('low', left < 5 * 60000);
+      if (left < 5 * 60000 && !warned) { warned = true; toast('⏱ 5 minutes left. Use 💾 Save file before the end.'); }
+    } else {
+      el.textContent = "⏱ Time's up";
+      el.classList.add('low');
+      if (!ended) { ended = true; toast("⏰ Time's up! Your work is saved here. Use 💾 Save file to turn it in or continue later."); }
+    }
+  }, 1000);
+}
+
 function enterLab() {
+  startTimer();
   LAB = generateLab(S.seedKey, S.settings);
   requestPersistence();
   inLab = true;
@@ -542,17 +584,34 @@ function renderSite(body) {
       <p><strong>${esc(site.landUse)}.</strong> ${esc(site.about)}</p>
       <ul class="obs-list">${siteObservations(LAB, id).map((o) => `<li>${esc(o)}</li>`).join('')}</ul>
     </div>
+    ${siteChecklist(id, sum)}
     <div class="tabs" role="tablist">
       <button class="tab ${siteView.tab === 'bugs' ? 'active' : ''}" data-tab="bugs">Macroinvertebrates ${badge(sum.idsCorrect, sum.idsTotal)}</button>
       <button class="tab ${siteView.tab === 'tests' ? 'active' : ''}" data-tab="tests">Water tests ${badge(sum.testsDone, TESTS.length)}</button>
       <button class="tab ${siteView.tab === 'notes' ? 'active' : ''}" data-tab="notes">Notes</button>
     </div>
     <div id="site-tab"></div>`;
-  $$('.tab', body).forEach((b) => (b.onclick = () => { siteView.tab = b.dataset.tab; siteView.specimen = null; rerender(); }));
+  $$('.tab, [data-goto]', body).forEach((b) => (b.onclick = () => { siteView.tab = b.dataset.tab || b.dataset.goto; siteView.specimen = null; rerender(); }));
   const tab = $('#site-tab', body);
   if (siteView.tab === 'bugs') renderBugs(tab, id);
   else if (siteView.tab === 'tests') renderTests(tab, id);
   else renderNotes(tab, id);
+}
+
+// Step-by-step list for each site, with what to do next highlighted.
+function siteChecklist(id, sum) {
+  const ss = S.sites[id];
+  const steps = [
+    { done: !!ss.kicked, tab: 'bugs', text: 'Take a kick-net sample', how: 'Macroinvertebrates tab → "Take the kick-net sample".' },
+    { done: sum.idsTotal > 0 && sum.idsCorrect === sum.idsTotal, tab: 'bugs', text: `Identify every specimen (${sum.idsCorrect} of ${sum.idsTotal || '?'})`, how: 'Tap a specimen, compare it with the 🔎 ID Guide, choose a match and press Confirm ID.' },
+    { done: sum.testsDone === TESTS.length, tab: 'tests', text: `Run all ${TESTS.length} water tests (${sum.testsDone} of ${TESTS.length})`, how: 'Water tests tab → press "Run test" on each one. The order doesn\'t matter.' },
+    { done: !!(ss.notes || '').trim(), tab: 'notes', text: 'Write what you notice (optional)', how: 'Notes tab: smells, water color, plants, nearby land use.', optional: true },
+  ];
+  const next = steps.find((x) => !x.done && !x.optional);
+  const after = id < 4 ? `Walk downstream to Site ${id + 1}: follow the yellow beacon or tap ${id + 1} at the top of the screen.` : 'All four sites done? Open 📓 Notebook to answer the analysis questions, then ✅ Finish.';
+  return `<details class="site-steps" ${next ? 'open' : ''}><summary>📋 What to do at this site ${next ? '' : '<span class="badge ok">Complete</span>'}</summary>
+    <ol>${steps.map((x) => `<li class="${x.done ? 'done' : x === next ? 'now' : ''}">${x.done ? '✅' : x === next ? '👉' : '⬜'} <strong>${esc(x.text)}</strong>${x === next ? `<br><span class="hint">${esc(x.how)}</span> <button class="link" data-goto="${x.tab}">Go there</button>` : ''}</li>`).join('')}</ol>
+    ${next ? '' : `<p class="callout">Site complete! ${esc(after)}</p>`}</details>`;
 }
 
 function renderBugs(tab, id) {
@@ -1042,4 +1101,4 @@ function wire() {
 }
 
 wire();
-renderJoin(new URLSearchParams(location.search).get('class') || '');
+renderJoin(new URLSearchParams(location.search).get('class') || loadClass()?.stream || '');

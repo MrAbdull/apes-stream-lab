@@ -34,6 +34,7 @@ function render() {
   const saved = localJSON(CLASSES_KEY, []);
   $('#teacher').innerHTML = `
     <header class="no-print">
+      <p><a href="teacher.html">← EarthLab teacher console</a></p>
       <h1>Stream Health Lab: Teacher Tools</h1>
       <p class="hint">Bookmark this page. Don't share its link with students: it contains the answer keys.</p>
     </header>
@@ -72,7 +73,7 @@ function render() {
 
     <section class="card">
       <h2>3. Answer key and lab check</h2>
-      <p class="hint no-print">Each student or group has different data. Enter a class code and your teacher key, then a student's email (individual labs) or group code (group labs) to see that stream's correct values and answers. Compare the Lab ID with the one printed on their report.</p>
+      <p class="hint no-print">Each student or group has different data. Enter a class code and your teacher key, then a student's email (individual labs; for students who joined through an EarthLab class, use the Stream Lab ID from the console roster) or group code (group labs) to see that stream's correct values and answers. Compare the Lab ID with the one printed on their report.</p>
       <div class="row no-print">
         <input id="k-class" placeholder="Class code" autocapitalize="characters" size="10">
         <input id="k-key" placeholder="Teacher key" autocapitalize="characters" size="8">

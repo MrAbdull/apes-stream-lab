@@ -4,12 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
-  <title>Stream Lab Teacher Tools</title>
+  <title>EarthLab Teacher Console</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/console.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
 </head>
 <body>
-  <main class="teacher" id="teacher"></main>
+  <main class="teacher console" id="console"></main>
+  <div id="print-area" class="print-only"></div>
   <div id="toast" role="status" aria-live="polite"></div>
-  <script type="module" src="js/teacher.js"></script>
+  <script type="module" src="js/console.js"></script>
 </body>
 </html>

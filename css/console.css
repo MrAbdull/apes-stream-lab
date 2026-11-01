@@ -1,0 +1,69 @@
+/* EarthLab teacher console */
+.console { max-width: 1180px; }
+.console .login { max-width: 440px; margin: 10vh auto 0; }
+.console-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+.console-head .row { margin: 0; }
+.console .btn { display: inline-flex; align-items: center; padding: 10px 14px; border-radius: 10px; border: 1px solid #b9c9bd; background: #fff; color: var(--ink); text-decoration: none; font-weight: 600; }
+.class-pick { margin: 0 0 6px; }
+label.inline { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 8px; }
+label.inline input, label.inline select { width: auto; }
+button.danger { color: var(--bad); border-color: #e3b6b2; }
+
+.lab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; margin: 12px 0; }
+.lab-toggle { flex-direction: row; align-items: center; gap: 10px; margin: 0; padding: 12px; border: 2px solid var(--line); border-left: 6px solid var(--c); border-radius: 12px; cursor: pointer; font-weight: 400; }
+.lab-toggle input { width: 22px; height: 22px; flex: none; accent-color: var(--green); }
+.lab-toggle span { display: flex; flex-direction: column; }
+.lab-toggle small { color: var(--muted); }
+.lab-toggle:has(input:checked) { background: var(--green-soft); border-color: var(--green); border-left-color: var(--c); }
+
+.share-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.share-grid h3 { margin: 0 0 4px; }
+.qr { background: #fff; padding: 10px; display: inline-block; border-radius: 10px; border: 1px solid var(--line); }
+.qr img, .qr canvas { display: block; }
+.qr-full { position: fixed; inset: 0; background: rgba(255,255,255,.98); z-index: 50; display: flex; align-items: center; justify-content: center; text-align: center; }
+.qr-full h2 { margin: 0; font-size: 2rem; }
+.qr-full p { font-size: 1.2rem; color: var(--muted); }
+.qr-full .qr { border: none; }
+
+.roster td, .roster th { padding: 6px 8px; }
+.roster code { font-size: 1.05rem; letter-spacing: 1px; }
+
+.drop { display: block; text-align: center; padding: 28px 16px; border: 2px dashed #b9c9bd; border-radius: 14px; cursor: pointer; font-weight: 600; color: var(--green-dark); background: #f7faf7; }
+.drop.over { background: var(--green-soft); border-color: var(--green); }
+.table-wrap { overflow-x: auto; }
+table.gb th small { display: block; font-weight: 400; color: var(--muted); }
+table.gb td.g { font-weight: 600; white-space: nowrap; }
+table.gb td.g-A, table.gb td.g-B { background: #e6f2e7; }
+table.gb td.g-C { background: #fff6dd; }
+table.gb td.g-D, table.gb td.g-F { background: #fbe7e5; }
+table.gb td.prog { color: var(--warn); white-space: nowrap; }
+
+table.heat { border-collapse: separate; border-spacing: 3px; }
+table.heat th { font-size: .8rem; color: var(--muted); cursor: help; min-width: 24px; }
+table.heat td:first-child { white-space: nowrap; padding-right: 10px; }
+.hm { width: 24px; height: 22px; border-radius: 4px; }
+td.hm.none { background: #f1f3f1; }
+.hm.full { background: #4caf50; color: #4caf50; }
+.hm.part { background: #f2c94c; color: #f2c94c; }
+.hm.bad { background: #e57373; color: #e57373; }
+.hm.todo { background: #dfe5e0; color: #c7d0c9; }
+span.hm { width: auto; height: auto; }
+.task-key { font-size: .88rem; columns: 2; column-gap: 28px; }
+
+.bar { height: 8px; background: #f1d6d3; border-radius: 99px; overflow: hidden; margin-bottom: 4px; max-width: 220px; }
+.bar span { display: block; height: 100%; background: var(--green); }
+.wq + .wq { border-top: 2px solid var(--line); margin-top: 18px; padding-top: 6px; }
+.wa { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.wa p { margin: 4px 0 0; line-height: 1.45; }
+.wa input { width: 70px; }
+
+.print-only { display: none; }
+@media print {
+  .console, #toast { display: none !important; }
+  .print-only { display: block; }
+  .slips { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .slip { border: 1px dashed #888; padding: 14px 16px; break-inside: avoid; font-size: 13px; }
+  .slip .pin { font-size: 20px; letter-spacing: 3px; }
+  .slip .small { font-size: 11px; color: #444; margin: 6px 0 0; }
+}
+@media (max-width: 760px) { .share-grid { grid-template-columns: 1fr; } .task-key { columns: 1; } }

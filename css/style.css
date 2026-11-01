@@ -275,3 +275,16 @@ legend { font-weight: 700; padding: 0 6px; }
   .no-print { display: none !important; }
   .teacher .card { box-shadow: none; border: 1px solid #ccc; }
 }
+
+/* Stream Lab: per-site checklist */
+.site-steps { background: var(--green-soft); border-radius: 12px; padding: 10px 14px; margin: 0 0 10px; }
+.site-steps summary { cursor: pointer; font-weight: 700; color: var(--green-dark); }
+.site-steps ol { list-style: none; padding: 0; margin: 8px 0 0; }
+.site-steps li { padding: 5px 0; line-height: 1.4; }
+.site-steps li.done { color: var(--muted); }
+.site-steps li.done strong { font-weight: 500; }
+.site-steps li.now { background: #fff; border-radius: 8px; padding: 8px 10px; }
+.site-steps .callout { margin: 8px 0 0; }
+.pf-timer { font-style: normal; font-weight: 700; font-size: .85rem; color: var(--green-dark); margin-top: 2px; }
+.pf-timer.low { color: var(--bad); }
+.pf-timer.hidden { display: none; }

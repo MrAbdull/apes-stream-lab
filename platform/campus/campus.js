@@ -5,7 +5,9 @@ import * as THREE from 'three';
 import { mulberry32 } from '../../js/rng.js';
 import { AVATARS, SKIN_TONES, DEFAULT_AVATAR } from '../../js/avatars.js';
 import { esc } from '../engine/hud.js';
-import { newProfile, saveProfile, exportProfile, readProfileFile, streamLabStatus } from '../engine/progress.js';
+import { newProfile, saveProfile, exportProfile, readProfileFile, streamLabStatus, streamIdFor } from '../engine/progress.js';
+import { loadClass, labOpen, applyLabCode, pinCheck } from '../../js/classlink.js';
+import { controlsSeen } from '../../js/controls.js';
 
 const PORTAL_R = 30;
 const smooth = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
@@ -132,13 +134,26 @@ export async function createWorld(ctx) {
       const lx = side * 1.6, c = Math.cos(g.rotation.y), s = Math.sin(g.rotation.y);
       ctx.colliders.addCircle(p.x + lx * c, p.z - lx * s, 0.3);
     }
-    const label = ctx.makeLabel([p.title, open ? p.subject : 'Coming soon'], { accent: open ? p.color : '#9aa1a6', scale: 0.75 });
-    label.position.y = 5.6;
-    g.add(label);
     scene.add(g);
-    p.group = g; p.surface = surface;
+    p.group = g; p.surface = surface; p.frame = frame;
     portalMeshes.push(g);
   }
+
+  // Labs the teacher hasn't opened look grey with a padlock. Re-run after a lab code changes them.
+  const usable = (p) => p.status === 'open' && labOpen(p.id);
+  function applyLocks() {
+    for (const p of portals) {
+      const open = p.status === 'open', ok = usable(p);
+      p.frame.color.set(ok ? p.color : '#9aa1a6');
+      p.surface.material.color.set(ok ? p.color : '#c9ced2');
+      if (!ok) p.surface.material.opacity = 0.25;
+      if (p.label) p.group.remove(p.label);
+      p.label = ctx.makeLabel([p.title, !open ? 'Coming soon' : ok ? p.subject : '🔒 Locked by your teacher'], { accent: ok ? p.color : '#9aa1a6', scale: 0.75 });
+      p.label.position.y = 5.6;
+      p.group.add(p.label);
+    }
+  }
+  applyLocks();
 
   const world = {
     ground,
@@ -147,7 +162,7 @@ export async function createWorld(ctx) {
     occluders: () => scatter.occluders(),
     update(dt, t, frame) {
       if (frame % 5 === 0) scatter.update(ctx.player.pos.x, ctx.player.pos.z);
-      for (const p of portals) if (p.status === 'open') p.surface.material.opacity = 0.45 + 0.15 * Math.sin(t * 2 + p.angle);
+      for (const p of portals) if (usable(p)) p.surface.material.opacity = 0.45 + 0.15 * Math.sin(t * 2 + p.angle);
       globe.rotation.y += dt * 0.3; land.rotation.y += dt * 0.3;
     },
 
@@ -164,24 +179,31 @@ export async function createWorld(ctx) {
       // After talking to Dr. Rivera, point the way to a good first field station.
       c.interactions.on((g, id) => {
         if (g !== 'talk' || id !== 'rivera') return;
-        const target = portals.find((p) => p.id === 'biodiversity' && p.status === 'open');
+        const target = portals.find((p) => p.id === 'biodiversity' && usable(p)) || portals.find(usable);
         if (target) c.interactions.setGuide(`portal:${target.id}`);
       });
     },
 
     async onReady(c) {
-      if (!c.profile) await signUp();
-      else c.hud.toast(`Welcome back, ${c.profile.name}!`);
+      const cls = loadClass();
+      const locked = c.params.get('locked');
+      if (cls && (!c.profile || c.profile.classId !== cls.id)) await classSignIn(cls);
+      else if (!c.profile) await signUp();
+      else c.hud.toast(locked ? `${portals.find((p) => p.id === locked)?.title || 'That lab'} is locked. Your teacher will open it when it's time.` : `Welcome back, ${c.profile.name}!`);
+      if (!controlsSeen('campus')) await c.showControls();
     },
 
-    addActions(hud) { hud.addAction('🪪 <span>Passport</span>', openPassport, { primary: true }); },
+    addActions(hud) {
+      if (loadClass()) hud.addAction('🔑 <span>Lab code</span>', enterLabCode);
+      hud.addAction('🪪 <span>Passport</span>', openPassport, { primary: true });
+    },
     labelFor: (id) => (id?.startsWith('portal:') ? portals.find((p) => `portal:${p.id}` === id)?.title : null),
   };
 
   // ---------- dialogue ----------
   function riveraDialogue() {
     const name = ctx.profile?.name?.split(' ')[0] || 'there';
-    const open = portals.filter((p) => p.status === 'open');
+    const open = portals.filter(usable).length ? portals.filter(usable) : portals.filter((p) => p.status === 'open');
     return [
       `Hi ${name}! I'm Dr. Rivera. Welcome to the EarthLab campus, where you'll work as a field scientist.`,
       {
@@ -201,7 +223,7 @@ export async function createWorld(ctx) {
   function missionStatusHTML(p) {
     if (p.type === 'external' || p.id === 'cellbio') return '<p class="muted">This lab saves its own progress in your browser.</p>';
     if (p.id === 'stream') {
-      const s = streamLabStatus(ctx.profile?.email);
+      const s = streamLabStatus(streamIdFor(ctx.profile));
       return s ? `<p class="muted">${s.finished ? '✅ Finished' : `⏳ In progress: ${s.sites} of 4 sites complete`}</p>` : '<p class="muted">Not started</p>';
     }
     const ms = ctx.profile?.worlds[p.id]?.missions || {};
@@ -215,13 +237,15 @@ export async function createWorld(ctx) {
         <div class="pf-portal" style="--c:${p.status === 'open' ? p.color : '#9aa1a6'}">
           <p class="pf-subject">${esc(p.subject)} · ${esc(p.units)}</p>
           <p>${esc(p.blurb)}</p>
-          ${p.status === 'open' ? missionStatusHTML(p) : '<p class="callout">This field station is still being built. Check back soon!</p>'}
+          ${p.status !== 'open' ? '<p class="callout">This field station is still being built. Check back soon!</p>'
+            : !usable(p) ? '<p class="callout warn">🔒 Your teacher hasn\'t opened this lab yet. When they do, they\'ll give you a lab code: tap 🔑 Lab code and type it.</p>' : missionStatusHTML(p)}
         </div>
-        ${p.status === 'open' ? `<div class="row"><button class="primary big" id="pf-enter">${p.type === 'external' ? 'Open in a new tab ↗' : 'Enter field station →'}</button></div>` : ''}`;
+        ${usable(p) ? `<div class="row"><button class="primary big" id="pf-enter">${p.type === 'external' ? 'Open in a new tab ↗' : 'Enter field station →'}</button></div>` : ''}`;
       body.querySelector('#pf-enter')?.addEventListener('click', () => {
         world.savePose?.();
         if (p.type === 'external') { window.open(p.url, '_blank', 'noopener'); return; }
-        location.href = p.type === 'app' ? p.url : `world.html?w=${p.id}`;
+        const code = p.id === 'stream' ? loadClass()?.stream : '';
+        location.href = p.type === 'app' ? p.url + (code ? `?class=${encodeURIComponent(code)}` : '') : `world.html?w=${p.id}`;
       });
     });
   }
@@ -244,6 +268,7 @@ export async function createWorld(ctx) {
       let avatar = { ...DEFAULT_AVATAR };
       ctx.hud.openPanel('Welcome to EarthLab', (body) => {
         body.innerHTML = `
+          <p class="callout">Joining your class? Open the <strong>class link</strong> your teacher gave you (or scan the QR code). Otherwise, practice on your own here.</p>
           <p class="lead">Create your field-scientist profile. Everything stays on this device.</p>
           <label>Your name<input id="su-name" autocomplete="name"></label>
           <label>Your school email <span class="hint">(links your work across labs; optional)</span><input id="su-email" type="email" inputmode="email" autocapitalize="off"></label>
@@ -262,6 +287,7 @@ export async function createWorld(ctx) {
           ctx.hud.closePanel();
           ctx.hud.toast(`Welcome, ${name}! Go say hello to Dr. Rivera.`);
           ctx.interactions.setGuide('rivera');
+          if (!controlsSeen('campus')) await ctx.showControls();
           resolve();
         };
         body.querySelector('#su-file').onchange = async (e) => {
@@ -278,12 +304,91 @@ export async function createWorld(ctx) {
     });
   }
 
+  // Roster sign-in: pick your name, type your PIN.
+  function classSignIn(cls, { switching = false } = {}) {
+    return new Promise((resolve) => {
+      const old = ctx.profile && !switching && ctx.profile.classId !== cls.id ? ctx.profile : null;
+      let avatar = { ...(ctx.profile?.avatar || DEFAULT_AVATAR) }, fails = 0, waitUntil = 0, fromFile = null;
+      ctx.hud.openPanel(`Join ${cls.name}`, (body) => {
+        body.innerHTML = `
+          <p class="lead">Choose your name and type the 4-digit PIN your teacher gave you.</p>
+          <label>Your name<select id="si-name"><option value="">Choose your name…</option>${cls.roster.map((s, i) => `<option value="${i}">${esc(s.name)}</option>`).join('')}</select></label>
+          <label>PIN<input id="si-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="••••"></label>
+          ${old ? `<label class="pf-check"><input type="checkbox" id="si-keep"> Keep the progress already on this device (from ${esc(old.name)})</label>` : ''}
+          <h3>Choose your field scientist</h3><div id="si-avatar"></div>
+          <p class="error" id="si-err"></p>
+          <div class="row"><button class="primary big" id="si-go">Join class →</button>
+            <label class="file-btn">📂 I have a progress file<input type="file" id="si-file" accept=".json,application/json"></label>
+            ${switching ? '<button class="secondary" id="si-cancel">Cancel</button>' : ''}</div>
+          <p class="hint">Forgot your PIN? Ask your teacher.</p>`;
+        avatarPicker(body.querySelector('#si-avatar'), avatar, (a) => { avatar = a; });
+        const err = (m) => { body.querySelector('#si-err').textContent = m; };
+        body.querySelector('#si-cancel')?.addEventListener('click', () => { ctx.hud.closePanel(); resolve(); });
+        body.querySelector('#si-file').onchange = async (e) => {
+          try {
+            const p = await readProfileFile(e.target.files[0]);
+            if (p.classId !== cls.id || !cls.roster[p.rosterIdx]) throw new Error('That progress file is from a different class.');
+            fromFile = p;
+            body.querySelector('#si-name').value = String(p.rosterIdx);
+            err(''); ctx.hud.toast(`Progress file for ${p.name} loaded. Type your PIN to continue.`);
+          } catch (x) { err(x.message); }
+        };
+        body.querySelector('#si-go').onclick = async () => {
+          const idx = body.querySelector('#si-name').value, pin = body.querySelector('#si-pin').value.trim();
+          if (idx === '') return err('Choose your name.');
+          if (!/^\d{4}$/.test(pin)) return err('Type your 4-digit PIN.');
+          if (Date.now() < waitUntil) return err(`Too many tries. Wait ${Math.ceil((waitUntil - Date.now()) / 1000)} seconds.`);
+          const s = cls.roster[+idx];
+          if (pinCheck(cls.id, +idx, pin) !== s.check) {
+            fails++;
+            if (fails >= 5) { waitUntil = Date.now() + 30000; fails = 0; }
+            return err("That PIN doesn't match. Check it with your teacher.");
+          }
+          let p;
+          if (fromFile && fromFile.rosterIdx === +idx) p = fromFile;
+          else if (old && body.querySelector('#si-keep')?.checked) p = old;
+          else if (ctx.profile?.classId === cls.id && ctx.profile.rosterIdx === +idx) p = ctx.profile;
+          else p = newProfile({ name: s.name, avatar });
+          Object.assign(p, { name: s.name, classId: cls.id, rosterIdx: +idx, avatar });
+          ctx.setProfile(p);
+          await ctx.player.setAvatar(avatar);
+          ctx.hud.closePanel();
+          ctx.hud.toast(`Welcome, ${s.name.split(' ')[0]}! Go say hello to Dr. Rivera.`);
+          ctx.interactions.setGuide('rivera');
+          if (!switching && !controlsSeen('campus')) await ctx.showControls();
+          resolve();
+        };
+      }, { wide: true, locked: !switching });
+    });
+  }
+
+  function enterLabCode() {
+    ctx.hud.openPanel('Lab code', (body) => {
+      body.innerHTML = `
+        <p>Type the lab code your teacher shows on the board. It opens labs and sets the lab timer.</p>
+        <label>Lab code<input id="lc-code" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX" maxlength="9"></label>
+        <p class="error" id="lc-err"></p>
+        <div class="row"><button class="primary big" id="lc-go">Apply</button></div>`;
+      const go = () => {
+        const cls = applyLabCode(body.querySelector('#lc-code').value);
+        if (!cls) { body.querySelector('#lc-err').textContent = "That code doesn't work for your class. Check each letter and number."; return; }
+        applyLocks();
+        ctx.hud.closePanel();
+        const names = portals.filter(usable).map((p) => p.title);
+        ctx.hud.toast(names.length ? `Open now: ${names.join(', ')}` : 'All labs are locked for now.');
+      };
+      body.querySelector('#lc-go').onclick = go;
+      body.querySelector('#lc-code').onkeydown = (e) => { if (e.key === 'Enter') go(); };
+      setTimeout(() => body.querySelector('#lc-code')?.focus(), 50);
+    });
+  }
+
   function openPassport() {
     const p = ctx.profile;
     ctx.hud.openPanel('My Passport', (body) => {
       const rows = portals.filter((w) => w.status === 'open' && w.type !== 'external' && w.id !== 'cellbio').map((w) => {
         if (w.id === 'stream') {
-          const s = streamLabStatus(p.email);
+          const s = streamLabStatus(streamIdFor(p));
           return `<tr><td>${esc(w.title)}</td><td>Stream Health Lab</td><td>${s ? (s.finished ? 'Finished' : `${s.sites}/4 sites`) : 'Not started'}</td><td>See PDF report</td></tr>`;
         }
         const ms = p.worlds[w.id]?.missions || {};
@@ -292,7 +397,7 @@ export async function createWorld(ctx) {
         return entries.map(([id, m]) => `<tr><td>${esc(w.title)}</td><td>${esc(id)}</td><td>${m.status === 'complete' ? `Complete (${m.attempts}×)` : 'In progress'}</td><td>${m.best ? `${m.best.score}/${m.best.max} · <strong>${m.best.grade}</strong>` : '—'}</td></tr>`).join('');
       }).join('');
       body.innerHTML = `
-        <div class="pf-passport-head"><div><h3>${esc(p.name)}</h3><p class="muted">${esc(p.email || 'No email set')} · Joined ${new Date(p.createdAt).toLocaleDateString()}</p></div>
+        <div class="pf-passport-head"><div><h3>${esc(p.name)}</h3><p class="muted">${esc(loadClass()?.id === p.classId ? loadClass().name : p.email || 'Practice (no class)')} · Joined ${new Date(p.createdAt).toLocaleDateString()}</p></div>
           <div class="pf-badges">${p.badges.length ? p.badges.map((b) => `<span class="pf-badge" title="${esc(b.name)}">${esc(b.icon || '🏅')} ${esc(b.name)}</span>`).join('') : '<span class="muted">No badges yet. Complete a mission with 70% or more!</span>'}</div></div>
         <table class="data"><thead><tr><th>Field station</th><th>Mission</th><th>Status</th><th>Best score</th></tr></thead><tbody>${rows}</tbody></table>
         <h3>Your character</h3><div id="pp-avatar"></div>
@@ -300,7 +405,9 @@ export async function createWorld(ctx) {
           <button class="primary" id="pp-export">💾 Download my progress file</button>
           <label class="file-btn">📂 Load a progress file<input type="file" id="pp-file" accept=".json,application/json"></label>
         </div>
-        <p class="hint">Turn in your progress file when your teacher asks, or use it to continue on another device.</p>`;
+        <p class="hint">Turn in your progress file when your teacher asks, or use it to continue on another device.</p>
+        ${loadClass() ? '<button class="link" id="pp-switch">Not you? Sign in as a different student</button>' : ''}`;
+      body.querySelector('#pp-switch')?.addEventListener('click', () => classSignIn(loadClass(), { switching: true }));
       let av = p.avatar || DEFAULT_AVATAR;
       avatarPicker(body.querySelector('#pp-avatar'), av, async (a) => { p.avatar = a; saveProfile(p); await ctx.player.setAvatar(a); });
       body.querySelector('#pp-export').onclick = () => exportProfile(p);
