@@ -36,6 +36,11 @@ export function shortName(full) {
 
 // ---------- class links ----------
 
+// Links for students always point at the public site. A console opened from a copy on this
+// computer (localhost, a file) would otherwise hand out links that only work on this computer.
+const LIVE = 'https://mrabdull.github.io/apes-stream-lab/';
+export const studentBase = () => (/^(localhost|127\.0\.0\.1|\[::1\]|)$/.test(location.hostname) || location.protocol === 'file:' ? LIVE : location.href);
+
 export function encodeClassLink(cls, base) {
   const data = {
     v: 1, i: cls.id, n: cls.name,

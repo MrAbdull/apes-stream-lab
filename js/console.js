@@ -3,7 +3,7 @@
 // Everything stays in this browser. The password stops students who use the teacher's
 // computer; it is not server security (there is no server).
 
-import { LAB_IDS, newClassId, randomPin, shortName, encodeClassLink, encodeLabCode } from './classlink.js';
+import { LAB_IDS, newClassId, randomPin, shortName, encodeClassLink, encodeLabCode, studentBase } from './classlink.js';
 import { gradeFor } from '../platform/engine/progress.js';
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -179,7 +179,7 @@ function newClassForm() {
 }
 
 function renderClass(body, cls) {
-  const link = encodeClassLink(cls, location.href);
+  const link = encodeClassLink(cls, studentBase());
   const code = encodeLabCode(cls.id, cls.open, cls.end > Date.now() ? cls.end : 0);
   const endVal = cls.end > Date.now() ? new Date(cls.end).toTimeString().slice(0, 5) : '';
   body.innerHTML = `

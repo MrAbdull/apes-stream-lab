@@ -4,6 +4,7 @@
 import { encodeClass, decodeClass, describeClass, randomSalt, teacherGroupCode, teacherKeyFor, normalizeCode, normalizeEmail, seedKeyFor, labFingerprint } from './codes.js';
 import { generateLab, siteDisplayName, TESTS, TAXON, GROUPS, SOURCES } from './model.js';
 import { localJSON, setLocalJSON } from './storage.js';
+import { studentBase } from './classlink.js';
 import { fmtTest } from './report.js';
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -34,7 +35,7 @@ async function copy(text) {
 }
 
 function studentLink(code) {
-  return new URL(`stream.html?class=${encodeURIComponent(code)}`, location.href).href;
+  return new URL(`stream.html?class=${encodeURIComponent(code)}`, studentBase()).href;
 }
 
 function render() {
