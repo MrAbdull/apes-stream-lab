@@ -4,7 +4,8 @@
 import * as THREE from 'three';
 import { loadCharacter } from './assets.js';
 
-export const WALK = 5, RUN = 10;
+// Human speeds: a brisk walk and a steady run (m/s).
+export const WALK = 2.4, RUN = 5.2;
 
 // Animates the Quaternius modular rig in code: bones are turned about WORLD axes
 // (x = swing forward/back, z = raise/lower sideways), so one walk cycle fits every outfit.
@@ -46,50 +47,67 @@ export class Walker {
     this.airK = (this.airK || 0) + ((air ? 1 : 0) - (this.airK || 0)) * Math.min(1, dt * 10);
     this.carryK = (this.carryK || 0) + ((carrying ? 1 : 0) - (this.carryK || 0)) * Math.min(1, dt * 6);
     this.lean = (this.lean || 0) + (Math.max(-0.25, Math.min(0.25, turnRate * speed * 0.03)) - (this.lean || 0)) * Math.min(1, dt * 6);
-    const run = Math.min(1, Math.max(0, (speed - WALK) / (RUN - WALK)));
+    // 0 = walking, 1 = running; eased so the gait changes smoothly as speed rises.
+    const r0 = Math.min(1, Math.max(0, (speed - WALK) / (RUN - WALK)));
+    this.runK = (this.runK ?? r0) + (r0 - (this.runK ?? r0)) * Math.min(1, dt * 6);
+    const run = this.runK;
     // One full cycle = two steps. Matching phase to distance keeps the feet from sliding.
-    const cycle = 1.5 + 1.1 * run;
+    // Stride: about 1.8 m per cycle walking, 3.0 m running (≈1.3 and 1.7 cycles per second).
+    const cycle = 1.8 + 1.2 * run;
     if (!air) this.phase += (dt * speed / cycle) * Math.PI * 2;
     const p = this.phase, k = this.blend * (1 - this.airK), s = Math.sin(p), c = Math.cos(p);
-    const A = (0.42 + 0.3 * run) * k; // thigh swing
     for (const [n, b] of Object.entries(this.bones)) b.quaternion.copy(this.rest[n]);
 
-    // Hips sway and twist with each step; the chest twists the other way.
-    this.turn('Hips', 'y', 0.12 * s * k);
-    this.turn('Hips', 'z', -0.04 * s * k + this.lean);
-    this.turn('Chest', 'y', -0.1 * s * k);
-    this.turn('Abdomen', 'x', (0.06 + 0.16 * run) * k);
+    // Trunk: hips twist with the legs, chest counter-twists; runners lean forward from the hips.
+    this.turn('Hips', 'y', (0.1 + 0.05 * run) * s * k);
+    this.turn('Hips', 'z', -0.035 * s * k * (1 - run) + this.lean);
+    this.turn('Chest', 'y', -(0.08 + 0.1 * run) * s * k);
+    this.turn('Abdomen', 'x', (0.04 + 0.2 * run) * k);
 
-    // Legs: thigh swings; the knee bends while the leg swings forward (cos > 0 for the left leg)
-    // and stays nearly straight while the foot is planted; the foot stays roughly level.
-    const knee = (0.95 + 0.6 * run) * k;
-    const thighL = -A * s, thighR = A * s;
-    const kneeL = 0.08 * k + knee * Math.max(0, c) ** 1.4, kneeR = 0.08 * k + knee * Math.max(0, -c) ** 1.4;
+    // Legs. The thigh swings (runners reach farther forward than back); the knee bends while that leg
+    // swings through (cos > 0 for the left leg) and stays almost straight while the foot is planted.
+    // Runners keep a soft knee on landing and lift the heel high during the swing.
+    // Thigh angle: walking swings evenly (±0.36 rad); running drives the knee well forward (0.8 rad)
+    // but only pushes back about 0.4 rad, so the foot lands under the body instead of far ahead.
+    const fwd = (0.36 + 0.24 * run) * k, back = (0.36 + 0.06 * run) * k;
+    const thigh = (x) => (x > 0 ? -fwd * x : -back * x);
+    const thighL = thigh(s), thighR = thigh(-s);
+    const lag = 0.45 * run; // running: the knee is still folded as the thigh reaches forward
+    const swingL = Math.max(0, Math.cos(p - lag)) ** 1.2, swingR = Math.max(0, -Math.cos(p - lag)) ** 1.2;
+    // Knee: soft on landing (more when running); heel kicks up high mid-swing (up to ~115° running).
+    const kneeL = k * (0.06 + 0.35 * run + (0.85 + 1.15 * run) * swingL);
+    const kneeR = k * (0.06 + 0.35 * run + (0.85 + 1.15 * run) * swingR);
     this.turn('UpperLegL', 'x', thighL - this.airK * 0.9);
     this.turn('UpperLegR', 'x', thighR - this.airK * 0.5);
     this.turn('LowerLegL', 'x', kneeL + this.airK * 1.3);
     this.turn('LowerLegR', 'x', kneeR + this.airK * 0.8);
-    this.turn('FootL', 'x', -(thighL + kneeL) * 0.75 + this.airK * 0.3);
-    this.turn('FootR', 'x', -(thighR + kneeR) * 0.75 + this.airK * 0.3);
+    this.turn('FootL', 'x', -(thighL + kneeL) * 0.7 + this.airK * 0.3);
+    this.turn('FootR', 'x', -(thighR + kneeR) * 0.7 + this.airK * 0.3);
 
-    // Arms hang at the sides and swing opposite the legs; elbows bend more when running.
+    // Arms swing opposite the legs. Walking: loose, nearly straight. Running: elbows bent ~85°,
+    // hands driving forward and back, arms held a little closer to the body.
     const g = this.gesture * (0.6 + 0.25 * Math.sin(t * 3));
     const carry = this.carryK;
-    this.turn('UpperArmL', 'z', -1.25 + this.airK * 0.5);
-    this.turn('UpperArmR', 'z', 1.25 - g * 0.5 - this.airK * 0.5);
-    this.turn('UpperArmL', 'x', A * 0.75 * s * (1 - carry) - carry * 0.7);
-    this.turn('UpperArmR', 'x', -A * 0.75 * s * (1 - carry) + g * 0.9 - carry * 0.7);
-    this.turn('LowerArmL', 'x', -(0.2 + 1.1 * run * k) - carry * 0.9);
-    this.turn('LowerArmR', 'x', -(0.2 + 1.1 * run * k) - g * 0.8 - carry * 0.9);
+    const swing = (0.3 + 0.45 * run) * k * (1 - carry);
+    const elbow = (0.2 + 1.3 * run) * k;
+    this.turn('UpperArmL', 'z', -1.25 + 0.12 * run * k + this.airK * 0.5);
+    this.turn('UpperArmR', 'z', 1.25 - 0.12 * run * k - g * 0.5 - this.airK * 0.5);
+    this.turn('UpperArmL', 'x', swing * s + 0.12 * run * k - carry * 0.7);
+    this.turn('UpperArmR', 'x', -swing * s + 0.12 * run * k + g * 0.9 - carry * 0.7);
+    this.turn('LowerArmL', 'y', -(elbow + carry * 1.1));
+    this.turn('LowerArmR', 'y', elbow + g * 0.9 + carry * 1.1);
 
-    // Idle: breathing, a slow weight shift and glances around.
+    // Idle: breathing, a slow weight shift and glances around. Head stays level while moving.
     const idle = 1 - this.blend;
     this.turn('Chest', 'x', idle * 0.025 * Math.sin(t * 1.6));
     this.turn('Hips', 'z', idle * 0.02 * Math.sin(t * 0.5));
-    this.turn('Head', 'y', idle * (talking ? 0.12 : 0.3) * Math.sin(t * (talking ? 1.3 : 0.31)) - 0.1 * s * k);
-    this.turn('Head', 'x', talking ? 0.05 * Math.sin(t * 5) : -0.04 * run * k);
-    // Two bounces per cycle: hips are highest as the legs pass each other, lowest at full stride.
-    return ((1 - Math.abs(s)) * (0.04 + 0.04 * run) - 0.035 - 0.02 * run) * k;
+    this.turn('Head', 'y', idle * (talking ? 0.12 : 0.3) * Math.sin(t * (talking ? 1.3 : 0.31)) + 0.06 * s * k);
+    this.turn('Head', 'x', talking ? 0.05 * Math.sin(t * 5) : -0.16 * run * k);
+    // Vertical motion, two bounces per cycle. Walking: highest as the legs pass each other.
+    // Running: lowest at that moment (knee absorbs the landing), highest in the airborne phase.
+    const walkBob = (1 - Math.abs(s)) * 0.035 - 0.03;
+    const runBob = Math.abs(s) * 0.1 - 0.06;
+    return (walkBob * (1 - run) + runBob * run) * k;
   }
 }
 
@@ -225,7 +243,8 @@ export class Player {
     let len = Math.hypot(f, s);
     if (len > 1) { f /= len; s /= len; len = 1; }
     const running = this.keys.has('ShiftLeft') || this.keys.has('ShiftRight') || Math.hypot(this.joy.x, this.joy.y) > 0.95;
-    this.speed += (len * (running ? RUN : WALK) - this.speed) * Math.min(1, dt * 10);
+    const wantSpeed = len * (running ? RUN : WALK);
+    this.speed += (wantSpeed - this.speed) * Math.min(1, dt * (wantSpeed > this.speed ? 5 : 8));
 
     const sin = Math.sin(this.camYaw), cos = Math.cos(this.camYaw);
     const mx = -sin * f + cos * s, mz = -cos * f - sin * s;
@@ -233,7 +252,7 @@ export class Player {
     if (len > 0.05) {
       let diff = Math.atan2(mx, mz) - this.facing;
       diff = Math.atan2(Math.sin(diff), Math.cos(diff));
-      const step = diff * Math.min(1, dt * 10);
+      const step = Math.sign(diff) * Math.min(Math.abs(diff), (6 + 4 * Math.abs(diff)) * dt); // turn at a natural rate
       this.facing += step;
       turnRate = dt > 0 ? step / dt : 0;
       const ml = Math.hypot(mx, mz);
@@ -247,10 +266,10 @@ export class Player {
 
     // Gravity and jumping (Space). Small ledges are stepped down smoothly.
     const groundY = this.ground(this.pos.x, this.pos.z);
-    if (!this.air && this.inputEnabled && this.keys.has('Space')) { this.vy = 4.6; this.air = true; this.keys.delete('Space'); }
+    if (!this.air && this.inputEnabled && this.keys.has('Space')) { this.vy = 3.0; this.air = true; this.keys.delete('Space'); }
     if (this.air || this.y > groundY + 0.35) {
       this.air = true;
-      this.vy -= 13 * dt;
+      this.vy -= 9.8 * dt;
       this.y += this.vy * dt;
       if (this.y <= groundY) { this.y = groundY; this.vy = 0; this.air = false; }
     } else {

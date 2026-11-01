@@ -35,9 +35,45 @@ function toast(msg) {
   const t = $('#toast');
   t.textContent = msg;
   t.classList.add('show');
+  layoutHUD();
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+  // Long messages stay up longer so students can finish reading them.
+  toastTimer = setTimeout(() => t.classList.remove('show'), Math.min(9000, 2600 + msg.length * 55));
 }
+
+// Keep the site button and messages above the buttons and joystick, measured on every change,
+// so nothing overlaps on phones, iPads or laptops.
+function layoutHUD() {
+  const lab = $('#screen-lab');
+  if (!lab || (lab.classList.contains('hidden') && $('#panel-backdrop').classList.contains('hidden'))) return;
+  const vh = window.innerHeight, gap = 10;
+  const shown = (el) => el && !el.classList.contains('hidden') && getComputedStyle(el).display !== 'none' && el.getBoundingClientRect().height > 0;
+  let floor = vh;
+  for (const el of [$('.hud-actions'), $('#joystick')]) if (shown(el)) floor = Math.min(floor, el.getBoundingClientRect().top);
+  const bottom = Math.round(vh - floor + gap);
+  const btn = $('#btn-interact');
+  btn.style.bottom = `${bottom}px`;
+  let topBottom = 0;
+  for (const el of [$('.hud-top'), $('#minimap')]) if (shown(el)) topBottom = Math.max(topBottom, el.getBoundingClientRect().bottom);
+  const t = $('#toast');
+  const above = bottom + (shown(btn) ? btn.getBoundingClientRect().height + gap : 0);
+  t.style.maxWidth = ''; t.style.left = '';
+  const th = t.getBoundingClientRect().height || 48;
+  // A window is open: put messages above or below it, or (phones) over its title bar, clear of the ✕.
+  if (!$('#panel-backdrop').classList.contains('hidden')) {
+    const pr = $('#panel').getBoundingClientRect(), hr = $('#panel header').getBoundingClientRect();
+    t.style.left = `${pr.left + pr.width / 2}px`;
+    t.style.bottom = 'auto';
+    if (pr.top - 6 >= th + 4) t.style.top = `${Math.round(pr.top - th - 6)}px`;
+    else if (vh - pr.bottom - 6 >= th + 4) t.style.top = `${Math.round(pr.bottom + 6)}px`;
+    else {
+      t.style.maxWidth = `${Math.max(160, pr.width - 120)}px`;
+      t.style.top = `${Math.round(Math.max(4, hr.top + (hr.height - t.getBoundingClientRect().height) / 2))}px`;
+    }
+  } else if (vh - above - th < topBottom + gap) { t.style.top = `${Math.round(topBottom + gap)}px`; t.style.bottom = 'auto'; }
+  else { t.style.bottom = `${above}px`; t.style.top = 'auto'; }
+}
+window.addEventListener('resize', layoutHUD);
 
 const me = () => S.student.name;
 
@@ -93,6 +129,7 @@ function openPanel(title, render, { wide = false } = {}) {
   $('#panel-title').textContent = title;
   $('#panel').classList.toggle('wide', wide);
   $('#panel-backdrop').classList.remove('hidden');
+  requestAnimationFrame(layoutHUD);
   $('#btn-interact').classList.add('hidden');
   world?.setInputEnabled(false);
   rerender();
@@ -111,6 +148,7 @@ function rerender() {
 function closePanel() {
   panel = null;
   $('#panel-backdrop').classList.add('hidden');
+  requestAnimationFrame(layoutHUD);
   world?.setInputEnabled(true);
   refreshHUD();
 }
@@ -460,6 +498,7 @@ function onNear(id) {
 }
 
 function refreshHUD() {
+  requestAnimationFrame(layoutHUD);
   if (!S || !LAB) return;
   $('#hud-who').textContent = S.group
     ? `${S.student.name} · Group ${S.group.code} · ${ROLES[S.group.role]?.name || ''}`

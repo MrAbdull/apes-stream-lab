@@ -361,9 +361,20 @@ export async function createWorld(ctx) {
     // Step to the side of the bench so the student doesn't block the camera.
     ctx.player.teleport(STATIONS[id].x + 1.9, BENCH_Z + 1.5, { x: STATIONS[id].x, z: BENCH_Z });
     // Shift the view so the experiment isn't hidden behind the side panel.
-    const shift = isMobileDock() ? new THREE.Vector3(0, -0.5, 0.6) : new THREE.Vector3(0.55, 0, 0);
-    ctx.player.focus = { pos: v.pos.clone().add(shift), target: v.target.clone().add(shift.clone().multiplyScalar(isMobileDock() ? 0.2 : 1)) };
-    hud.openDock(STATIONS[id].title, (body) => renderStation[id](body), { onClose: () => { ctx.player.focus = null; currentStation = null; } });
+    // Desktop/iPad: slide the view left of the side panel. Phones: the panel is a bottom sheet, so
+    // aim lower and pull back so the bench sits in the top part of the screen.
+    ctx.player.focus = isMobileDock()
+      ? { pos: v.pos.clone().add(new THREE.Vector3(0, 0.35, 1.3)), target: v.target.clone().add(new THREE.Vector3(0, -0.95, 0.7)) }
+      : { pos: v.pos.clone().add(new THREE.Vector3(0.55, 0, 0)), target: v.target.clone().add(new THREE.Vector3(0.55, 0, 0)) };
+    hud.openDock(STATIONS[id].title, (body) => { renderStation[id](body); body.insertAdjacentHTML('afterbegin', taskNow(id)); }, { onClose: () => { ctx.player.focus = null; currentStation = null; } });
+  }
+
+  // The mission task for this station, repeated at the top of its panel with step-by-step directions.
+  function taskNow(id) {
+    const a = world.runner && !world.runner.done ? world.runner.cur?.action : null;
+    if (!a || a.target !== id) return '';
+    const how = (a.how || []).filter((h) => !/glowing ring|slides up from the bottom/.test(h));
+    return `<div class="pf-task-now"><strong>Your task:</strong> ${esc(a.instruction)}${how.length ? `<ol>${how.map((h) => `<li>${esc(h)}</li>`).join('')}</ol>` : ''}</div>`;
   }
 
   const slider = (id, label, value, min, max, step, unit = '') =>

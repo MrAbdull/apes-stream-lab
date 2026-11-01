@@ -32,6 +32,7 @@ export class MissionRunner {
       this.hud.toast('Welcome back! Your mission progress was restored.');
     }
     this.refresh();
+    if (!saved && this.cur) this.briefing(this.cur.si);
   }
 
   // Does the current action expect this gesture on this target? Worlds use this before opening tools.
@@ -86,7 +87,7 @@ export class MissionRunner {
     this.checkpoint();
     if (this.state.i >= this.actions.length) return this.finish();
     const next = this.cur;
-    if (next.si !== c.si) setTimeout(() => this.hud.toast(`Step ${next.si + 1}: ${next.step.title}`), gaveUp || !a.feedback?.correct ? 0 : 1800);
+    if (next.si !== c.si) setTimeout(() => (this.m.steps[next.si].intro ? this.briefing(next.si) : this.hud.toast(`Step ${next.si + 1}: ${next.step.title}`)), gaveUp || !a.feedback?.correct ? 0 : 1800);
     this.refresh();
   }
 
@@ -131,12 +132,16 @@ export class MissionRunner {
       <div class="pf-bar"><div style="width:${pct}%"></div></div>
       <div class="pf-step">Step ${c.si + 1} of ${this.m.steps.length}: ${esc(c.step.title)}</div>
       <p class="pf-instr">${esc(a.instruction)}</p>
+      ${a.how ? `<details class="pf-explain"${this.howOpen() ? ' open' : ''}><summary>📘 How to do this</summary><ol>${a.how.map((h) => `<li>${esc(h)}</li>`).join('')}</ol></details>` : ''}
       ${this.state.hints[k] && a.hint ? `<p class="pf-hint">💡 ${esc(a.hint)}</p>` : ''}
       <div class="pf-tr-actions">
         ${a.gesture === 'answer' ? '<button class="primary" data-tr="answer">Answer question</button>' : ''}
         ${a.hint && !this.state.hints[k] ? '<button data-tr="hint">💡 Hint</button>' : ''}
         ${this.world.openNotebook ? '<button data-tr="notebook">📓 Data</button>' : ''}
+        ${c.step.intro ? '<button data-tr="brief">📖 Briefing</button>' : ''}
       </div>`);
+    this.hud.tracker.querySelector('.pf-explain')?.addEventListener('toggle', (e) => { this.hud.howOpen = e.target.open; this.hud.relayout(); });
+    this.hud.tracker.querySelector('[data-tr="brief"]')?.addEventListener('click', () => this.briefing(c.si));
     this.hud.tracker.querySelector('[data-tr="answer"]')?.addEventListener('click', () => this.openQuestion(c));
     this.hud.tracker.querySelector('[data-tr="hint"]')?.addEventListener('click', () => this.useHint());
     this.hud.tracker.querySelector('[data-tr="notebook"]')?.addEventListener('click', () => this.world.openNotebook());
@@ -149,6 +154,25 @@ export class MissionRunner {
     }
   }
 
+  // The how-to list starts open on laptops and iPads, folded on phones so the world stays visible.
+  howOpen() { return this.hud.howOpen ?? innerWidth >= 700; }
+
+  // Step briefing: why this step matters, key words, and the tasks ahead. Shown when a step begins.
+  briefing(si) {
+    const step = this.m.steps[si];
+    if (!step?.intro) return;
+    const intro = Array.isArray(step.intro) ? step.intro : [step.intro];
+    this.hud.openPanel(`Step ${si + 1} of ${this.m.steps.length}: ${step.title}`, (body) => {
+      body.innerHTML = `
+        ${si === 0 && this.m.objectives ? `<div class="pf-goals"><strong>🎯 By the end of this mission you will be able to:</strong><ul>${this.m.objectives.map((o) => `<li>${esc(o)}</li>`).join('')}</ul></div>` : ''}
+        ${intro.map((p) => `<p>${esc(p)}</p>`).join('')}
+        ${step.vocab ? `<h3>Key words</h3><dl class="pf-vocab">${step.vocab.map(([t, d]) => `<dt>${esc(t)}</dt><dd>${esc(d)}</dd>`).join('')}</dl>` : ''}
+        <h3>Your tasks in this step</h3><ol>${step.sequence.map((a) => `<li>${esc(a.instruction)}</li>`).join('')}</ol>
+        <div class="row"><button class="primary big" id="pf-go">Let's go</button></div>`;
+      body.querySelector('#pf-go').onclick = () => this.hud.closePanel();
+    });
+  }
+
   openQuestion(c) {
     const a = c.action, q = a.question, k = this.key(c);
     const options = q.options && !Array.isArray(q.options) ? this.world.compute(q.options.fn, q.options.args || {}) : q.options;
@@ -157,6 +181,7 @@ export class MissionRunner {
       const tries = this.state.tries[k] || 0;
       body.innerHTML = `
         <p class="q-prompt">${esc(q.prompt)}</p>
+        ${q.help ? `<details class="pf-help"><summary>🧮 Show me how <span class="muted">(no point cost)</span></summary><ol>${q.help.map((h) => `<li>${esc(h)}</li>`).join('')}</ol>${q.example ? `<p class="pf-example"><strong>Worked example:</strong> ${esc(q.example)}</p>` : ''}</details>` : ''}
         ${q.showData && this.world.dataHTML ? `<div class="pf-data">${this.world.dataHTML()}</div>` : ''}
         ${q.type === 'numeric' ? `<div class="row"><input class="pf-in" inputmode="decimal" placeholder="Your answer"> <span>${esc(q.unit || '')}</span></div>` : ''}
         ${q.type === 'choice' ? `<div class="mc">${options.map((o, i) => `<label class="mc-opt"><input type="radio" name="pfq" value="${esc(o.value ?? o)}"> ${esc(o.label ?? o)}</label>`).join('')}</div>` : ''}

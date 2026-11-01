@@ -7,91 +7,545 @@
     "Explain how human disturbance and invasive species reduce biodiversity (APES 2.2, 9.8)",
     "Propose a realistic conservation strategy and its trade-offs (APES 9.10)"
   ],
-  "badge": { "id": "bio-surveyor", "name": "Biodiversity Surveyor", "icon": "🦋" },
+  "badge": {
+    "id": "bio-surveyor",
+    "name": "Biodiversity Surveyor",
+    "icon": "🦋"
+  },
   "steps": [
     {
       "title": "Briefing",
       "sequence": [
-        { "target": "ranger", "gesture": "talk", "points": 5,
+        {
+          "target": "ranger",
+          "gesture": "talk",
+          "points": 5,
           "instruction": "Get your survey briefing from Ranger Okafor.",
           "npcLines": [
             "Today we compare three habitats: the wildflower meadow to the north, the old forest to the east, and the disturbed lot to the west that gets mowed and walked on.",
             "Lay two quadrats in each habitat. Two replicates give a better estimate than one.",
             "Take a quadrat kit from the table. I'll be here when you're ready to report."
-          ] },
-        { "target": "kit", "gesture": "collect", "points": 5,
+          ],
+          "how": [
+            "Follow the yellow arrow and the compass at the top of the screen.",
+            "Walk with W A S D or the arrow keys. On an iPad, drag the joystick in the bottom-left corner.",
+            "When you are close, a button appears at the bottom of the screen. Press E or tap the button.",
+            "Read each line, then press Continue."
+          ]
+        },
+        {
+          "target": "kit",
+          "gesture": "collect",
+          "points": 5,
           "instruction": "Pick up a quadrat kit from the table.",
-          "feedback": { "correct": "Kit ready." },
-          "effects": [{ "name": "giveKit" }] }
+          "feedback": {
+            "correct": "Kit ready."
+          },
+          "effects": [
+            {
+              "name": "giveKit"
+            }
+          ],
+          "how": [
+            "Walk to the wooden table beside the field station.",
+            "When you are close, a button appears at the bottom of the screen. Press E or tap 'Pick up'."
+          ]
+        }
+      ],
+      "intro": [
+        "Your question: is the disturbed lot next to the reserve losing biodiversity? You will collect evidence the same way field ecologists do.",
+        "You will sample three habitats with two quadrats each. Two quadrats per habitat (replicates) means one unusual spot won't throw off your results."
+      ],
+      "vocab": [
+        [
+          "Replicate",
+          "Repeating a measurement in more than one place to make results more reliable."
+        ],
+        [
+          "Species richness",
+          "How many DIFFERENT species live in an area."
+        ],
+        [
+          "Species evenness",
+          "How equal the numbers of each species are. If one species takes over, evenness is low."
+        ],
+        [
+          "Invasive species",
+          "A non-native species that spreads quickly and crowds out native species."
+        ]
       ]
     },
     {
       "title": "Meadow survey",
       "sequence": [
-        { "target": "A1", "gesture": "place", "points": 4, "instruction": "Go to Plot A1 in the meadow and lay out your quadrat.", "hint": "Follow the compass north from the station.", "effects": [{ "name": "placeQuadrat", "args": { "plot": "A1" } }] },
-        { "target": "A1", "gesture": "measure", "points": 12, "instruction": "Identify and tally every organism in Plot A1.", "hint": "Pick a species in the field guide first, then tap each matching organism.", "feedback": { "correct": "Plot A1 recorded." } },
-        { "target": "A2", "gesture": "place", "points": 4, "instruction": "Go to Plot A2 in the meadow and lay out your quadrat.", "effects": [{ "name": "placeQuadrat", "args": { "plot": "A2" } }] },
-        { "target": "A2", "gesture": "measure", "points": 12, "instruction": "Identify and tally every organism in Plot A2.", "feedback": { "correct": "Plot A2 recorded. Meadow complete!" } }
-      ]
+        {
+          "target": "A1",
+          "gesture": "place",
+          "points": 4,
+          "instruction": "Go to Plot A1 in the meadow and lay out your quadrat.",
+          "hint": "Follow the compass north from the station.",
+          "effects": [
+            {
+              "name": "placeQuadrat",
+              "args": {
+                "plot": "A1"
+              }
+            }
+          ],
+          "how": [
+            "Follow the compass north from the station to the orange flag marked A1.",
+            "Stand next to the flag.",
+            "Press E or tap 'Lay quadrat' to put down your frame."
+          ]
+        },
+        {
+          "target": "A1",
+          "gesture": "measure",
+          "points": 12,
+          "instruction": "Identify and tally every organism in Plot A1.",
+          "hint": "Pick a species in the field guide first, then tap each matching organism.",
+          "feedback": {
+            "correct": "Plot A1 recorded."
+          },
+          "how": [
+            "A photo of the quadrat opens. Only organisms inside the frame are in the photo.",
+            "On the right, choose a species from the field guide list and read its description.",
+            "Tap every organism of that species in the photo. A green check marks each one you counted.",
+            "Choose the next species and repeat until every organism has a check. The plot saves itself when you finish.",
+            "A wrong tap shows a red circle and costs a few points, so compare shapes and colors with the guide first."
+          ]
+        },
+        {
+          "target": "A2",
+          "gesture": "place",
+          "points": 4,
+          "instruction": "Go to Plot A2 in the meadow and lay out your quadrat.",
+          "effects": [
+            {
+              "name": "placeQuadrat",
+              "args": {
+                "plot": "A2"
+              }
+            }
+          ],
+          "how": [
+            "Follow the compass to the second meadow flag to the orange flag marked A2.",
+            "Stand next to the flag.",
+            "Press E or tap 'Lay quadrat' to put down your frame."
+          ]
+        },
+        {
+          "target": "A2",
+          "gesture": "measure",
+          "points": 12,
+          "instruction": "Identify and tally every organism in Plot A2.",
+          "feedback": {
+            "correct": "Plot A2 recorded. Meadow complete!"
+          },
+          "how": [
+            "Count Plot A2 the same way you counted A1: choose a species, then tap each one."
+          ]
+        }
+      ],
+      "intro": "The meadow is an open, sunny grassland with many wildflowers. People rarely disturb it."
     },
     {
       "title": "Forest survey",
       "sequence": [
-        { "target": "B1", "gesture": "place", "points": 4, "instruction": "Go to Plot B1 in the forest and lay out your quadrat.", "hint": "The forest is east of the station.", "effects": [{ "name": "placeQuadrat", "args": { "plot": "B1" } }] },
-        { "target": "B1", "gesture": "measure", "points": 12, "instruction": "Identify and tally every organism in Plot B1.", "feedback": { "correct": "Plot B1 recorded." } },
-        { "target": "B2", "gesture": "place", "points": 4, "instruction": "Go to Plot B2 in the forest and lay out your quadrat.", "effects": [{ "name": "placeQuadrat", "args": { "plot": "B2" } }] },
-        { "target": "B2", "gesture": "measure", "points": 12, "instruction": "Identify and tally every organism in Plot B2.", "feedback": { "correct": "Plot B2 recorded. Forest complete!" } }
-      ]
+        {
+          "target": "B1",
+          "gesture": "place",
+          "points": 4,
+          "instruction": "Go to Plot B1 in the forest and lay out your quadrat.",
+          "hint": "The forest is east of the station.",
+          "effects": [
+            {
+              "name": "placeQuadrat",
+              "args": {
+                "plot": "B1"
+              }
+            }
+          ],
+          "how": [
+            "Follow the compass east from the station into the forest to the orange flag marked B1.",
+            "Stand next to the flag.",
+            "Press E or tap 'Lay quadrat' to put down your frame."
+          ]
+        },
+        {
+          "target": "B1",
+          "gesture": "measure",
+          "points": 12,
+          "instruction": "Identify and tally every organism in Plot B1.",
+          "feedback": {
+            "correct": "Plot B1 recorded."
+          },
+          "how": [
+            "Choose a species from the field guide, then tap each one in the photo.",
+            "Forest plants look different from meadow plants. Read each description carefully."
+          ]
+        },
+        {
+          "target": "B2",
+          "gesture": "place",
+          "points": 4,
+          "instruction": "Go to Plot B2 in the forest and lay out your quadrat.",
+          "effects": [
+            {
+              "name": "placeQuadrat",
+              "args": {
+                "plot": "B2"
+              }
+            }
+          ],
+          "how": [
+            "Follow the compass to the second forest flag to the orange flag marked B2.",
+            "Stand next to the flag.",
+            "Press E or tap 'Lay quadrat' to put down your frame."
+          ]
+        },
+        {
+          "target": "B2",
+          "gesture": "measure",
+          "points": 12,
+          "instruction": "Identify and tally every organism in Plot B2.",
+          "feedback": {
+            "correct": "Plot B2 recorded. Forest complete!"
+          },
+          "how": [
+            "Count Plot B2 the same way: choose a species, then tap each one."
+          ]
+        }
+      ],
+      "intro": "The old forest is shaded by tall trees. Less sunlight reaches the ground, so different species grow there than in the meadow."
     },
     {
       "title": "Disturbed lot survey",
       "sequence": [
-        { "target": "C1", "gesture": "place", "points": 4, "instruction": "Go to Plot C1 in the disturbed lot and lay out your quadrat.", "hint": "The disturbed lot is west of the station, by the gravel road.", "effects": [{ "name": "placeQuadrat", "args": { "plot": "C1" } }] },
-        { "target": "C1", "gesture": "measure", "points": 12, "instruction": "Identify and tally every organism in Plot C1.", "feedback": { "correct": "Plot C1 recorded." } },
-        { "target": "C2", "gesture": "place", "points": 4, "instruction": "Go to Plot C2 in the disturbed lot and lay out your quadrat.", "effects": [{ "name": "placeQuadrat", "args": { "plot": "C2" } }] },
-        { "target": "C2", "gesture": "measure", "points": 12, "instruction": "Identify and tally every organism in Plot C2.", "feedback": { "correct": "Plot C2 recorded. All six plots done!" } }
+        {
+          "target": "C1",
+          "gesture": "place",
+          "points": 4,
+          "instruction": "Go to Plot C1 in the disturbed lot and lay out your quadrat.",
+          "hint": "The disturbed lot is west of the station, by the gravel road.",
+          "effects": [
+            {
+              "name": "placeQuadrat",
+              "args": {
+                "plot": "C1"
+              }
+            }
+          ],
+          "how": [
+            "Follow the compass west from the station, by the gravel road to the orange flag marked C1.",
+            "Stand next to the flag.",
+            "Press E or tap 'Lay quadrat' to put down your frame."
+          ]
+        },
+        {
+          "target": "C1",
+          "gesture": "measure",
+          "points": 12,
+          "instruction": "Identify and tally every organism in Plot C1.",
+          "feedback": {
+            "correct": "Plot C1 recorded."
+          },
+          "how": [
+            "Choose a species from the field guide, then tap each one in the photo.",
+            "Watch for garlic mustard: broad, bright yellow-green, heart-shaped leaves."
+          ]
+        },
+        {
+          "target": "C2",
+          "gesture": "place",
+          "points": 4,
+          "instruction": "Go to Plot C2 in the disturbed lot and lay out your quadrat.",
+          "effects": [
+            {
+              "name": "placeQuadrat",
+              "args": {
+                "plot": "C2"
+              }
+            }
+          ],
+          "how": [
+            "Follow the compass to the second flag in the lot to the orange flag marked C2.",
+            "Stand next to the flag.",
+            "Press E or tap 'Lay quadrat' to put down your frame."
+          ]
+        },
+        {
+          "target": "C2",
+          "gesture": "measure",
+          "points": 12,
+          "instruction": "Identify and tally every organism in Plot C2.",
+          "feedback": {
+            "correct": "Plot C2 recorded. All six plots done!"
+          },
+          "how": [
+            "Count Plot C2 the same way: choose a species, then tap each one."
+          ]
+        }
+      ],
+      "intro": "This lot is mowed and walked on often. Predict before you count: will frequent disturbance make the lot more diverse or less diverse?",
+      "vocab": [
+        [
+          "Disturbance",
+          "An event that changes a habitat, like mowing, trampling or clearing land."
+        ],
+        [
+          "Native species",
+          "A species that naturally lives in an area."
+        ]
       ]
     },
     {
       "title": "Analyze your data",
       "sequence": [
-        { "gesture": "answer", "points": 10, "instruction": "Answer analysis question 1: species richness.",
-          "question": { "type": "numeric", "showData": true, "unit": "species", "prompt": "What is the species richness of the MEADOW (both plots combined)?" },
-          "validator": { "preset": "value_within", "expected": { "fn": "richness", "args": { "habitat": "meadow" } }, "tolerance": 0 },
-          "feedback": { "correct": "Correct: count each species once across both meadow plots.", "incorrect": "Count how many DIFFERENT species appear in A1 or A2 (each species only once).", "reveal": "Richness counts each species once across both plots." } },
-        { "gesture": "answer", "points": 15, "instruction": "Answer analysis question 2: Simpson's index for the meadow.",
-          "question": { "type": "numeric", "showData": true, "prompt": "Calculate Simpson's diversity index (D = 1 - Σ n(n-1) / N(N-1)) for the MEADOW, combining both plots. Round to two decimal places." },
-          "validator": { "preset": "value_within", "expected": { "fn": "simpson", "args": { "habitat": "meadow" } }, "tolerance": 0.02 },
+        {
+          "gesture": "answer",
+          "points": 10,
+          "instruction": "Answer analysis question 1: species richness.",
+          "question": {
+            "type": "numeric",
+            "showData": true,
+            "unit": "species",
+            "prompt": "What is the species richness of the MEADOW (both plots combined)?",
+            "help": [
+              "Find the 'Meadow total' column in your data table.",
+              "Count how many species have a total greater than 0.",
+              "Each species counts once, no matter how many individuals you found."
+            ],
+            "example": "If a meadow had 12 clover, 3 daisies and 0 ferns, its richness is 2 (clover and daisy)."
+          },
+          "validator": {
+            "preset": "value_within",
+            "expected": {
+              "fn": "richness",
+              "args": {
+                "habitat": "meadow"
+              }
+            },
+            "tolerance": 0
+          },
+          "feedback": {
+            "correct": "Correct: count each species once across both meadow plots.",
+            "incorrect": "Count how many DIFFERENT species appear in A1 or A2 (each species only once).",
+            "reveal": "Richness counts each species once across both plots."
+          }
+        },
+        {
+          "gesture": "answer",
+          "points": 15,
+          "instruction": "Answer analysis question 2: Simpson's index for the meadow.",
+          "question": {
+            "type": "numeric",
+            "showData": true,
+            "prompt": "Calculate Simpson's diversity index (D = 1 - Σ n(n-1) / N(N-1)) for the MEADOW, combining both plots. Round to two decimal places.",
+            "help": [
+              "Use the 'Meadow total' column (A1 and A2 combined). Each number is n for one species.",
+              "For each species, calculate n × (n − 1). A species with 0 or 1 individual gives 0.",
+              "Add all of those results together. This is Σ n(n − 1).",
+              "Find N, the total of all organisms in the meadow (bottom row), and calculate N × (N − 1).",
+              "Divide: Σ n(n − 1) ÷ N(N − 1).",
+              "Subtract your answer from 1, then round to two decimal places."
+            ],
+            "example": "Counts of 5, 3 and 2 → n(n − 1) = 20, 6 and 2 → Σ = 28. N = 10, so N(N − 1) = 90. 28 ÷ 90 = 0.31. D = 1 − 0.31 = 0.69."
+          },
+          "validator": {
+            "preset": "value_within",
+            "expected": {
+              "fn": "simpson",
+              "args": {
+                "habitat": "meadow"
+              }
+            },
+            "tolerance": 0.02
+          },
           "hint": "Add the counts for each species across A1 and A2 first. Then N is the total of all individuals.",
-          "feedback": { "correct": "Correct Simpson's index for the meadow.", "incorrect": "Not quite. Combine A1 and A2, compute n(n-1) for each species, add them up, divide by N(N-1), then subtract from 1." } },
-        { "gesture": "answer", "points": 15, "instruction": "Answer analysis question 3: Simpson's index for the disturbed lot.",
-          "question": { "type": "numeric", "showData": true, "prompt": "Now calculate Simpson's diversity index for the DISTURBED LOT (C1 + C2). Round to two decimal places." },
-          "validator": { "preset": "value_within", "expected": { "fn": "simpson", "args": { "habitat": "disturbed" } }, "tolerance": 0.02 },
-          "feedback": { "correct": "Correct Simpson's index for the disturbed lot.", "incorrect": "Not quite. Use the combined C1 + C2 counts." } },
-        { "gesture": "answer", "points": 10, "instruction": "Answer analysis question 4: which habitat is most diverse?",
-          "question": { "type": "choice", "showData": true, "prompt": "Based on Simpson's index, which habitat has the HIGHEST biodiversity?", "options": { "fn": "habitatOptions" } },
-          "validator": { "preset": "choice", "expected": { "fn": "mostDiverse" } },
-          "feedback": { "correct": "Yes, that habitat combines high richness with high evenness.", "incorrect": "Compare D for all three habitats. You can calculate the forest's D the same way." } },
-        { "gesture": "answer", "points": 10, "instruction": "Answer analysis question 5: invasive species.",
-          "question": { "type": "choice", "showData": true, "prompt": "Which species dominates the disturbed lot and is an invasive species?", "options": { "fn": "speciesOptions" } },
-          "validator": { "preset": "choice", "expected": { "fn": "dominant", "args": { "habitat": "disturbed" } } },
-          "feedback": { "correct": "Right. Garlic mustard is a non-native invasive that crowds out native wildflowers.", "incorrect": "Look for the species with the largest count in C1 and C2." } },
-        { "gesture": "answer", "points": 10, "instruction": "Answer analysis question 6: explain the pattern.",
-          "question": { "type": "text", "showData": true, "prompt": "Explain why the disturbed lot has lower biodiversity than the meadow. Use at least two numbers from your data (richness, D, or counts) as evidence." },
-          "validator": { "preset": "free_text", "minWords": 20 } }
+          "feedback": {
+            "correct": "Correct Simpson's index for the meadow.",
+            "incorrect": "Not quite. Combine A1 and A2, compute n(n-1) for each species, add them up, divide by N(N-1), then subtract from 1."
+          }
+        },
+        {
+          "gesture": "answer",
+          "points": 15,
+          "instruction": "Answer analysis question 3: Simpson's index for the disturbed lot.",
+          "question": {
+            "type": "numeric",
+            "showData": true,
+            "prompt": "Now calculate Simpson's diversity index for the DISTURBED LOT (C1 + C2). Round to two decimal places.",
+            "help": [
+              "Use the 'Lot total' column this time.",
+              "Repeat the same steps: n(n − 1) for each species, add them up, divide by N(N − 1), and subtract from 1."
+            ],
+            "example": "Counts of 18, 1 and 1 → Σ = 306 + 0 + 0 = 306. N = 20, so N(N − 1) = 380. 306 ÷ 380 = 0.81, so D = 0.19. One species dominates, so D is low."
+          },
+          "validator": {
+            "preset": "value_within",
+            "expected": {
+              "fn": "simpson",
+              "args": {
+                "habitat": "disturbed"
+              }
+            },
+            "tolerance": 0.02
+          },
+          "feedback": {
+            "correct": "Correct Simpson's index for the disturbed lot.",
+            "incorrect": "Not quite. Use the combined C1 + C2 counts."
+          }
+        },
+        {
+          "gesture": "answer",
+          "points": 10,
+          "instruction": "Answer analysis question 4: which habitat is most diverse?",
+          "question": {
+            "type": "choice",
+            "showData": true,
+            "prompt": "Based on Simpson's index, which habitat has the HIGHEST biodiversity?",
+            "options": {
+              "fn": "habitatOptions"
+            },
+            "help": [
+              "Write down D for the meadow and the disturbed lot (your answers to questions 2 and 3).",
+              "Calculate D for the forest the same way, using the 'Forest total' column.",
+              "The habitat with the LARGEST D (closest to 1) has the highest biodiversity."
+            ]
+          },
+          "validator": {
+            "preset": "choice",
+            "expected": {
+              "fn": "mostDiverse"
+            }
+          },
+          "feedback": {
+            "correct": "Yes, that habitat combines high richness with high evenness.",
+            "incorrect": "Compare D for all three habitats. You can calculate the forest's D the same way."
+          }
+        },
+        {
+          "gesture": "answer",
+          "points": 10,
+          "instruction": "Answer analysis question 5: invasive species.",
+          "question": {
+            "type": "choice",
+            "showData": true,
+            "prompt": "Which species dominates the disturbed lot and is an invasive species?",
+            "options": {
+              "fn": "speciesOptions"
+            },
+            "help": [
+              "Look at the 'Lot total' column.",
+              "Find the species with the largest count.",
+              "Check the field guide: invasive species are marked 'invasive'."
+            ]
+          },
+          "validator": {
+            "preset": "choice",
+            "expected": {
+              "fn": "dominant",
+              "args": {
+                "habitat": "disturbed"
+              }
+            }
+          },
+          "feedback": {
+            "correct": "Right. Garlic mustard is a non-native invasive that crowds out native wildflowers.",
+            "incorrect": "Look for the species with the largest count in C1 and C2."
+          }
+        },
+        {
+          "gesture": "answer",
+          "points": 10,
+          "instruction": "Answer analysis question 6: explain the pattern.",
+          "question": {
+            "type": "text",
+            "showData": true,
+            "prompt": "Explain why the disturbed lot has lower biodiversity than the meadow. Use at least two numbers from your data (richness, D, or counts) as evidence.",
+            "help": [
+              "Claim: say which habitat has lower biodiversity.",
+              "Evidence: give at least two numbers from your data, such as richness or D for both habitats.",
+              "Reasoning: explain WHY, using a cause such as mowing, trampling or an invasive species crowding out native plants."
+            ],
+            "example": "You could start with: 'The disturbed lot has lower biodiversity than the meadow because…'"
+          },
+          "validator": {
+            "preset": "free_text",
+            "minWords": 20
+          }
+        }
+      ],
+      "intro": [
+        "Now turn your counts into numbers you can compare. Press 'Answer question' in the mission panel to open each question. Your data table appears under every question.",
+        "Each wrong try costs points, but 'Show me how' is free. Use it whenever you are unsure."
+      ],
+      "vocab": [
+        [
+          "n",
+          "The number of individuals of ONE species."
+        ],
+        [
+          "N",
+          "The total number of individuals of ALL species together."
+        ],
+        [
+          "Σ (sigma)",
+          "Means 'add them all up'."
+        ],
+        [
+          "Simpson's index (D)",
+          "A diversity score from 0 (no diversity) to almost 1 (very diverse). It combines richness and evenness."
+        ]
       ]
     },
     {
       "title": "Report and recommend",
       "sequence": [
-        { "target": "ranger", "gesture": "talk", "points": 5, "instruction": "Report your findings to Ranger Okafor.",
+        {
+          "target": "ranger",
+          "gesture": "talk",
+          "points": 5,
+          "instruction": "Report your findings to Ranger Okafor.",
           "npcLines": [
             "So the disturbed lot really is losing diversity, and the invasive garlic mustard is taking over. Your data makes the case.",
             "The town council meets next week. What should we recommend to protect the reserve? Write your proposal in the last question."
-          ] },
-        { "gesture": "answer", "points": 15, "instruction": "Write your conservation recommendation.",
-          "question": { "type": "text", "prompt": "Propose ONE realistic plan to restore biodiversity in the disturbed lot. Explain how it would raise species richness or evenness, and describe one cost or drawback." },
-          "validator": { "preset": "free_text", "minWords": 25 } }
+          ],
+          "how": [
+            "Walk back to Ranger Okafor at the field station.",
+            "Press E or tap the button to talk."
+          ]
+        },
+        {
+          "gesture": "answer",
+          "points": 15,
+          "instruction": "Write your conservation recommendation.",
+          "question": {
+            "type": "text",
+            "prompt": "Propose ONE realistic plan to restore biodiversity in the disturbed lot. Explain how it would raise species richness or evenness, and describe one cost or drawback.",
+            "help": [
+              "Name ONE action, for example removing garlic mustard, replanting native wildflowers, mowing less often, or adding a fenced path.",
+              "Explain how it would raise richness (more species) or evenness (no single species taking over).",
+              "Describe one cost or drawback, such as money, volunteer time, or less space for people to use."
+            ]
+          },
+          "validator": {
+            "preset": "free_text",
+            "minWords": 25
+          }
+        }
+      ],
+      "intro": "Scientists use data to help communities make decisions. Your recommendation should be realistic and backed by your evidence.",
+      "vocab": [
+        [
+          "Restoration",
+          "Helping a damaged habitat recover, for example by replanting native species."
+        ],
+        [
+          "Trade-off",
+          "Something you give up to get something else, such as cost, time or space."
+        ]
       ]
     }
   ]

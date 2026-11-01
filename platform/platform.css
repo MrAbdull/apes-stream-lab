@@ -100,3 +100,50 @@
 .pf-sp .n { background: #eef1ef; border-radius: 999px; padding: 2px 10px; font-variant-numeric: tabular-nums; }
 .pf-sp .sw { width: 14px; height: 14px; border-radius: 50%; display: inline-block; margin-right: 6px; vertical-align: -2px; }
 @media (max-width: 680px) { .pf-tally { grid-template-columns: 1fr; } }
+
+/* ---------- layout manager support (positions are set by HUD.layout) ---------- */
+.pf-tracker { max-height: calc(100dvh - 220px); overflow-y: auto; transition: top .2s; }
+.pf-tr-head { padding-right: 34px; }
+.pf-tr-min { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; min-height: 32px; padding: 0; border-radius: 8px; font-size: 1rem; line-height: 1; }
+.pf-tracker { position: absolute; }
+.pf-tracker.min .pf-bar, .pf-tracker.min .pf-step, .pf-tracker.min .pf-hint, .pf-tracker.min .pf-tr-actions, .pf-tracker.min .pf-explain { display: none; }
+.pf-tracker.min .pf-instr { margin: 6px 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pf-dialogue { overflow-y: auto; transition: bottom .2s; }
+.pf-toast { transition: opacity .25s, transform .25s; transform: translate(-50%, 12px); }
+.pf-toast.show { transform: translate(-50%, 0); }
+
+/* Phones and narrow windows */
+.pf-narrow .pf-top { gap: 8px; flex-wrap: nowrap; }
+.pf-narrow .pf-title { max-width: calc(50vw - 14px); min-width: 0; padding: 6px 10px; }
+.pf-narrow .pf-title strong { font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pf-narrow .pf-title span { display: none; }
+.pf-narrow .pf-compass { margin: 0 0 0 auto; padding: 6px 12px; font-size: .9rem; max-width: calc(50vw - 14px); min-width: 0; }
+.pf-narrow .pf-compass-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pf-narrow .pf-tracker { left: 10px; right: 10px; width: auto; padding: 10px 12px; }
+.pf-narrow .pf-actions { max-width: calc(100% - 150px); gap: 6px; }
+.pf-narrow .pf-actions button { min-width: 44px; padding: 8px 10px; }
+.pf-narrow #joystick { width: 116px; height: 116px; left: 14px; }
+.pf-narrow .pf-dialogue { padding: 12px 14px; }
+.pf-narrow .pf-line { font-size: 1rem; }
+.pf-narrow .pf-prompt { font-size: .98rem; padding: 12px 18px; max-width: calc(100% - 32px); }
+
+/* Grade 9–12 guidance: how-to lists, step briefings, worked examples */
+.pf-explain { margin: 0 0 8px; background: var(--green-soft); border-radius: 8px; padding: 6px 10px; font-size: .9rem; }
+.pf-explain summary, .pf-help summary { cursor: pointer; font-weight: 600; color: var(--green-dark); padding: 2px 0; }
+.pf-explain ol, .pf-help ol { margin: 6px 0 2px; padding-left: 20px; line-height: 1.45; }
+.pf-explain li + li, .pf-help li + li { margin-top: 4px; }
+.pf-help { margin: 10px 0; background: #eef4fb; border: 1px solid #cfe0f2; border-radius: 10px; padding: 8px 12px; }
+.pf-help summary { color: var(--blue); }
+.pf-example { margin: 8px 0 2px; padding: 8px 10px; background: #fff; border-radius: 8px; font-size: .92rem; line-height: 1.45; }
+.pf-goals { background: var(--green-soft); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
+.pf-goals ul { margin: 6px 0 0; padding-left: 20px; }
+.pf-vocab { display: grid; grid-template-columns: max-content 1fr; gap: 6px 12px; margin: 0 0 8px; }
+.pf-vocab dt { font-weight: 700; color: var(--green-dark); }
+.pf-vocab dd { margin: 0; }
+.pf-narrow .pf-vocab { grid-template-columns: 1fr; gap: 2px; }
+.pf-narrow .pf-vocab dd { margin-bottom: 4px; }
+.pf-task-now { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 10px; margin: 0 0 8px; font-size: .92rem; }
+.pf-howto { margin: 0 0 10px; }
+.pf-howto summary { cursor: pointer; font-weight: 600; color: var(--green-dark); }
+.pf-howto ol { margin: 6px 0 0; padding-left: 20px; line-height: 1.45; }
+.pf-task-now ol { margin: 6px 0 0; padding-left: 20px; line-height: 1.4; }

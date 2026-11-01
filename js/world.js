@@ -37,7 +37,7 @@ const SITE_POS = SITES.map((s) => ({ id: s.id, x: streamX(s.z) + 7.5, z: s.z }))
 const START = { x: streamX(-205) + 6, z: -205 };
 const NEAR_DIST = 10;
 const CHUNK = 60;
-const WALK = 5, RUN = 10;
+const WALK = 2.4, RUN = 5.2; // human walking and running speeds (m/s)
 
 const MODELS = {
   oak1: 'nature/common_tree_1.glb', oak2: 'nature/common_tree_2.glb', oak3: 'nature/common_tree_3.glb',
@@ -796,7 +796,7 @@ export class StreamWorld {
     const wading = waterY(this.player.z) - groundY(this.player.x, this.player.z) > 0.15;
     const targetSpeed = len * (running ? RUN : WALK) * (wading ? 0.55 : 1);
     const pl = this.player;
-    pl.speed += (targetSpeed - pl.speed) * Math.min(1, dt * 10);
+    pl.speed += (targetSpeed - pl.speed) * Math.min(1, dt * (targetSpeed > pl.speed ? 5 : 8));
 
     // Move relative to where the camera looks; the character turns to face its path.
     const sin = Math.sin(this.camYaw), cos = Math.cos(this.camYaw);
@@ -805,7 +805,7 @@ export class StreamWorld {
       const want = Math.atan2(mx, mz);
       let diff = want - pl.facing;
       diff = Math.atan2(Math.sin(diff), Math.cos(diff));
-      const step = diff * Math.min(1, dt * 10);
+      const step = Math.sign(diff) * Math.min(Math.abs(diff), (6 + 4 * Math.abs(diff)) * dt);
       pl.facing += step;
       this.turnRate = dt > 0 ? step / dt : 0;
       const ml = Math.hypot(mx, mz);
