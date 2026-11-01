@@ -1,0 +1,61 @@
+{
+  "id": "orientation",
+  "title": "Field Orientation",
+  "objectives": [
+    "Explain why ecologists use quadrats to sample a habitat",
+    "Lay out a quadrat and identify every organism inside it",
+    "Record counts accurately for later analysis"
+  ],
+  "badge": { "id": "bio-field-ready", "name": "Field Ready", "icon": "🌱" },
+  "steps": [
+    {
+      "title": "Meet the ranger",
+      "sequence": [
+        { "target": "ranger", "gesture": "talk", "points": 5,
+          "instruction": "Talk to Ranger Okafor outside the field station.",
+          "hint": "Follow the yellow arrow and the compass at the top of the screen.",
+          "npcLines": [
+            "Welcome to the reserve! I'm Ranger Okafor. We think the disturbed lot next door is losing plant diversity, and we need data to prove it.",
+            "We measure biodiversity with quadrats: square frames we lay on the ground. We count every organism inside, then compare habitats.",
+            "Grab a quadrat kit from the table by the station, and I'll show you on the practice plot."
+          ] }
+      ]
+    },
+    {
+      "title": "Gear up",
+      "sequence": [
+        { "target": "kit", "gesture": "collect", "points": 5,
+          "instruction": "Pick up a quadrat kit from the table by the field station.",
+          "hint": "It's the white frame and clipboard on the wooden table.",
+          "feedback": { "correct": "Quadrat kit collected: a 2 m × 2 m frame, a field guide and a tally sheet." },
+          "effects": [{ "name": "giveKit" }] }
+      ]
+    },
+    {
+      "title": "Practice plot",
+      "sequence": [
+        { "target": "P", "gesture": "place", "points": 5,
+          "instruction": "Walk to the practice plot (marked P) and lay out your quadrat.",
+          "hint": "Stand next to the orange flag marked Plot P and press E (or tap the button).",
+          "feedback": { "correct": "Quadrat placed. Only count what's inside the frame." },
+          "effects": [{ "name": "placeQuadrat", "args": { "plot": "P" } }] },
+        { "target": "P", "gesture": "measure", "points": 15,
+          "validator": { "preset": "correct_target" },
+          "instruction": "Count every organism in the practice quadrat. Choose a species from the field guide, then tap each one you see.",
+          "hint": "Compare shapes and colors with the field guide swatches. Every plant must be tallied before the plot is complete.",
+          "feedback": { "correct": "Practice plot recorded. Nice careful counting!" } }
+      ]
+    },
+    {
+      "title": "Report back",
+      "sequence": [
+        { "target": "ranger", "gesture": "talk", "points": 5,
+          "instruction": "Tell Ranger Okafor what you found on the practice plot.",
+          "npcLines": [
+            "Great work! See how every species in the frame now has a count? That's your raw data.",
+            "Next, run the full Habitat Biodiversity Survey: two quadrats each in the meadow, the forest and the disturbed lot. Then we'll see which habitat is most diverse."
+          ] }
+      ]
+    }
+  ]
+}

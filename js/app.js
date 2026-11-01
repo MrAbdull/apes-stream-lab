@@ -117,6 +117,10 @@ function closePanel() {
 
 // ---------- join ----------
 
+function campusProfile() {
+  try { return JSON.parse(localStorage.getItem('earthlab:profile:v1') || 'null'); } catch { return null; }
+}
+
 function renderJoin(prefill = '') {
   $('#screen-join').innerHTML = `
     <div class="join-card card">
@@ -163,6 +167,12 @@ function renderJoin(prefill = '') {
   };
   $('#j-class').addEventListener('input', update);
   update();
+  // Students arriving from the EarthLab campus don't retype their name and email.
+  const campus = campusProfile();
+  if (campus) {
+    $('#j-name').value = campus.name || '';
+    $('#j-email').value = campus.email || '';
+  }
   $('#j-newgroup').onclick = () => {
     $('#j-gcode').value = randomGroupCode();
     toast('New group code made. Share it with your teammates.');
@@ -354,7 +364,7 @@ function renderBrief() {
       <div id="b-avatar"></div>
       <button class="primary big" id="b-go">Enter the field site →</button>
     </div>`;
-  let avatar = S.avatar || DEFAULT_AVATAR;
+  let avatar = S.avatar || campusProfile()?.avatar || DEFAULT_AVATAR;
   avatarPicker($('#b-avatar'), avatar, (p) => { avatar = p; });
   $('#b-go').onclick = () => {
     S.avatar = avatar;
@@ -972,6 +982,7 @@ function wire() {
     save: downloadSaveFile,
     help: openHelp,
     finish: openFinish,
+    campus: () => { persist(); location.href = 'index.html'; },
   })[b.dataset.act]()));
 
   document.addEventListener('visibilitychange', () => {

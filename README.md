@@ -1,46 +1,46 @@
-# Stream Health Lab: Virtual Macroinvertebrate Survey (APES)
+# EarthLab: virtual field science for AP Environmental Science
 
-A 3D virtual field lab that runs in any modern browser (laptops and iPads). There is no server,
-no accounts and no cost. It's just a folder of web files.
+A free, browser-based 3D science campus for Earth, environmental and biological science.
+It works on laptops and iPads, with no installs, no accounts and no server.
 
 ## Pages
-- `index.html`: the student lab
-- `teacher.html`: teacher tools (create class codes, make groups, answer keys). **Don't share this link with students.**
+- `index.html`: **EarthLab Campus**, the hub. Students create a profile, meet Dr. Rivera, and walk through portals to field stations.
+- `world.html?w=<id>`: a field station built on the shared engine (currently `biodiversity`).
+- `stream.html`: the Stream Health Lab, with class codes, groups and PDF reports. Old `index.html?class=…` links redirect here.
+- `teacher.html`: Stream Lab teacher tools (class codes, groups, answer keys). **Don't share this link with students.**
 
-## Putting it online (free)
-The folder must be served from a website. Opening `index.html` by double-clicking won't work.
-Easiest options:
-1. **Netlify Drop**: go to app.netlify.com/drop and drag the `stream-lab` folder onto the page. You get a link in seconds.
-2. **GitHub Pages**: upload the folder to a GitHub repository and turn on Pages in the settings.
+## Field stations
+| Station | Status | What students do |
+|---|---|---|
+| Watershed Science (Stream Health) | Open | Kick-net macroinvertebrates, water tests, water-quality index, pollution-source mystery |
+| Biodiversity Field Station | Open | Quadrat sampling in three habitats, species richness, Simpson's index, invasive species, conservation plan |
+| Eutrophication Lake, Coral Reef & Ocean, Climate & Carbon, Soil & Farm, Renewable Energy, Geology Canyon | Planned | Portals show "coming soon" |
 
-Students need internet access while working (the 3D engine and PDF tool load from public CDNs).
+## How a field station works
+- **NPC teachers** give briefings and react to each mission step.
+- **Missions** are JSON files (`platform/worlds/<id>/missions/*.json`). Each step lists a target, a gesture (talk, go, collect,
+  place, measure, answer), an instruction, a hint, a validator and feedback. Teachers or developers can write new missions without coding.
+- **Scoring:** points per task; hints cost 30%, wrong tries 25%, misidentifications 10%. Grades run A–F, and 70% or more earns a badge.
+- **Progress** saves after every action. If the mission file changes, old checkpoints are safely discarded.
+- **Data differ per student** (seeded from their email), so answers can't be copied.
+- The **Ask** button is an offline assistant that answers from each station's glossary. Nothing leaves the device.
 
-## Running a lab
-1. Open `teacher.html`, choose individual or group, how groups form, and standard or mystery mode, then **Create class code**.
-2. Write down the **teacher key**. You need it to open answer keys.
-3. Give students the class code or the student link.
-4. Group labs: paste your roster to make (or randomize) groups. Each group gets a 4-character group code.
-5. Students finish by downloading a **PDF report** (plus an optional CSV and an email summary to themselves) and turn it in through your LMS.
-6. To grade, open the answer key with the student's email (or group code) and compare the **Lab ID** on their report.
+## Adding a new field station
+1. Create `platform/worlds/<id>/` with `manifest.json` (title, missions, glossary), `world.js` (exports `createWorld`) and `missions/`.
+2. Add one entry to `platform/worlds/registry.json` with `"type": "world", "status": "open"`. A portal appears on the campus automatically.
+No build step is needed. The engine in `platform/engine/` handles the character, camera, NPCs, missions, scoring and saving.
 
-## How it works
-- Every student (or group) gets a slightly different stream, generated from their email or group code.
-  Copying someone else's numbers won't match the copier's own lab.
-- Progress saves automatically in the student's browser. On a different device, students use **Save file** and then
-  **Continue from a save file**.
-- Groups: teammates' screens don't sync live. Each member downloads a save file, and one member imports them
-  (Notebook → Team) to make a combined group report with credit for each person.
-- The report logs active time, an activity timeline, ID attempts and how many times the student left the lab page.
+## Progress and grading
+- Students open **Passport** on the campus to see scores and badges and to download a progress file (to hand in or to move devices).
+- Stream Lab students still download their PDF report at the end of that lab.
 
-## The 3D world
-- Students pick a character (5 outfits, 5 skin tones) and explore in third person.
-- Scenery comes from free CC0 packs by flo-bit, Quaternius and KayKit (see [CREDITS.md](CREDITS.md)).
-- About 4–5 MB loads once per student. Distant trees switch to simple shapes, and older iPads automatically drop
-  to a lower resolution if they run slowly.
+## Hosting
+Any static host works (currently GitHub Pages). Students need internet while working, because the 3D engine and PDF tool load from public CDNs.
 
-## Science notes
-- Water-quality index modeled on the Izaak Walton League "Save Our Streams" method (count TYPES per tolerance group,
-  weight ×3 / ×2 / ×1; Excellent >22, Good 17–22, Fair 11–16, Poor ≤10).
-- Dissolved oxygen is computed from temperature-dependent saturation, so DO and temperature always agree.
-- Mystery mode sources: sewage, thermal pollution, construction sediment or agricultural drainage. Each leaves a
-  distinct, realistic chemical and biological signature.
+## Credits and design
+See [CREDITS.md](CREDITS.md) (all 3D art is CC0) and [PLATFORM_PLAN.md](PLATFORM_PLAN.md) (repository analysis and architecture).
+
+## Science notes (Stream Lab)
+- Water-quality index modeled on the Izaak Walton League "Save Our Streams" method.
+- Dissolved oxygen is computed from temperature-dependent saturation.
+- Mystery mode sources: sewage, thermal pollution, construction sediment, agricultural drainage.

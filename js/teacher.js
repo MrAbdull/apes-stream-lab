@@ -27,7 +27,7 @@ async function copy(text) {
 }
 
 function studentLink(code) {
-  return new URL(`index.html?class=${encodeURIComponent(code)}`, location.href).href;
+  return new URL(`stream.html?class=${encodeURIComponent(code)}`, location.href).href;
 }
 
 function render() {

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Stream Health Lab</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+    { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    } }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+</head>
+<body>
+  <section id="screen-join" class="screen"></section>
+  <section id="screen-brief" class="screen hidden"></section>
+
+  <section id="screen-lab" class="screen hidden">
+    <div id="world"><div class="world-loading">Loading the field site…</div></div>
+    <div id="hud">
+      <div class="hud-top">
+        <div class="hud-title"><strong>Stream Health Lab</strong><span id="hud-who"></span></div>
+        <div id="hud-sites" class="site-chips"></div>
+      </div>
+      <canvas id="minimap" width="120" height="190" aria-label="Map of the stream"></canvas>
+      <button id="btn-interact" class="interact hidden"></button>
+      <div class="hud-actions">
+        <button data-act="notebook">📓 <span>Notebook</span></button>
+        <button data-act="guide">🔎 <span>ID Guide</span></button>
+        <button data-act="save">💾 <span>Save file</span></button>
+        <button data-act="help">❔ <span>Help</span></button>
+        <button data-act="campus">🏛️ <span>Campus</span></button>
+        <button data-act="finish" class="primary">✅ <span>Finish</span></button>
+      </div>
+      <div id="joystick" class="hidden" aria-hidden="true"><div class="knob"></div></div>
+      <div id="save-warning" class="hidden">Progress isn't saving in this browser (private browsing?). Use 💾 Save file often.</div>
+    </div>
+  </section>
+
+  <div id="panel-backdrop" class="hidden">
+    <div id="panel" role="dialog" aria-modal="true" aria-labelledby="panel-title">
+      <header><h2 id="panel-title"></h2><button id="panel-close" aria-label="Close">✕</button></header>
+      <div id="panel-body"></div>
+    </div>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

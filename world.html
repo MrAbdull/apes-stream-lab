@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>EarthLab Field Station</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="platform/platform.css">
+  <script type="importmap">
+    { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    } }
+  </script>
+</head>
+<body>
+  <main id="app" class="pf-app">
+    <div id="scene"></div>
+    <div id="hud" class="pf-hud"></div>
+    <div id="loading" class="pf-loading"><div class="pf-logo">🌿</div><strong>EarthLab</strong><span>Loading field station…</span></div>
+  </main>
+  <script type="module">
+    import { boot } from './platform/host.js';
+    const w = new URLSearchParams(location.search).get('w');
+    boot({ worldId: w }).catch((e) => {
+      console.error(e);
+      document.getElementById('loading').innerHTML = '<strong>This field station couldn\'t load.</strong><span>Check your internet connection, or <a href="index.html">return to the campus</a>.</span>';
+    });
+  </script>
+</body>
+</html>

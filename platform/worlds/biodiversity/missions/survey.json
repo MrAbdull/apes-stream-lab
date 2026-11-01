@@ -1,0 +1,98 @@
+{
+  "id": "survey",
+  "title": "Habitat Biodiversity Survey",
+  "objectives": [
+    "Sample three habitats with replicate quadrats (APES 2.1)",
+    "Calculate species richness and Simpson's diversity index from field data",
+    "Explain how human disturbance and invasive species reduce biodiversity (APES 2.2, 9.8)",
+    "Propose a realistic conservation strategy and its trade-offs (APES 9.10)"
+  ],
+  "badge": { "id": "bio-surveyor", "name": "Biodiversity Surveyor", "icon": "🦋" },
+  "steps": [
+    {
+      "title": "Briefing",
+      "sequence": [
+        { "target": "ranger", "gesture": "talk", "points": 5,
+          "instruction": "Get your survey briefing from Ranger Okafor.",
+          "npcLines": [
+            "Today we compare three habitats: the wildflower meadow to the north, the old forest to the east, and the disturbed lot to the west that gets mowed and walked on.",
+            "Lay two quadrats in each habitat. Two replicates give a better estimate than one.",
+            "Take a quadrat kit from the table. I'll be here when you're ready to report."
+          ] },
+        { "target": "kit", "gesture": "collect", "points": 5,
+          "instruction": "Pick up a quadrat kit from the table.",
+          "feedback": { "correct": "Kit ready." },
+          "effects": [{ "name": "giveKit" }] }
+      ]
+    },
+    {
+      "title": "Meadow survey",
+      "sequence": [
+        { "target": "A1", "gesture": "place", "points": 4, "instruction": "Go to Plot A1 in the meadow and lay out your quadrat.", "hint": "Follow the compass north from the station.", "effects": [{ "name": "placeQuadrat", "args": { "plot": "A1" } }] },
+        { "target": "A1", "gesture": "measure", "points": 12, "instruction": "Identify and tally every organism in Plot A1.", "hint": "Pick a species in the field guide first, then tap each matching organism.", "feedback": { "correct": "Plot A1 recorded." } },
+        { "target": "A2", "gesture": "place", "points": 4, "instruction": "Go to Plot A2 in the meadow and lay out your quadrat.", "effects": [{ "name": "placeQuadrat", "args": { "plot": "A2" } }] },
+        { "target": "A2", "gesture": "measure", "points": 12, "instruction": "Identify and tally every organism in Plot A2.", "feedback": { "correct": "Plot A2 recorded. Meadow complete!" } }
+      ]
+    },
+    {
+      "title": "Forest survey",
+      "sequence": [
+        { "target": "B1", "gesture": "place", "points": 4, "instruction": "Go to Plot B1 in the forest and lay out your quadrat.", "hint": "The forest is east of the station.", "effects": [{ "name": "placeQuadrat", "args": { "plot": "B1" } }] },
+        { "target": "B1", "gesture": "measure", "points": 12, "instruction": "Identify and tally every organism in Plot B1.", "feedback": { "correct": "Plot B1 recorded." } },
+        { "target": "B2", "gesture": "place", "points": 4, "instruction": "Go to Plot B2 in the forest and lay out your quadrat.", "effects": [{ "name": "placeQuadrat", "args": { "plot": "B2" } }] },
+        { "target": "B2", "gesture": "measure", "points": 12, "instruction": "Identify and tally every organism in Plot B2.", "feedback": { "correct": "Plot B2 recorded. Forest complete!" } }
+      ]
+    },
+    {
+      "title": "Disturbed lot survey",
+      "sequence": [
+        { "target": "C1", "gesture": "place", "points": 4, "instruction": "Go to Plot C1 in the disturbed lot and lay out your quadrat.", "hint": "The disturbed lot is west of the station, by the gravel road.", "effects": [{ "name": "placeQuadrat", "args": { "plot": "C1" } }] },
+        { "target": "C1", "gesture": "measure", "points": 12, "instruction": "Identify and tally every organism in Plot C1.", "feedback": { "correct": "Plot C1 recorded." } },
+        { "target": "C2", "gesture": "place", "points": 4, "instruction": "Go to Plot C2 in the disturbed lot and lay out your quadrat.", "effects": [{ "name": "placeQuadrat", "args": { "plot": "C2" } }] },
+        { "target": "C2", "gesture": "measure", "points": 12, "instruction": "Identify and tally every organism in Plot C2.", "feedback": { "correct": "Plot C2 recorded. All six plots done!" } }
+      ]
+    },
+    {
+      "title": "Analyze your data",
+      "sequence": [
+        { "gesture": "answer", "points": 10, "instruction": "Answer analysis question 1: species richness.",
+          "question": { "type": "numeric", "showData": true, "unit": "species", "prompt": "What is the species richness of the MEADOW (both plots combined)?" },
+          "validator": { "preset": "value_within", "expected": { "fn": "richness", "args": { "habitat": "meadow" } }, "tolerance": 0 },
+          "feedback": { "correct": "Correct: count each species once across both meadow plots.", "incorrect": "Count how many DIFFERENT species appear in A1 or A2 (each species only once).", "reveal": "Richness counts each species once across both plots." } },
+        { "gesture": "answer", "points": 15, "instruction": "Answer analysis question 2: Simpson's index for the meadow.",
+          "question": { "type": "numeric", "showData": true, "prompt": "Calculate Simpson's diversity index (D = 1 - Σ n(n-1) / N(N-1)) for the MEADOW, combining both plots. Round to two decimal places." },
+          "validator": { "preset": "value_within", "expected": { "fn": "simpson", "args": { "habitat": "meadow" } }, "tolerance": 0.02 },
+          "hint": "Add the counts for each species across A1 and A2 first. Then N is the total of all individuals.",
+          "feedback": { "correct": "Correct Simpson's index for the meadow.", "incorrect": "Not quite. Combine A1 and A2, compute n(n-1) for each species, add them up, divide by N(N-1), then subtract from 1." } },
+        { "gesture": "answer", "points": 15, "instruction": "Answer analysis question 3: Simpson's index for the disturbed lot.",
+          "question": { "type": "numeric", "showData": true, "prompt": "Now calculate Simpson's diversity index for the DISTURBED LOT (C1 + C2). Round to two decimal places." },
+          "validator": { "preset": "value_within", "expected": { "fn": "simpson", "args": { "habitat": "disturbed" } }, "tolerance": 0.02 },
+          "feedback": { "correct": "Correct Simpson's index for the disturbed lot.", "incorrect": "Not quite. Use the combined C1 + C2 counts." } },
+        { "gesture": "answer", "points": 10, "instruction": "Answer analysis question 4: which habitat is most diverse?",
+          "question": { "type": "choice", "showData": true, "prompt": "Based on Simpson's index, which habitat has the HIGHEST biodiversity?", "options": { "fn": "habitatOptions" } },
+          "validator": { "preset": "choice", "expected": { "fn": "mostDiverse" } },
+          "feedback": { "correct": "Yes, that habitat combines high richness with high evenness.", "incorrect": "Compare D for all three habitats. You can calculate the forest's D the same way." } },
+        { "gesture": "answer", "points": 10, "instruction": "Answer analysis question 5: invasive species.",
+          "question": { "type": "choice", "showData": true, "prompt": "Which species dominates the disturbed lot and is an invasive species?", "options": { "fn": "speciesOptions" } },
+          "validator": { "preset": "choice", "expected": { "fn": "dominant", "args": { "habitat": "disturbed" } } },
+          "feedback": { "correct": "Right. Garlic mustard is a non-native invasive that crowds out native wildflowers.", "incorrect": "Look for the species with the largest count in C1 and C2." } },
+        { "gesture": "answer", "points": 10, "instruction": "Answer analysis question 6: explain the pattern.",
+          "question": { "type": "text", "showData": true, "prompt": "Explain why the disturbed lot has lower biodiversity than the meadow. Use at least two numbers from your data (richness, D, or counts) as evidence." },
+          "validator": { "preset": "free_text", "minWords": 20 } }
+      ]
+    },
+    {
+      "title": "Report and recommend",
+      "sequence": [
+        { "target": "ranger", "gesture": "talk", "points": 5, "instruction": "Report your findings to Ranger Okafor.",
+          "npcLines": [
+            "So the disturbed lot really is losing diversity, and the invasive garlic mustard is taking over. Your data makes the case.",
+            "The town council meets next week. What should we recommend to protect the reserve? Write your proposal in the last question."
+          ] },
+        { "gesture": "answer", "points": 15, "instruction": "Write your conservation recommendation.",
+          "question": { "type": "text", "prompt": "Propose ONE realistic plan to restore biodiversity in the disturbed lot. Explain how it would raise species richness or evenness, and describe one cost or drawback." },
+          "validator": { "preset": "free_text", "minWords": 25 } }
+      ]
+    }
+  ]
+}

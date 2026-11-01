@@ -1,0 +1,27 @@
+{
+  "id": "biodiversity",
+  "title": "Biodiversity Field Station",
+  "subtitle": "Quadrat survey · APES Unit 2",
+  "intro": "Ranger Okafor needs your help: is the disturbed lot next to the reserve losing biodiversity? Start with Field Orientation if this is your first visit.",
+  "missions": [
+    { "id": "orientation", "file": "missions/orientation.json", "title": "Field Orientation", "time": "About 5 minutes",
+      "summary": "Learn quadrat sampling: pick up your kit, lay out a quadrat on the practice plot and count every organism inside." },
+    { "id": "survey", "file": "missions/survey.json", "title": "Habitat Biodiversity Survey", "time": "About 25 minutes",
+      "summary": "Survey six quadrats in a meadow, a forest and a disturbed lot. Calculate species richness and Simpson's diversity index, identify an invasive species and recommend a conservation plan." }
+  ],
+  "glossary": [
+    { "term": "Quadrat", "aliases": ["frame", "square", "plot"], "answer": "A square frame (ours is 2 m by 2 m) placed on the ground to sample a small, equal-sized area. Counting organisms in several quadrats lets scientists estimate what lives in a whole habitat without counting everything." },
+    { "term": "Species richness", "aliases": ["richness", "how many species", "number of species"], "answer": "The number of different species in an area. Count each species once, no matter how many individuals you found." },
+    { "term": "Species evenness", "aliases": ["evenness", "even", "balanced", "dominate"], "answer": "How equal the population sizes of the species are. A habitat where one species dominates has low evenness, even if it has several species." },
+    { "term": "Simpson's diversity index", "aliases": ["simpson", "diversity index", "formula", "calculate diversity", "d"], "answer": "D = 1 - Σ n(n-1) / N(N-1), where n is the number of individuals of each species and N is the total of all individuals. D runs from 0 (no diversity) to almost 1 (high diversity). It combines richness and evenness." },
+    { "term": "Biodiversity", "aliases": ["diversity", "genetic", "ecosystem diversity"], "answer": "The variety of life at three levels: genetic diversity (within a species), species diversity (number and evenness of species) and ecosystem diversity (variety of habitats). Higher biodiversity usually makes an ecosystem more resilient to disturbances." },
+    { "term": "Invasive species", "aliases": ["invasive", "non-native", "exotic", "garlic mustard", "alien"], "answer": "A non-native species that spreads quickly and harms native species, often because it has no natural predators. Garlic mustard is a real invasive plant in North American forests; it also releases chemicals that harm the soil fungi native plants depend on." },
+    { "term": "Habitat disturbance", "aliases": ["disturbance", "disturbed", "lot", "mowing", "trampling", "development"], "answer": "Events that change a habitat, like mowing, trampling, clearing or construction. Frequent human disturbance favors a few tolerant or invasive species, lowering diversity." },
+    { "term": "Habitat fragmentation", "aliases": ["fragmentation", "fragment", "edge", "edge effect", "corridor"], "answer": "When a large habitat is broken into smaller, isolated patches (for example by roads or lots). Fragments have more edge, smaller populations and less movement between them, which reduces biodiversity. Wildlife corridors can reconnect fragments." },
+    { "term": "Ecosystem services", "aliases": ["services", "benefits", "pollination", "why care"], "answer": "Benefits people get from ecosystems: provisioning (food, timber), regulating (pollination, flood control, water filtering), supporting (soil formation, nutrient cycling) and cultural (recreation). Losing biodiversity can reduce these services." },
+    { "term": "Fungi and decomposers", "aliases": ["mushroom", "mushrooms", "fungus", "fungi", "decomposer"], "answer": "Mushrooms are the reproductive parts of fungi. Fungi are decomposers that recycle nutrients from dead material back into the soil. Many forest plants depend on partnerships with soil fungi (mycorrhizae)." },
+    { "term": "Random sampling", "aliases": ["sampling", "bias", "random", "sample", "replicate", "why two"], "answer": "Scientists place quadrats in several spots (replicates) and combine the results so one unusual spot doesn't skew the conclusion. More quadrats give a more reliable estimate." },
+    { "term": "HIPPCO", "aliases": ["threats", "biodiversity loss", "causes", "extinction"], "answer": "The main threats to biodiversity: Habitat destruction, Invasive species, Population growth, Pollution, Climate change, and Overexploitation." },
+    { "term": "Conservation", "aliases": ["protect", "restore", "restoration", "solution", "plan", "recommend"], "answer": "Ways to protect biodiversity include removing invasive species, replanting native species, limiting mowing and trampling, creating protected areas and buffers, and connecting habitats with corridors." }
+  ]
+}
