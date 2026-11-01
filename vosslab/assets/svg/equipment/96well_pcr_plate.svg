@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 393.3275 278.5243">
+  <title>96-well PCR plate</title>
+  <defs>
+    <linearGradient id="plate_skirt" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#c6dce2"/><stop offset="1" stop-color="#85a8b4"/></linearGradient>
+    <linearGradient id="plate_deck" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f9ffff"/><stop offset=".55" stop-color="#d9eef1"/><stop offset="1" stop-color="#abcdd5"/></linearGradient>
+    <radialGradient id="well_recess" cx="35%" cy="25%" r="70%"><stop stop-color="#f9ffff"/><stop offset=".52" stop-color="#c9e1e6"/><stop offset="1" stop-color="#7fa6b1"/></radialGradient>
+  </defs>
+  <!-- Molded PCR plate: the recessed deck sits inside a continuous rim, while the short front and right skirt make its shallow physical thickness legible. -->
+  <g id="plate_body" stroke-linejoin="round">
+    <path d="M20 32Q20 19 33 19H361q13 0 13 13v214l-12 14H32q-12 0-12-12z" fill="url(#plate_skirt)"/>
+    <path d="M20 246h354l-12 14H32q-12 0-12-12z" fill="#91b5bf"/>
+    <path d="M374 32v214l-12 14V46z" fill="#789ea9"/>
+    <rect x="24" y="23" width="346.3275" height="229" rx="12" fill="#eff9fa" stroke="#6f99a5" stroke-width="1.5"/>
+    <rect x="30" y="29" width="334.3275" height="217" rx="8" fill="url(#plate_deck)" stroke="#a6c7cf" stroke-width="1.5"/>
+    <path d="M39 36h314" fill="none" stroke="#fff" stroke-width="2.5" opacity=".9"/>
+    <path d="M33 252h327" fill="none" stroke="#dff0f3" stroke-width="1.5" opacity=".8"/>
+  </g>
+  <g id="orientation_marker" fill="#557f8b"><path d="M35 35h10L35 45Z"/></g>
+  <g id="wells" fill="url(#well_recess)" stroke="#6f99a5" stroke-width="1.15" aria-label="96 plate wells">
+    <g class="well_row" data-row="A">
+      <g class="well"><circle id="A1" data-subpart-id="A1" cx="45.010" cy="49.260" r="11"/><circle cx="45.010" cy="49.260" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="A2" data-subpart-id="A2" cx="73.357" cy="49.260" r="11"/><circle cx="73.357" cy="49.260" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="A3" data-subpart-id="A3" cx="101.704" cy="49.260" r="11"/><circle cx="101.704" cy="49.260" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="A4" data-subpart-id="A4" cx="130.051" cy="49.260" r="11"/><circle cx="130.051" cy="49.260" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="A5" data-subpart-id="A5" cx="158.398" cy="49.260" r="11"/><circle cx="158.398" cy="49.260" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="A6" data-subpart-id="A6" cx="186.745" cy="49.260" r="11"/><circle cx="186.745" cy="49.260" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="A7" data-subpart-id="A7" cx="215.092" cy="49.260" r="11"/><circle cx="215.092" cy="49.260" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="A8" data-subpart-id="A8" cx="243.439" cy="49.260" r="11"/><circle cx="243.439" cy="49.260" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="A9" data-subpart-id="A9" cx="271.786" cy="49.260" r="11"/><circle cx="271.786" cy="49.260" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="A10" data-subpart-id="A10" cx="300.133" cy="49.260" r="11"/><circle cx="300.133" cy="49.260" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="A11" data-subpart-id="A11" cx="328.480" cy="49.260" r="11"/><circle cx="328.480" cy="49.260" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="A12" data-subpart-id="A12" cx="356.827" cy="49.260" r="11"/><circle cx="356.827" cy="49.260" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+    </g>
+    <g class="well_row" data-row="B">
+      <g class="well"><circle id="B1" data-subpart-id="B1" cx="45.010" cy="77.607" r="11"/><circle cx="45.010" cy="77.607" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="B2" data-subpart-id="B2" cx="73.357" cy="77.607" r="11"/><circle cx="73.357" cy="77.607" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="B3" data-subpart-id="B3" cx="101.704" cy="77.607" r="11"/><circle cx="101.704" cy="77.607" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="B4" data-subpart-id="B4" cx="130.051" cy="77.607" r="11"/><circle cx="130.051" cy="77.607" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="B5" data-subpart-id="B5" cx="158.398" cy="77.607" r="11"/><circle cx="158.398" cy="77.607" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="B6" data-subpart-id="B6" cx="186.745" cy="77.607" r="11"/><circle cx="186.745" cy="77.607" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="B7" data-subpart-id="B7" cx="215.092" cy="77.607" r="11"/><circle cx="215.092" cy="77.607" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="B8" data-subpart-id="B8" cx="243.439" cy="77.607" r="11"/><circle cx="243.439" cy="77.607" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="B9" data-subpart-id="B9" cx="271.786" cy="77.607" r="11"/><circle cx="271.786" cy="77.607" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="B10" data-subpart-id="B10" cx="300.133" cy="77.607" r="11"/><circle cx="300.133" cy="77.607" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="B11" data-subpart-id="B11" cx="328.480" cy="77.607" r="11"/><circle cx="328.480" cy="77.607" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="B12" data-subpart-id="B12" cx="356.827" cy="77.607" r="11"/><circle cx="356.827" cy="77.607" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+    </g>
+    <g class="well_row" data-row="C">
+      <g class="well"><circle id="C1" data-subpart-id="C1" cx="45.010" cy="105.954" r="11"/><circle cx="45.010" cy="105.954" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="C2" data-subpart-id="C2" cx="73.357" cy="105.954" r="11"/><circle cx="73.357" cy="105.954" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="C3" data-subpart-id="C3" cx="101.704" cy="105.954" r="11"/><circle cx="101.704" cy="105.954" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="C4" data-subpart-id="C4" cx="130.051" cy="105.954" r="11"/><circle cx="130.051" cy="105.954" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="C5" data-subpart-id="C5" cx="158.398" cy="105.954" r="11"/><circle cx="158.398" cy="105.954" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="C6" data-subpart-id="C6" cx="186.745" cy="105.954" r="11"/><circle cx="186.745" cy="105.954" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="C7" data-subpart-id="C7" cx="215.092" cy="105.954" r="11"/><circle cx="215.092" cy="105.954" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="C8" data-subpart-id="C8" cx="243.439" cy="105.954" r="11"/><circle cx="243.439" cy="105.954" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="C9" data-subpart-id="C9" cx="271.786" cy="105.954" r="11"/><circle cx="271.786" cy="105.954" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="C10" data-subpart-id="C10" cx="300.133" cy="105.954" r="11"/><circle cx="300.133" cy="105.954" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="C11" data-subpart-id="C11" cx="328.480" cy="105.954" r="11"/><circle cx="328.480" cy="105.954" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="C12" data-subpart-id="C12" cx="356.827" cy="105.954" r="11"/><circle cx="356.827" cy="105.954" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+    </g>
+    <g class="well_row" data-row="D">
+      <g class="well"><circle id="D1" data-subpart-id="D1" cx="45.010" cy="134.301" r="11"/><circle cx="45.010" cy="134.301" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="D2" data-subpart-id="D2" cx="73.357" cy="134.301" r="11"/><circle cx="73.357" cy="134.301" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="D3" data-subpart-id="D3" cx="101.704" cy="134.301" r="11"/><circle cx="101.704" cy="134.301" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="D4" data-subpart-id="D4" cx="130.051" cy="134.301" r="11"/><circle cx="130.051" cy="134.301" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="D5" data-subpart-id="D5" cx="158.398" cy="134.301" r="11"/><circle cx="158.398" cy="134.301" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="D6" data-subpart-id="D6" cx="186.745" cy="134.301" r="11"/><circle cx="186.745" cy="134.301" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="D7" data-subpart-id="D7" cx="215.092" cy="134.301" r="11"/><circle cx="215.092" cy="134.301" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="D8" data-subpart-id="D8" cx="243.439" cy="134.301" r="11"/><circle cx="243.439" cy="134.301" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="D9" data-subpart-id="D9" cx="271.786" cy="134.301" r="11"/><circle cx="271.786" cy="134.301" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="D10" data-subpart-id="D10" cx="300.133" cy="134.301" r="11"/><circle cx="300.133" cy="134.301" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="D11" data-subpart-id="D11" cx="328.480" cy="134.301" r="11"/><circle cx="328.480" cy="134.301" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="D12" data-subpart-id="D12" cx="356.827" cy="134.301" r="11"/><circle cx="356.827" cy="134.301" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+    </g>
+    <g class="well_row" data-row="E">
+      <g class="well"><circle id="E1" data-subpart-id="E1" cx="45.010" cy="162.648" r="11"/><circle cx="45.010" cy="162.648" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="E2" data-subpart-id="E2" cx="73.357" cy="162.648" r="11"/><circle cx="73.357" cy="162.648" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="E3" data-subpart-id="E3" cx="101.704" cy="162.648" r="11"/><circle cx="101.704" cy="162.648" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="E4" data-subpart-id="E4" cx="130.051" cy="162.648" r="11"/><circle cx="130.051" cy="162.648" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="E5" data-subpart-id="E5" cx="158.398" cy="162.648" r="11"/><circle cx="158.398" cy="162.648" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="E6" data-subpart-id="E6" cx="186.745" cy="162.648" r="11"/><circle cx="186.745" cy="162.648" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="E7" data-subpart-id="E7" cx="215.092" cy="162.648" r="11"/><circle cx="215.092" cy="162.648" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="E8" data-subpart-id="E8" cx="243.439" cy="162.648" r="11"/><circle cx="243.439" cy="162.648" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="E9" data-subpart-id="E9" cx="271.786" cy="162.648" r="11"/><circle cx="271.786" cy="162.648" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="E10" data-subpart-id="E10" cx="300.133" cy="162.648" r="11"/><circle cx="300.133" cy="162.648" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="E11" data-subpart-id="E11" cx="328.480" cy="162.648" r="11"/><circle cx="328.480" cy="162.648" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="E12" data-subpart-id="E12" cx="356.827" cy="162.648" r="11"/><circle cx="356.827" cy="162.648" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+    </g>
+    <g class="well_row" data-row="F">
+      <g class="well"><circle id="F1" data-subpart-id="F1" cx="45.010" cy="190.995" r="11"/><circle cx="45.010" cy="190.995" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="F2" data-subpart-id="F2" cx="73.357" cy="190.995" r="11"/><circle cx="73.357" cy="190.995" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="F3" data-subpart-id="F3" cx="101.704" cy="190.995" r="11"/><circle cx="101.704" cy="190.995" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="F4" data-subpart-id="F4" cx="130.051" cy="190.995" r="11"/><circle cx="130.051" cy="190.995" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="F5" data-subpart-id="F5" cx="158.398" cy="190.995" r="11"/><circle cx="158.398" cy="190.995" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="F6" data-subpart-id="F6" cx="186.745" cy="190.995" r="11"/><circle cx="186.745" cy="190.995" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="F7" data-subpart-id="F7" cx="215.092" cy="190.995" r="11"/><circle cx="215.092" cy="190.995" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="F8" data-subpart-id="F8" cx="243.439" cy="190.995" r="11"/><circle cx="243.439" cy="190.995" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="F9" data-subpart-id="F9" cx="271.786" cy="190.995" r="11"/><circle cx="271.786" cy="190.995" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="F10" data-subpart-id="F10" cx="300.133" cy="190.995" r="11"/><circle cx="300.133" cy="190.995" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="F11" data-subpart-id="F11" cx="328.480" cy="190.995" r="11"/><circle cx="328.480" cy="190.995" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="F12" data-subpart-id="F12" cx="356.827" cy="190.995" r="11"/><circle cx="356.827" cy="190.995" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+    </g>
+    <g class="well_row" data-row="G">
+      <g class="well"><circle id="G1" data-subpart-id="G1" cx="45.010" cy="219.342" r="11"/><circle cx="45.010" cy="219.342" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="G2" data-subpart-id="G2" cx="73.357" cy="219.342" r="11"/><circle cx="73.357" cy="219.342" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="G3" data-subpart-id="G3" cx="101.704" cy="219.342" r="11"/><circle cx="101.704" cy="219.342" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="G4" data-subpart-id="G4" cx="130.051" cy="219.342" r="11"/><circle cx="130.051" cy="219.342" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="G5" data-subpart-id="G5" cx="158.398" cy="219.342" r="11"/><circle cx="158.398" cy="219.342" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="G6" data-subpart-id="G6" cx="186.745" cy="219.342" r="11"/><circle cx="186.745" cy="219.342" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="G7" data-subpart-id="G7" cx="215.092" cy="219.342" r="11"/><circle cx="215.092" cy="219.342" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="G8" data-subpart-id="G8" cx="243.439" cy="219.342" r="11"/><circle cx="243.439" cy="219.342" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="G9" data-subpart-id="G9" cx="271.786" cy="219.342" r="11"/><circle cx="271.786" cy="219.342" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="G10" data-subpart-id="G10" cx="300.133" cy="219.342" r="11"/><circle cx="300.133" cy="219.342" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="G11" data-subpart-id="G11" cx="328.480" cy="219.342" r="11"/><circle cx="328.480" cy="219.342" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="G12" data-subpart-id="G12" cx="356.827" cy="219.342" r="11"/><circle cx="356.827" cy="219.342" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+    </g>
+    <g class="well_row" data-row="H">
+      <g class="well"><circle id="H1" data-subpart-id="H1" cx="45.010" cy="247.689" r="11"/><circle cx="45.010" cy="247.689" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="H2" data-subpart-id="H2" cx="73.357" cy="247.689" r="11"/><circle cx="73.357" cy="247.689" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="H3" data-subpart-id="H3" cx="101.704" cy="247.689" r="11"/><circle cx="101.704" cy="247.689" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="H4" data-subpart-id="H4" cx="130.051" cy="247.689" r="11"/><circle cx="130.051" cy="247.689" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="H5" data-subpart-id="H5" cx="158.398" cy="247.689" r="11"/><circle cx="158.398" cy="247.689" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="H6" data-subpart-id="H6" cx="186.745" cy="247.689" r="11"/><circle cx="186.745" cy="247.689" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="H7" data-subpart-id="H7" cx="215.092" cy="247.689" r="11"/><circle cx="215.092" cy="247.689" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="H8" data-subpart-id="H8" cx="243.439" cy="247.689" r="11"/><circle cx="243.439" cy="247.689" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="H9" data-subpart-id="H9" cx="271.786" cy="247.689" r="11"/><circle cx="271.786" cy="247.689" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="H10" data-subpart-id="H10" cx="300.133" cy="247.689" r="11"/><circle cx="300.133" cy="247.689" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="H11" data-subpart-id="H11" cx="328.480" cy="247.689" r="11"/><circle cx="328.480" cy="247.689" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+      <g class="well"><circle id="H12" data-subpart-id="H12" cx="356.827" cy="247.689" r="11"/><circle cx="356.827" cy="247.689" r="7.4" fill="none" stroke="#c8e1e9" stroke-width="1.2"/></g>
+    </g>
+  </g>
+</svg>

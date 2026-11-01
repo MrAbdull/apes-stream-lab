@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 372 213" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="counter-shell" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f5f7f5"/><stop offset="1" stop-color="#b7c2c0"/></linearGradient>
+    <linearGradient id="counter-top" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#dbe3e1"/></linearGradient>
+    <linearGradient id="counter-glass" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#2a3d42"/><stop offset="1" stop-color="#111d20"/></linearGradient>
+  </defs>
+  <g id="counter_housing" stroke="#52646b" stroke-linejoin="round">
+    <path d="M33 57Q33 39 52 35L315 29Q334 29 342 46L345 171Q344 188 326 192L57 198Q37 197 31 181Z" fill="#819094" stroke-width="2.8"/>
+    <path d="M33 57Q33 39 52 35L315 29Q334 29 342 46L337 59L55 65Q40 65 33 57Z" fill="url(#counter-top)" stroke-width="2.8"/>
+    <path d="M55 65L337 59L338 167Q338 180 324 183L59 189Q47 188 46 176L46 78Q46 67 55 65Z" fill="url(#counter-shell)" stroke-width="2.2"/>
+    <path d="M53 190L326 184L324 192L59 200Q48 199 48 193Z" fill="#6e7e82" stroke-width="1.8"/>
+    <path d="M66 190L91 189L88 202L68 202ZM291 184L315 183L312 197L293 198Z" fill="#435359" stroke-width="1.6"/>
+  </g>
+  <g id="counter_display" stroke="#52646b" stroke-linejoin="round">
+    <path d="M65 77Q66 71 74 71L224 68Q233 68 234 77L237 139Q237 147 229 148L74 154Q65 153 64 144Z" fill="#dde5e3" stroke-width="2.2"/>
+    <path d="M74 82L217 78Q224 78 225 85L227 133L75 139Z" fill="url(#counter-glass)" stroke="#697a7e" stroke-width="1.7"/>
+    <path d="M82 90L214 86" fill="none" stroke="#91b7ba" stroke-width="1.5" stroke-linecap="round" opacity=".7"/>
+    <g fill="#6d8b90"><circle cx="95" cy="105" r="4.5"/><circle cx="121" cy="103" r="3.5"/><circle cx="147" cy="101" r="4"/><circle cx="174" cy="100" r="4.5"/><circle cx="199" cy="98" r="3.5"/></g>
+    <path d="M81 120L219 116L220 131L82 136Z" fill="#172529"/>
+    <path d="M92 127L202 123" fill="none" stroke="#89a7ab" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="7 5"/>
+  </g>
+  <g id="counter_controls" stroke="#52646b" stroke-linejoin="round">
+    <path d="M255 72Q256 66 263 66L311 65Q318 65 319 73L322 143Q322 150 315 151L262 153Q254 152 253 145Z" fill="#d5dfdd" stroke-width="2"/>
+    <path d="M263 77L308 75L309 95L264 97Z" fill="#203338" stroke-width="1.6"/>
+    <path d="M270 85L302 83" fill="none" stroke="#b3d0d0" stroke-width="2.2" stroke-linecap="round"/>
+    <circle cx="272" cy="118" r="8" fill="#87989a" stroke-width="1.6"/><circle cx="300" cy="116" r="8" fill="#87989a" stroke-width="1.6"/>
+    <circle cx="272" cy="118" r="2.2" fill="#f4f6f4"/><circle cx="300" cy="116" r="2.2" fill="#f4f6f4"/>
+    <path d="M264 138L311 135" fill="none" stroke="#7e9293" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g id="counter_slide_slot" stroke="#52646b" stroke-linejoin="round">
+    <path d="M86 161L233 157L234 177L88 182Z" fill="#5d6e72" stroke-width="2"/>
+    <path d="M96 166L222 163L223 172L97 176Z" fill="#16262a" stroke-width="1.3"/>
+    <path d="M103 167L214 164" fill="none" stroke="#b7c9c8" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+  <g id="overlay_root"/>
+  <path id="anchor_label" fill="none" stroke="none" display="none" d="M 26 142 L 346 142 L 346 184 L 26 184 Z"/>
+  <path id="anchor_error" fill="none" stroke="none" display="none" d="M 326 122 L 342 122 L 342 138 L 326 138 Z"/>
+</svg>

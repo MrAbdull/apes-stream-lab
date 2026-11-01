@@ -1,0 +1,741 @@
+{
+  "aspirating_pipette": {
+    "body_anchor_y": 119.0,
+    "body_join_y": 25.0,
+    "body_start_fill_percent": null,
+    "bounds": {
+      "height": 119.0,
+      "width": 12.0,
+      "x": 10.0,
+      "y": 25.0
+    },
+    "fill_height_exponent": 1.0,
+    "max_fill_percent": null,
+    "min_fill_percent": null,
+    "paints": [
+      {
+        "adjustment": null,
+        "element_handle": "lr_059de3fe98522114",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_a74ac241dd511c2b",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_47dcb4c5416f349e",
+        "liquid_part": "body",
+        "paint_handle": "lr_28d18a832bb6c4a3",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": 0.18,
+        "element_handle": "lr_8743ba7a04385724",
+        "liquid_part": "surface",
+        "paint_handle": "lr_1e33791ad08de6d4",
+        "paint_role": "highlight"
+      }
+    ],
+    "region_handle": "lr_841b333304c8a3b5",
+    "reveal_handle": "lr_6466e231ed6ef6f3",
+    "surface_reference_y": 25.0
+  },
+  "bottle_medium_pink": {
+    "body_anchor_y": 360.0,
+    "body_join_y": 125.0,
+    "body_start_fill_percent": null,
+    "bounds": {
+      "height": 261.526,
+      "width": 174.355,
+      "x": 2.618,
+      "y": 125.0
+    },
+    "fill_height_exponent": 1.0,
+    "max_fill_percent": 85,
+    "min_fill_percent": null,
+    "paints": [
+      {
+        "adjustment": null,
+        "element_handle": "lr_e2ae7ea4471fe65b",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_2cd80a0bedffb05e",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_137bd8439f6eab6e",
+        "liquid_part": "body",
+        "paint_handle": "lr_4b724d59a3ca4e3a",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": 0.18,
+        "element_handle": "lr_ff2bc6718e4b3e5f",
+        "liquid_part": "body",
+        "paint_handle": "lr_ad2130032e9aad93",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": -0.18,
+        "element_handle": "lr_6499a28cee7c0c26",
+        "liquid_part": "body",
+        "paint_handle": "lr_6cdacb7736178ce0",
+        "paint_role": "shadow"
+      },
+      {
+        "adjustment": -0.22,
+        "element_handle": "lr_b399d57b6aeb18f7",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_395dff3d87d6e2a7",
+        "paint_role": "shadow"
+      },
+      {
+        "adjustment": 0.18,
+        "element_handle": "lr_1a5066f7e9153a8c",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_595ef9922dee133a",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": -0.18,
+        "element_handle": "lr_42b489adf5941cae",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_e2faf4e161bdaef9",
+        "paint_role": "shadow"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_d0a4357de8afdcd1",
+        "liquid_part": "surface",
+        "paint_handle": "lr_85343a6c23aba44e",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": 0.18,
+        "element_handle": "lr_4ee017d887b881d7",
+        "liquid_part": "surface",
+        "paint_handle": "lr_361b88cb1a969518",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": 0.1,
+        "element_handle": "lr_cca603c430551fc2",
+        "liquid_part": "surface",
+        "paint_handle": "lr_31e04b1280dd83b1",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": -0.18,
+        "element_handle": "lr_eeadfac1f6b505a2",
+        "liquid_part": "surface",
+        "paint_handle": "lr_e8f5ece41872c115",
+        "paint_role": "shadow"
+      },
+      {
+        "adjustment": 0.5,
+        "element_handle": "lr_1665e67c65d87e99",
+        "liquid_part": "surface",
+        "paint_handle": "lr_21ad35c11f9043ed",
+        "paint_role": "highlight"
+      }
+    ],
+    "region_handle": "lr_ce007ce67329c77a",
+    "reveal_handle": "lr_c28d674eb34c268f",
+    "surface_reference_y": 119.4
+  },
+  "falcon_15ml": {
+    "body_anchor_y": 363.62,
+    "body_join_y": 187.087,
+    "body_start_fill_percent": 2.8672624,
+    "bounds": {
+      "height": 383.528,
+      "width": 54.846,
+      "x": 7.917,
+      "y": 35.899
+    },
+    "fill_height_exponent": null,
+    "max_fill_percent": null,
+    "min_fill_percent": null,
+    "paints": [
+      {
+        "adjustment": null,
+        "element_handle": "lr_0a3132f1654e831b",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_3bb3351d91a1bb9f",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": -0.2,
+        "element_handle": "lr_66c77a82b0607c27",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_6a04c82a79721cdd",
+        "paint_role": "shadow"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_4abc11cec0f1a2cd",
+        "liquid_part": "body",
+        "paint_handle": "lr_79c1b6e2b75ff9b6",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_65eb5ce7f4f2532c",
+        "liquid_part": "body",
+        "paint_handle": "lr_d1c0473e723ff996",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_dad9b579d39e290b",
+        "liquid_part": "surface",
+        "paint_handle": "lr_3b5e2d7d3ccd7928",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": 0.18,
+        "element_handle": "lr_75f548e89d1e355c",
+        "liquid_part": "surface",
+        "paint_handle": "lr_add5fc4c559883dd",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": 0.5,
+        "element_handle": "lr_4aa126c7e577ed69",
+        "liquid_part": "surface",
+        "paint_handle": "lr_3930e52ce560db33",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": -0.18,
+        "element_handle": "lr_7c0e5f09ab393d3b",
+        "liquid_part": "body",
+        "paint_handle": "lr_57a957899e2f49f1",
+        "paint_role": "shadow"
+      },
+      {
+        "adjustment": -0.1,
+        "element_handle": "lr_8c0c58cea0aeed7f",
+        "liquid_part": "surface",
+        "paint_handle": "lr_f9d2333aff6f880b",
+        "paint_role": "shadow"
+      },
+      {
+        "adjustment": 0.15,
+        "element_handle": "lr_f61f1fbc3a12a182",
+        "liquid_part": "surface",
+        "paint_handle": "lr_5eca1594230ced8d",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": -0.2,
+        "element_handle": "lr_c423015d1c07b5ba",
+        "liquid_part": "body",
+        "paint_handle": "lr_87c04756218a42da",
+        "paint_role": "shadow"
+      }
+    ],
+    "region_handle": "lr_dd5609972c0de85d",
+    "reveal_handle": "lr_a3173967c3e59e15",
+    "surface_reference_y": 182.85
+  },
+  "falcon_50ml": {
+    "body_anchor_y": 365.259,
+    "body_join_y": 189.20499999999998,
+    "body_start_fill_percent": 3.5863657,
+    "bounds": {
+      "height": 338.143,
+      "width": 95.063,
+      "x": 5.477,
+      "y": 72.956
+    },
+    "fill_height_exponent": null,
+    "max_fill_percent": null,
+    "min_fill_percent": 10,
+    "paints": [
+      {
+        "adjustment": null,
+        "element_handle": "lr_1ff2dc3ab35086ce",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_dd57e1abd123df1c",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": -0.2,
+        "element_handle": "lr_31c1daa1b05bb032",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_e3ff3bbdc80ee7af",
+        "paint_role": "shadow"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_655c62054782bf7b",
+        "liquid_part": "body",
+        "paint_handle": "lr_50176453e52c1fb2",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_8f9a9aa0f85b4be1",
+        "liquid_part": "body",
+        "paint_handle": "lr_947361b1550add9f",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": -0.2,
+        "element_handle": "lr_6472202341e3abea",
+        "liquid_part": "body",
+        "paint_handle": "lr_869558a8f501b987",
+        "paint_role": "shadow"
+      },
+      {
+        "adjustment": -0.15,
+        "element_handle": "lr_9c11b7842054bb5a",
+        "liquid_part": "body",
+        "paint_handle": "lr_e98df671112d49e6",
+        "paint_role": "shadow"
+      },
+      {
+        "adjustment": 0.18,
+        "element_handle": "lr_2a0dddf361983419",
+        "liquid_part": "surface",
+        "paint_handle": "lr_e3d8c8152ed009a4",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": -0.1,
+        "element_handle": "lr_a027fcd8299d880f",
+        "liquid_part": "surface",
+        "paint_handle": "lr_c3146bc6b05619f2",
+        "paint_role": "shadow"
+      },
+      {
+        "adjustment": 0.12,
+        "element_handle": "lr_75fcef10c18aa8be",
+        "liquid_part": "surface",
+        "paint_handle": "lr_e47ec3b179878bff",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": 0.5,
+        "element_handle": "lr_d59fe9c069c4dd68",
+        "liquid_part": "surface",
+        "paint_handle": "lr_5f262db4004dd107",
+        "paint_role": "highlight"
+      }
+    ],
+    "region_handle": "lr_276ee52502095ff3",
+    "reveal_handle": "lr_27f20733107b1159",
+    "surface_reference_y": 189.20499999999998
+  },
+  "microtube": {
+    "body_anchor_y": 275.954,
+    "body_join_y": 250.0,
+    "body_start_fill_percent": 35.98,
+    "bounds": {
+      "height": 224.124,
+      "width": 76.754,
+      "x": 52.809,
+      "y": 170.318
+    },
+    "fill_height_exponent": null,
+    "max_fill_percent": null,
+    "min_fill_percent": null,
+    "paints": [
+      {
+        "adjustment": null,
+        "element_handle": "lr_c74d078567bde810",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_97151abfb3c0dc81",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": 0.2,
+        "element_handle": "lr_b41d3d0aa525024b",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_c14dd9bf60a206a5",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": -0.2,
+        "element_handle": "lr_4a6df4d28d6dc2a0",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_554e96e2d75b6d9f",
+        "paint_role": "shadow"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_541d594b78b45312",
+        "liquid_part": "body",
+        "paint_handle": "lr_e155fec4854824ee",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": 0.2,
+        "element_handle": "lr_d0046bd0d964bb5e",
+        "liquid_part": "body",
+        "paint_handle": "lr_db3fde546fdb9095",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": -0.2,
+        "element_handle": "lr_e5b6998e405adec4",
+        "liquid_part": "body",
+        "paint_handle": "lr_6cda044fcd86e0f7",
+        "paint_role": "shadow"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_d755070e892fa1f9",
+        "liquid_part": "surface",
+        "paint_handle": "lr_e3d88e23cc646531",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": 0.3,
+        "element_handle": "lr_505686358033e3e3",
+        "liquid_part": "surface",
+        "paint_handle": "lr_c1eca50a94e30a03",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": -0.24,
+        "element_handle": "lr_1ce25c3286cf9203",
+        "liquid_part": "surface",
+        "paint_handle": "lr_07d8927edbcfde21",
+        "paint_role": "shadow"
+      }
+    ],
+    "region_handle": "lr_0d9f9ae4e206c489",
+    "reveal_handle": "lr_d66cb04071b88a17",
+    "surface_reference_y": 240.0
+  },
+  "multichannel_pipette": {
+    "body_anchor_y": 426.0,
+    "body_join_y": 294.0,
+    "body_start_fill_percent": null,
+    "bounds": {
+      "height": 138.0,
+      "width": 152.0,
+      "x": 24.0,
+      "y": 292.0
+    },
+    "fill_height_exponent": 1.0,
+    "max_fill_percent": null,
+    "min_fill_percent": null,
+    "paints": [
+      {
+        "adjustment": null,
+        "element_handle": "lr_dab31478b6d4aaba",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_4f5e4139ac3c18b6",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_861c82f77a10e4d1",
+        "liquid_part": "body",
+        "paint_handle": "lr_894705dcf1f9cca9",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": 0.18,
+        "element_handle": "lr_32add16aaa4d3e26",
+        "liquid_part": "body",
+        "paint_handle": "lr_5cb2355b2c89718f",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": 0.12,
+        "element_handle": "lr_0543c5a8ec1ee07a",
+        "liquid_part": "surface",
+        "paint_handle": "lr_1413b8dbd1a8d63d",
+        "paint_role": "highlight"
+      }
+    ],
+    "region_handle": "lr_52161567f8b06da9",
+    "reveal_handle": "lr_a9984488f3e70099",
+    "surface_reference_y": 294.0
+  },
+  "p1000_micropipette": {
+    "body_anchor_y": 425.0,
+    "body_join_y": 313.0,
+    "body_start_fill_percent": null,
+    "bounds": {
+      "height": 131.0,
+      "width": 32.0,
+      "x": 48.0,
+      "y": 313.0
+    },
+    "fill_height_exponent": 1.0,
+    "max_fill_percent": null,
+    "min_fill_percent": null,
+    "paints": [
+      {
+        "adjustment": null,
+        "element_handle": "lr_bdd5bc8b0ac634fc",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_9b8e1095c1b7b85a",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_1205d399b4060735",
+        "liquid_part": "body",
+        "paint_handle": "lr_eb6947b84696b929",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": 0.18,
+        "element_handle": "lr_f62d3c5465973414",
+        "liquid_part": "body",
+        "paint_handle": "lr_c51b33e69de28545",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": -0.18,
+        "element_handle": "lr_dd2fddb0f54617c5",
+        "liquid_part": "body",
+        "paint_handle": "lr_7ee5de8c455973ca",
+        "paint_role": "shadow"
+      },
+      {
+        "adjustment": 0.12,
+        "element_handle": "lr_ee9e0f076edd47ce",
+        "liquid_part": "surface",
+        "paint_handle": "lr_7742030e36c04c8e",
+        "paint_role": "highlight"
+      }
+    ],
+    "region_handle": "lr_9223d4500df1411c",
+    "reveal_handle": "lr_15768ace07d9eef7",
+    "surface_reference_y": 313.0
+  },
+  "p10_micropipette": {
+    "body_anchor_y": 426.0,
+    "body_join_y": 326.0,
+    "body_start_fill_percent": null,
+    "bounds": {
+      "height": 118.0,
+      "width": 13.0,
+      "x": 54.0,
+      "y": 326.0
+    },
+    "fill_height_exponent": 1.0,
+    "max_fill_percent": null,
+    "min_fill_percent": null,
+    "paints": [
+      {
+        "adjustment": null,
+        "element_handle": "lr_211f8d5a6cdbf269",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_81e50bb3e8781b42",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_a95aa1a4c79e0899",
+        "liquid_part": "body",
+        "paint_handle": "lr_3be59fd7bd484799",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": 0.18,
+        "element_handle": "lr_847477793510d85b",
+        "liquid_part": "body",
+        "paint_handle": "lr_df0895c6af3b41ed",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": 0.12,
+        "element_handle": "lr_d653d6d3a9520f26",
+        "liquid_part": "surface",
+        "paint_handle": "lr_fc2e92446ba1aaa1",
+        "paint_role": "highlight"
+      }
+    ],
+    "region_handle": "lr_13d7bdad025d2723",
+    "reveal_handle": "lr_2b14cb895a1ab1d3",
+    "surface_reference_y": 326.0
+  },
+  "p200_micropipette": {
+    "body_anchor_y": 426.0,
+    "body_join_y": 319.0,
+    "body_start_fill_percent": null,
+    "bounds": {
+      "height": 125.0,
+      "width": 19.0,
+      "x": 51.0,
+      "y": 319.0
+    },
+    "fill_height_exponent": 1.0,
+    "max_fill_percent": null,
+    "min_fill_percent": null,
+    "paints": [
+      {
+        "adjustment": null,
+        "element_handle": "lr_c83c9520d60f20f2",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_5710731d7646d9b1",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_8272dacb9c0c256d",
+        "liquid_part": "body",
+        "paint_handle": "lr_24b0f26af88edda1",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": 0.18,
+        "element_handle": "lr_b5c10680762b2a4f",
+        "liquid_part": "body",
+        "paint_handle": "lr_90552b41123df026",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": -0.18,
+        "element_handle": "lr_16a5503e47154f8e",
+        "liquid_part": "body",
+        "paint_handle": "lr_638b855042ba9bcc",
+        "paint_role": "shadow"
+      },
+      {
+        "adjustment": 0.12,
+        "element_handle": "lr_3840517d2e0458b8",
+        "liquid_part": "surface",
+        "paint_handle": "lr_9b8090196fd383df",
+        "paint_role": "highlight"
+      }
+    ],
+    "region_handle": "lr_d3c81d4333d199d5",
+    "reveal_handle": "lr_f73ff6cd728654de",
+    "surface_reference_y": 319.0
+  },
+  "p20_micropipette": {
+    "body_anchor_y": 426.0,
+    "body_join_y": 326.0,
+    "body_start_fill_percent": null,
+    "bounds": {
+      "height": 118.0,
+      "width": 13.0,
+      "x": 54.0,
+      "y": 326.0
+    },
+    "fill_height_exponent": 1.0,
+    "max_fill_percent": null,
+    "min_fill_percent": null,
+    "paints": [
+      {
+        "adjustment": null,
+        "element_handle": "lr_74efdd53aa047ec3",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_704d8a1db07f59c9",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_32a486f0e8f74607",
+        "liquid_part": "body",
+        "paint_handle": "lr_152b4b2f9854fd49",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": 0.18,
+        "element_handle": "lr_18658579a418ea82",
+        "liquid_part": "body",
+        "paint_handle": "lr_36a229ad43f230d3",
+        "paint_role": "highlight"
+      },
+      {
+        "adjustment": 0.12,
+        "element_handle": "lr_5450b4f48948afe7",
+        "liquid_part": "surface",
+        "paint_handle": "lr_7d183ccb9fd9a6dc",
+        "paint_role": "highlight"
+      }
+    ],
+    "region_handle": "lr_ded186f1363cdcc6",
+    "reveal_handle": "lr_f1a07c9109fb56b0",
+    "surface_reference_y": 326.0
+  },
+  "repeat_dispenser": {
+    "body_anchor_y": 211.0,
+    "body_join_y": 82.0,
+    "body_start_fill_percent": null,
+    "bounds": {
+      "height": 129.0,
+      "width": 38.0,
+      "x": 40.0,
+      "y": 82.0
+    },
+    "fill_height_exponent": 1.0,
+    "max_fill_percent": null,
+    "min_fill_percent": null,
+    "paints": [
+      {
+        "adjustment": null,
+        "element_handle": "lr_77dea502b65a942f",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_a6c2b85e049eb40b",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_4b8d1b54755ea58d",
+        "liquid_part": "body",
+        "paint_handle": "lr_b1a471aaefb0a5fe",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": 0.18,
+        "element_handle": "lr_563d1d63742ad4e0",
+        "liquid_part": "surface",
+        "paint_handle": "lr_8169d4a63f8e19ea",
+        "paint_role": "highlight"
+      }
+    ],
+    "region_handle": "lr_d3c6417b611f5822",
+    "reveal_handle": "lr_dc72e77b0e4df2d7",
+    "surface_reference_y": 82.0
+  },
+  "serological_pipette": {
+    "body_anchor_y": 116.0,
+    "body_join_y": 15.0,
+    "body_start_fill_percent": 7.3394495,
+    "bounds": {
+      "height": 125.0,
+      "width": 5.0,
+      "x": 5.5,
+      "y": 15.0
+    },
+    "fill_height_exponent": null,
+    "max_fill_percent": null,
+    "min_fill_percent": null,
+    "paints": [
+      {
+        "adjustment": null,
+        "element_handle": "lr_ba2d3762846c0d49",
+        "liquid_part": "bottom",
+        "paint_handle": "lr_3cb5d42e53027f18",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": null,
+        "element_handle": "lr_20bf1cba9838e89b",
+        "liquid_part": "body",
+        "paint_handle": "lr_a4a153c1da31cb7b",
+        "paint_role": "base"
+      },
+      {
+        "adjustment": 0.18,
+        "element_handle": "lr_b0b2dda04807664e",
+        "liquid_part": "surface",
+        "paint_handle": "lr_4af87bdba1c96e7f",
+        "paint_role": "highlight"
+      }
+    ],
+    "region_handle": "lr_17ba4cb8a4b474df",
+    "reveal_handle": "lr_c7b7e4d98d9d24a2",
+    "surface_reference_y": 15.0
+  }
+}

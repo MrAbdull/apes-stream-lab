@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="slide_glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset=".38" stop-color="#e8f8fa"/><stop offset="1" stop-color="#a7c8d0"/></linearGradient>
+    <linearGradient id="glass_edge" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#bdd9df"/><stop offset="1" stop-color="#7da5b0"/></linearGradient>
+    <linearGradient id="chamber_glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8ffff"/><stop offset="1" stop-color="#c5e2e7"/></linearGradient>
+    <clipPath id="anchor_liquid_clip"><rect x="139" y="69" width="122" height="82" rx="7"/></clipPath>
+  </defs>
+  <!-- A thin transparent hemocytometer: the central cover glass is only slightly raised above the slide, while the ruled grid is engraved in its counting chamber. -->
+  <g id="slide_body" stroke-linejoin="round">
+    <path d="m27 77 319-28q11-1 15 9l13 86-318 29q-11 1-15-9z" fill="url(#glass_edge)"/>
+    <path d="m27 77 319-28q11-1 15 9l10 75-319 29q-11 1-15-9z" fill="url(#slide_glass)" stroke="#789eaa" stroke-width="1.4"/>
+    <path d="m39 78 312-27" fill="none" stroke="#fff" stroke-width="2.4" opacity=".88"/>
+    <path d="m48 151 316-29" fill="none" stroke="#79a1ab" stroke-width="1.1" opacity=".58"/>
+  </g>
+  <g id="left_chamber" fill="url(#chamber_glass)" stroke="#8caeb7" stroke-width="1.15"><path d="m51 91 67-6 6 49-67 6z"/><path d="m65 101 42-4M66 112l42-4M67 123l42-4" fill="none" stroke="#9dc2c9"/></g>
+  <g id="diamond_chamber" stroke-linejoin="round">
+    <path d="m127 76 138-12 9 73-138 13z" fill="#92b9c2"/>
+    <path d="m131 73 134-12 7 68-134 13z" fill="url(#chamber_glass)" stroke="#82aab4" stroke-width="1.4"/>
+    <path d="m139 69 122-11v82l-122 11z" fill="#d9f2f7" opacity=".5"/>
+    <g fill="none" stroke="#88afb8" stroke-linecap="round"><rect data-subpart-id="diamond" x="153" y="77" width="94" height="66" stroke-width="1.15"/><path d="M184.3 77V143M215.7 77V143M153 99H247M153 121H247M190.6 99V121M203.4 99V121M184.3 106.3H215.7M184.3 113.7H215.7" stroke-width=".72"/></g>
+    <path d="m143 75 115-10" fill="none" stroke="#fff" stroke-width="1.4" opacity=".85"/>
+  </g>
+  <g id="semicircle_chamber" fill="url(#chamber_glass)" stroke="#8caeb7" stroke-width="1.15"><path data-subpart-id="semicircle" d="m283 91 49-4 5 43-49 5z"/><path d="m291 100 35-3M292 110l35-3M293 120l35-3" fill="none" stroke="#9dc2c9"/></g>
+  <path d="m55 162 312-29" fill="none" stroke="#e7f6f8" stroke-width="1.4" opacity=".8"/>
+  <g id="overlay_root"/>
+  <rect id="anchor_liquid_bounds" x="139" y="69" width="122" height="82" fill="none" stroke="none" display="none"/>
+  <rect id="anchor_label" x="126" y="180" width="148" height="28" fill="none" stroke="none" display="none"/>
+  <rect id="anchor_error" x="356" y="32" width="28" height="28" fill="none" stroke="none" display="none"/>
+</svg>

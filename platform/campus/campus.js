@@ -199,7 +199,7 @@ export async function createWorld(ctx) {
 
   // ---------- portals ----------
   function missionStatusHTML(p) {
-    if (p.type === 'external') return '<p class="muted">Progress in this lab is saved on its own site.</p>';
+    if (p.type === 'external' || p.id === 'cellbio') return '<p class="muted">This lab saves its own progress in your browser.</p>';
     if (p.id === 'stream') {
       const s = streamLabStatus(ctx.profile?.email);
       return s ? `<p class="muted">${s.finished ? '✅ Finished' : `⏳ In progress: ${s.sites} of 4 sites complete`}</p>` : '<p class="muted">Not started</p>';
@@ -281,7 +281,7 @@ export async function createWorld(ctx) {
   function openPassport() {
     const p = ctx.profile;
     ctx.hud.openPanel('My Passport', (body) => {
-      const rows = portals.filter((w) => w.status === 'open' && w.type !== 'external').map((w) => {
+      const rows = portals.filter((w) => w.status === 'open' && w.type !== 'external' && w.id !== 'cellbio').map((w) => {
         if (w.id === 'stream') {
           const s = streamLabStatus(p.email);
           return `<tr><td>${esc(w.title)}</td><td>Stream Health Lab</td><td>${s ? (s.finished ? 'Finished' : `${s.sites}/4 sites`) : 'Not started'}</td><td>See PDF report</td></tr>`;

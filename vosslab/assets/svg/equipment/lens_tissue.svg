@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 150">
+  <!-- Single folded lens tissue with a fine, almost transparent paper edge. -->
+  <path d="M29 38l143-13 20 17-10 77-143 12-18-18z" fill="#dcebe7" stroke="#81999c" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M30 35l142-12 20 17-12 76-141 12-18-18z" fill="#fbfdf8" stroke="#81999c" stroke-width="1.7" stroke-linejoin="round"/>
+  <path d="M172 23l20 17-28 16-21-15z" fill="#e3efec" stroke="#9baead" stroke-width="1.2" stroke-linejoin="round"/>
+  <path d="M21 113l18 18 141-12-13-14z" fill="#e0ece8" stroke="#9baead" stroke-width="1.2" stroke-linejoin="round"/>
+  <path d="M49 55l110-10m-106 28 110-10m-105 28 105-9M77 33l10 83m37-89 10 84m29-67-9 58" fill="none" stroke="#e2ddd0" stroke-width="1.35" stroke-linecap="round"/>
+  <path d="M142 42l22 14m-22-14 6 19M42 108l124-10" fill="none" stroke="#cdd8d3" stroke-width="1.2" stroke-linecap="round"/>
+  <g fill="#d8d2c0" opacity=".62"><circle cx="61" cy="57" r=".9"/><circle cx="97" cy="51" r=".9"/><circle cx="132" cy="48" r=".9"/><circle cx="79" cy="82" r=".9"/><circle cx="116" cy="77" r=".9"/><circle cx="148" cy="71" r=".9"/><circle cx="99" cy="103" r=".9"/></g>
+</svg>

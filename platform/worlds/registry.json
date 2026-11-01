@@ -32,14 +32,14 @@
   },
   {
     "id": "cellbio",
-    "type": "external",
-    "url": "https://vosslab.github.io/virtual-lab-protocol-simulation/",
+    "type": "app",
+    "url": "vosslab/index.html",
     "status": "open",
     "color": "#7b4fa0",
     "title": "Cell Biology Bench",
     "subject": "Cell culture \u00b7 Lab technique",
     "units": "Biology lab skills",
-    "blurb": "Practice real cell-culture lab protocols step by step: feeding cells, drug treatment, counting cells under the microscope. Built by the Voss Lab (opens in a new tab; content CC-BY 4.0, code LGPL-3.0)."
+    "blurb": "Practice real cell-culture and protein-gel (SDS-PAGE) lab protocols step by step: pipetting, feeding cells, counting cells, running a gel. Built by the Voss Lab (content CC-BY 4.0, code LGPL-3.0)."
   },
   {
     "id": "lake",

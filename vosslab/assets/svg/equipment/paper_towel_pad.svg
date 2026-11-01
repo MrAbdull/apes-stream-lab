@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 150">
+  <!-- Thick absorbent bench towel stack with deckled folded sheet edges. -->
+  <path d="M25 93c5-8 13-10 24-7l160-25c9-1 17 4 19 12l5 14c2 6-3 11-11 12L61 127c-9 1-17-3-19-10z" fill="#d4dfd8" stroke="#829598" stroke-width="1.7" stroke-linejoin="round"/>
+  <path d="M29 80c5-8 13-10 24-7l160-25c9-1 17 4 19 12l5 14c2 6-3 11-11 12L65 114c-9 1-17-3-19-10z" fill="#e9eee4" stroke="#829598" stroke-width="1.7" stroke-linejoin="round"/>
+  <path d="M33 67c5-8 13-10 24-7l160-25c9-1 17 4 19 12l5 14c2 6-3 11-11 12L69 101c-9 1-17-3-19-10z" fill="#fffdf3" stroke="#829598" stroke-width="1.8" stroke-linejoin="round"/>
+  <path d="M50 69c18 5 37 3 57-4m-28 29c19 4 38 2 58-5m-9-35c3 11 8 20 15 29m30-40c3 11 8 20 15 29m-87-17c3 11 8 20 15 29" fill="none" stroke="#dfcf9f" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M59 75l2 2m16-5 2 2m16-5 2 2m16-5 2 2m16-5 2 2m16-5 2 2m16-5 2 2m16-5 2 2m16-5 2 2" fill="none" stroke="#d6be85" stroke-width="2" stroke-linecap="round"/>
+  <path d="M35 70l-6 10m202-32 5 12m-180 52-6 10" fill="none" stroke="#fffdf3" stroke-width="2" stroke-linecap="round"/>
+</svg>

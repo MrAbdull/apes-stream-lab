@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 108" role="img" aria-labelledby="interpretation_choice_card_title interpretation_choice_card_desc">
+  <title id="interpretation_choice_card_title">Interpretation choice card</title>
+  <desc id="interpretation_choice_card_desc">A reusable card with a selected option and neutral response lines.</desc>
+  <g id="choice_card" stroke="#263548" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="10" y="10" width="232" height="88" rx="13" fill="#f8fbf5" stroke-width="4"/>
+    <path d="M18 87h216l-7 7H25z" fill="#d7e6eb" stroke="none"/>
+    <path d="M23 23h63v62H23z" fill="#dceff2" stroke="#6daeb9" stroke-width="3"/>
+    <circle cx="54" cy="54" r="19" fill="#fffef5" stroke-width="4"/>
+    <circle cx="54" cy="54" r="8" fill="#5c9ca9" stroke="none"/>
+    <path d="M106 40h108M106 55h91M106 70h75" fill="none" stroke="#7b9bad" stroke-width="6"/>
+  </g>
+  <g id="overlay_root"/>
+  <path id="anchor_label" fill="none" stroke="none" display="none" d="M 20 20 L 232 20 L 232 88 L 20 88 Z"/>
+  <path id="anchor_error" fill="none" stroke="none" display="none" d="M 212 12 L 240 12 L 240 40 L 212 40 Z"/>
+</svg>

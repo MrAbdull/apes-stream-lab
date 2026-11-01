@@ -27,7 +27,7 @@ Code libraries: [three.js](https://threejs.org) (MIT) and [jsPDF](https://github
   so only the two third-party models above (which carry their own CC licenses) were used.
 - **VossLab virtual-lab-protocol-simulation** (Neil Voss; code LGPL-3.0, content CC-BY-4.0): EarthLab's mission format
   (steps → target, gesture, instruction, hint, validator, feedback) and checkpointed, schema-versioned saving are re-implemented
-  from its design. The campus's **Cell Biology Bench** portal opens VossLab's published simulator.
+  from its design. The campus's **Cell Biology Bench** is VossLab's simulator, built from source and hosted in `vosslab/` with its LGPL-3.0 and CC-BY-4.0 license files and a NOTICE pointing to the complete source (only change: a "Back to EarthLab" link).
 - **HandsOn** (VietTung0801, MIT): carrying equipment (its grab system), dropped objects falling under gravity, field notes
   placed anywhere in the world, and a lab assistant students can ask questions (EarthLab's runs offline, with no cloud keys).
 

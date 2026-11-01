@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 214 308">
+  <g id="inserted_comb" stroke="#294657" stroke-linejoin="round">
+    <path d="M37 20h132l-7 22H44z" fill="#92b8c6" stroke-width="3"/>
+    <path d="M41 23h124l-3 5H44z" fill="#f7fcfd" stroke="none" opacity=".9"/>
+    <g fill="#d6edf1" stroke-width="2">
+      <path d="M43 41h10v16H43zM56 41h10v16H56zM69 41h10v16H69zM82 41h10v16H82zM95 41h10v16H95z"/>
+      <path d="M108 41h10v16h-10zM121 41h10v16h-10zM134 41h10v16h-10zM147 41h10v16h-10zM160 41h10v16h-10z"/>
+    </g>
+  </g>
+</svg>

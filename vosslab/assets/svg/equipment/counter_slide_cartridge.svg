@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 344 191" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="tray_top" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4fbfc"/><stop offset=".58" stop-color="#c8dde2"/><stop offset="1" stop-color="#9dbbc4"/></linearGradient>
+    <linearGradient id="tray_edge" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#a2c0c8"/><stop offset="1" stop-color="#7597a2"/></linearGradient>
+    <linearGradient id="slide_glass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset=".42" stop-color="#ecf9fa"/><stop offset="1" stop-color="#b7d6dd"/></linearGradient>
+  </defs>
+  <!-- Low bench cassette: a true open tray, rear rail, front retaining lip, and individually visible microscope slides. -->
+  <g id="cartridge_body" stroke-linejoin="round">
+    <path d="M29 68 286 43q10-1 15 8l20 67-260 29q-10 1-14-8z" fill="url(#tray_edge)"/>
+    <path d="m29 68 257-25q10-1 15 8l17 57-258 28q-10 1-14-8z" fill="url(#tray_top)" stroke="#789ca7" stroke-width="1.4"/>
+    <path d="m38 71 252-24 14 53-253 27z" fill="#b8d2d8"/>
+    <path d="m40 70 249-24" fill="none" stroke="#fff" stroke-width="2.2" opacity=".85"/>
+    <path d="m48 119 257-27 4 13-257 28z" fill="#87a8b2"/>
+  </g>
+  <g id="slide_slots" fill="url(#slide_glass)" stroke="#83a6af" stroke-width="1">
+    <path d="m54 75 18-2 8 38-18 2z"/><path d="m78 72 18-2 8 38-18 2z"/><path d="m102 70 18-2 8 38-18 2z"/><path d="m126 68 18-2 8 38-18 2z"/><path d="m150 65 18-2 8 38-18 2z"/><path d="m174 63 18-2 8 38-18 2z"/><path d="m198 61 18-2 8 38-18 2z"/><path d="m222 58 18-2 8 38-18 2z"/><path d="m246 56 18-2 8 38-18 2z"/><path d="m270 54 18-2 8 38-18 2z"/>
+  </g>
+  <g fill="#7db5c6" opacity=".62"><path d="m59 83 10-1 2 8-10 1z"/><path d="m83 80 10-1 2 8-10 1z"/><path d="m107 78 10-1 2 8-10 1z"/><path d="m131 76 10-1 2 8-10 1z"/><path d="m155 73 10-1 2 8-10 1z"/><path d="m179 71 10-1 2 8-10 1z"/><path d="m203 69 10-1 2 8-10 1z"/><path d="m227 66 10-1 2 8-10 1z"/><path d="m251 64 10-1 2 8-10 1z"/><path d="m275 62 10-1 2 8-10 1z"/></g>
+  <!-- The retaining lip deliberately occludes the lower ends of the slides. -->
+  <path d="m48 111 257-27 4 14-257 28q-5 0-8-5z" fill="#d9eaed" stroke="#7699a3" stroke-width="1.2"/>
+  <path d="m52 119 251-27" fill="none" stroke="#fff" stroke-width="1.2" opacity=".82"/>
+  <path d="m151 104 55-6 2 8-55 6z" fill="#eaf5f7" opacity=".58"/>
+  <g id="overlay_root"/>
+  <path id="anchor_label" fill="none" stroke="none" display="none" d="M60 137 L284 137 L284 165 L60 165 Z"/>
+  <path id="anchor_error" fill="none" stroke="none" display="none" d="M314 2 L344 2 L344 32 L314 32 Z"/>
+</svg>

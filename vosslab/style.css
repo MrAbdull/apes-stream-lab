@@ -1,0 +1,1972 @@
+/*============================================
+  Protocol host page: six-region grid layout
+
+  Grid column/row layout:
+    Columns: [avatar+bubble region] [outline column]
+    Rows:    [header] [scene+outline] [interaction controls] [guidance+outline]
+
+  Named grid areas:
+    header   -- top row (avatar, tips, step-counter)
+    scene    -- center-left: bounded scene panel
+    controls -- in-flow value-entry controls
+    outline  -- right column spanning scene + guidance rows
+    guidance -- bottom-left: current step guidance bar
+============================================*/
+
+/*============================================
+  Bundled condensed font for scene-object labels.
+  PT Sans Narrow (SIL OFL 1.1). Bundled as woff2 so it renders identically
+  in the headless-Chromium PNG render path and the GitHub Pages browser build;
+  a bare system font name would silently fall back. The build copies
+  assets/fonts/ into dist/assets/fonts/, so the url() resolves relative to
+  dist/style.css. See assets/fonts/ATTRIBUTION.md and assets/fonts/OFL.txt.
+============================================*/
+@font-face {
+  font-family: "PT Sans Narrow";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/pt_sans_narrow_regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "PT Sans Narrow";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/pt_sans_narrow_bold.woff2") format("woff2");
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.protocol-page-grid {
+  display: grid;
+  /* Two columns: scene area (flex) + outline (fixed 220px) */
+  grid-template-columns: minmax(0, 1fr) 220px;
+  /* Four rows: header (auto) + scene (flex) + controls (auto) + guidance (auto) */
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    "header  header"
+    "scene   outline"
+    "controls outline"
+    "guidance outline";
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  background: #f0ece4;
+  overflow: hidden;
+}
+
+/* The Solid shell remains a sibling of #scene-root. `display: contents`
+   lets its header, outline, and action rail occupy the page grid directly
+   without creating an ancestor that could affect scene asset clipping. */
+#shell-root,
+.protocol-shell {
+  display: contents;
+}
+
+/* The host owns the value-entry region so type and adjust controls keep the
+   same usable location with the optional shell disabled. The region is empty
+   during scene-click work and collapses completely until one control mounts. */
+.interaction-controls {
+  grid-area: controls;
+  min-width: 0;
+  background: #fbfcfd;
+  border-top: 1px solid #d8e0e8;
+}
+
+.interaction-controls:not(:has([data-type-input-panel], [data-adjust-panel])) {
+  display: none;
+}
+
+#type-input-root,
+#adjust-editor-root {
+  display: contents;
+}
+
+/*============================================
+  Header row: coach identity + progress
+============================================*/
+
+.protocol-header {
+  grid-area: header;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 18px;
+  color: #102a43;
+  background: #fbfaf7;
+  border-bottom: 1px solid #d8e0e8;
+}
+
+.protocol-brand {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.protocol-brand-mark {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  color: #ffffff;
+  background: #176b6f;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+.protocol-display-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: #486581;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.protocol-header-statuses {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 14px;
+  align-items: center;
+}
+
+.protocol-session-controls {
+  display: grid;
+  gap: 2px;
+  justify-items: end;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.protocol-session-status {
+  margin: 0;
+  color: #26734d;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.protocol-session-status[data-session-status="unavailable"] {
+  color: #8a1c1c;
+}
+
+.protocol-start-over {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 5px 8px;
+  color: #486581;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.protocol-start-over:hover {
+  color: #102a43;
+  background: #e8f1f2;
+  border-color: #75b8ba;
+}
+
+.protocol-start-over:focus-visible,
+.protocol-reset-dialog button:focus-visible {
+  outline: 3px solid #c48402;
+  outline-offset: 2px;
+}
+
+.protocol-reset-dialog {
+  max-width: min(30rem, calc(100vw - 32px));
+  padding: 22px;
+  color: #102a43;
+  background: #fbfaf7;
+  border: 1px solid #718aa3;
+  border-radius: 10px;
+  box-shadow: 0 18px 48px rgb(16 42 67 / 28%);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.protocol-reset-dialog::backdrop {
+  background: rgb(16 42 67 / 52%);
+}
+
+.protocol-reset-dialog h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.protocol-reset-dialog p {
+  margin: 10px 0 0;
+  color: #334e68;
+  line-height: 1.5;
+}
+
+.protocol-reset-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.protocol-reset-actions button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.protocol-reset-cancel {
+  color: #102a43;
+  background: #ffffff;
+  border: 1px solid #718aa3;
+}
+
+.protocol-reset-confirm {
+  color: #ffffff;
+  background: #a3261f;
+  border: 1px solid #781b16;
+}
+
+.protocol-reset-confirm:hover {
+  background: #781b16;
+}
+
+.protocol-status-summary {
+  display: grid;
+  gap: 1px;
+  justify-items: end;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.2;
+}
+
+.protocol-status-summary-label {
+  color: #526b80;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.protocol-status-summary strong {
+  color: #176b6f;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* Compatibility hooks for the existing walker stay in the DOM but do not
+   duplicate the student-facing action rail. */
+.protocol-hud {
+  display: none;
+}
+
+/*============================================
+  Scene panel: bounded aspect-locked panel
+  #scene-root is INSIDE this panel, NOT full viewport.
+  Items position in scene-percent relative to #scene-root,
+  which is contained inside .scene-panel.
+============================================*/
+
+.scene-panel {
+  grid-area: scene;
+  display: grid;
+  /* The protocol shell owns the browser viewport. If a scene's declared
+     interaction frame is larger than the available row, this region -- not the
+     document -- scrolls it into reach. `safe` prevents centering an oversized
+     frame to an unreachable negative origin. */
+  align-items: safe center;
+  justify-items: safe center;
+  background: #e8e0cc;
+  padding: 8px;
+  min-height: 0; /* allow grid row to shrink */
+  overflow: auto;
+  /* Size container so .scene-panel-inner can compute the largest 16:9 box that
+     fits using container-query units (cqw/cqh). This is what FORCES exact 16:9
+     regardless of whether the panel is wider or taller than 16:9 (WP-PRECOMP2). */
+  container-type: size;
+  /* A shared generic 16:9 floor keeps engine-owned labels at their readable
+     scale. The host combines this with each scene's emitted interaction frame;
+     the panel remains the single local scrollport when either floor exceeds
+     available space. */
+}
+
+/* The layout engine resolves label positions against its canonical 1152px
+   scene-percent basis. Keeping that width as the shared presentation floor
+   preserves those resolved label clearances; narrower browser viewports use
+   the owning local scrollport instead of rescaling labels into collisions. */
+.scene-panel,
+.scene-viewer-content {
+  --scene-label-safe-frame-width: 1152px;
+  /* Frame size has one canonical axis. A height-dominant emitted envelope is
+     converted to its 16:9 inline equivalent before layout derives block size
+     from aspect-ratio; independent width/height floors can distort a future
+     non-16:9 envelope. */
+  --scene-min-frame-inline-size: max(
+    var(--scene-min-interaction-width, 0px),
+    calc(var(--scene-min-interaction-height, 0px) * 16 / 9),
+    var(--scene-label-safe-frame-width)
+  );
+}
+
+.scene-bench-page {
+  margin: 0;
+  overflow: hidden;
+}
+
+.scene-bench-panel {
+  width: 100vw;
+  height: 100vh;
+}
+
+.scene-panel-content {
+  display: grid;
+  grid-template-columns: minmax(var(--scene-min-frame-inline-size), 1fr);
+  gap: 10px;
+  width: min(100cqw, calc(100cqh * 16 / 9));
+  min-inline-size: var(--scene-min-frame-inline-size);
+}
+
+/* Inner wrapper that FORCES an exact 16:9 rendered scene frame (WP-PRECOMP2).
+   #scene-root fills this wrapper 100%x100%, so #scene-root is always exactly
+   16:9 regardless of the surrounding grid/header/guidance-bar sizing.
+   Aspect-ratio on this intermediate element (not on #scene-root directly)
+   avoids the CSS policy ban on #scene-root constraints.
+   This element is NOT a scene-content element; it is pure layout chrome, so
+   max-width / max-height here are permitted by tools/check_css_content_policy.py.
+
+   Letterbox strategy (largest 16:9 box that fits the panel, centered):
+   the parent .scene-panel is a size container (container-type: size), so width
+   resolves against the panel via container-query units. The width is the SMALLER
+   of the panel width (100cqw) and the width a full-height 16:9 box would need
+   (100cqh * 16 / 9). aspect-ratio: 16/9 then derives the height, so the element
+   is always EXACTLY 16:9 and never exceeds either panel dimension:
+     - panel wider than 16:9  -> width = 100cqh*16/9 (height-bound): pillarbox,
+       neutral bars left/right.
+     - panel taller than 16:9 -> width = 100cqw (width-bound): letterbox,
+       neutral bars top/bottom.
+   The flex parent centers the box; the neutral bars are the .scene-panel
+   background (#e8e0cc) showing around the frame. Resizing the browser changes
+   ONLY the bar thickness and the uniform scale, never the scene-internal layout:
+   the engine and the precomputed layout always see an exact 16:9 space.
+   A plain max-width/max-height + width:100% approach does NOT force 16:9 on a
+   wider-than-16:9 panel: the explicit width wins and max-height only caps the
+   height, yielding an off-16:9 box. The container-query min() removes that. */
+.scene-panel-inner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  /* Host-provided precomputed scene metadata reserves a usable interaction
+     frame when the grid has room. The transparent envelope itself preserves
+     the 44px core in constrained desktop layouts without scaling artwork. */
+  min-inline-size: var(--scene-min-frame-inline-size);
+  overflow: visible;
+}
+
+#scene-annotation-root {
+  min-width: 0;
+}
+
+.scene-annotation-rail {
+  display: grid;
+  gap: 5px;
+  padding: 8px 10px;
+  color: #172033;
+  background: #fbfaf7;
+  border: 1px solid #718aa3;
+  border-radius: 6px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.scene-annotation-rail__heading {
+  margin: 0;
+  color: #334e68;
+  font-size: 0.82rem;
+  line-height: 1.2;
+}
+
+.scene-annotation-rail__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.scene-annotation-rail__item {
+  padding: 2px 5px;
+  background: #f2f7f8;
+  border-left: 3px solid #718aa3;
+  border-radius: 3px;
+  font-size: 0.74rem;
+  line-height: 1.3;
+}
+
+.scene-annotation-rail__item[data-annotation-affordance="active"] {
+  border-left-color: #9e6507;
+}
+
+.scene-annotation-rail__item[data-annotation-affordance="candidate"] {
+  border-left-color: #2563eb;
+  border-left-style: dashed;
+}
+
+.scene-annotation-rail__object {
+  font-weight: 700;
+}
+
+/* #scene-root: bounded panel -- NOT 100vw x 100vh.
+   .scene-panel is the flex container that sizes this element.
+   #scene-root fills the full .scene-panel (100% width, 100% height).
+   The panel itself is constrained to a 16:9 aspect ratio so that
+   scene-percent positions render correctly relative to this element.
+   overflow: visible ensures no scientific asset is clipped at the boundary. */
+#scene-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  background: linear-gradient(180deg, #e8e2d0 0%, #d4cbb3 100%);
+}
+
+/*============================================
+  Surface band: subtle horizontal surface cue drawn BEHIND all scene objects
+  via ::after (z-index 0, below data-depth="back" z-index:1). Sits at 78%
+  down from the top, fading from transparent to a tinted bottom strip.
+  pointer-events: none prevents any click interception.
+  overflow: visible on #scene-root means this pseudo-element is never clipped.
+  This is a RENDER-LAYER effect only. No layout geometry is changed.
+
+  Round 1.7 refinement: color is now CONDITIONAL on workspace type:
+  - WARM amber/wood tone for bench-type scenes: bench, cell_counter.
+    These scenes have warm lab-bench backgrounds; a warm surface band
+    reads as a believable wood-bench edge.
+  - NEUTRAL cool blue-grey for clinical scenes: microscope, incubator,
+    plate_reader. These scenes have cool/clinical backgrounds; a neutral
+    grey band reads as a clinical surface edge without introducing
+    warmth that would conflict.
+  - NO band for hood. The enclosed fume-hood interior reads cleanest
+    with no surface band. seeding_workspace also maps to workspace=hood
+    so it also receives no band (accepted limitation).
+
+  The mountScene function in render_scene.tsx stamps data-scene-workspace on
+  #scene-root from result.scene.workspace; these selectors gate on that value.
+============================================*/
+
+/* WARM surface band -- bench-type workspaces */
+#scene-root[data-scene-workspace="bench"]::after,
+#scene-root[data-scene-workspace="cell_counter"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 78%;
+  bottom: 0;
+  /* Warm amber/wood-bench tone: low-opacity gradient evoking a bench-top
+     surface edge. Stays faint -- a spatial anchor hint, not a heavy stripe. */
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(80, 60, 30, 0.1) 40%,
+    rgba(80, 60, 30, 0.18) 100%
+  );
+  pointer-events: none;
+  /* Behind all scene objects (depth back = z-index 1). */
+  z-index: 0;
+}
+
+/* NEUTRAL surface band -- clinical workspaces */
+#scene-root[data-scene-workspace="microscope"]::after,
+#scene-root[data-scene-workspace="incubator"]::after,
+#scene-root[data-scene-workspace="plate_reader"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 78%;
+  bottom: 0;
+  /* Neutral cool blue-grey: desaturated gradient matching clinical scene
+     backgrounds. No warm tint -- reads correctly in clinical workspaces. */
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(120, 125, 130, 0.12) 40%,
+    rgba(110, 116, 122, 0.2) 100%
+  );
+  pointer-events: none;
+  /* Behind all scene objects (depth back = z-index 1). */
+  z-index: 0;
+}
+
+/*============================================
+  Right column: read-only step outline
+  Spans both scene and guidance rows.
+============================================*/
+
+.outline-panel {
+  grid-area: outline;
+  display: flex;
+  flex-direction: column;
+  background: #fbfcfd;
+  border-left: 1px solid #d8e0e8;
+  overflow-y: auto;
+  padding: 14px 12px;
+  min-height: 0; /* allow grid to control height */
+}
+
+.outline-heading {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #334e68;
+  text-align: left;
+  padding: 0 0 4px 0;
+  border: 0;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.outline-progress-copy {
+  padding: 0 0 12px 0;
+  color: #627d98;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 0.75rem;
+  border-bottom: 1px solid #d8e0e8;
+  margin-bottom: 12px;
+}
+
+.outline-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Individual step card in the outline */
+.outline-step-card {
+  display: flex;
+  gap: 7px;
+  align-items: flex-start;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  border: 1px solid #e2e8f0;
+  cursor: default;
+  user-select: none;
+}
+
+/* Completed steps retain their visible check mark and readable label. */
+.outline-step-card[data-step-status="complete"] {
+  background: #e7f5ee;
+  color: #22543d;
+  border-color: #b7e1ca;
+}
+
+/* Current step: highlighted pink/rose per the layout doc */
+.outline-step-card[data-step-status="current"] {
+  background: #e2f0f0;
+  color: #124e51;
+  border-color: #75b8ba;
+  font-weight: 600;
+}
+
+.outline-step-state {
+  flex: 0 0 auto;
+  font-weight: 800;
+}
+
+.outline-step-label {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* Upcoming / future steps: light neutral */
+.outline-step-card[data-step-status="upcoming"] {
+  background: #ffffff;
+  color: #486581;
+  border-color: #d9e2ec;
+}
+
+/*============================================
+  Guidance rail: the only dominant current action
+============================================*/
+
+.guidance-bar {
+  grid-area: guidance;
+  color: #102a43;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  background: #ffffff;
+  border-top: 1px solid #d8e0e8;
+}
+
+.action-rail,
+.protocol-completion {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 86px;
+  padding: 13px 18px;
+}
+
+.action-rail {
+  display: block;
+  min-width: 0;
+  border-left: 6px solid #176b6f;
+}
+
+.action-rail__goal {
+  max-width: 70rem;
+  margin: 6px 0 0;
+  color: #486581;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.action-rail__goal-label {
+  color: #334e68;
+  font-weight: 700;
+}
+
+/* The target names the real scene object without competing with the next
+   action. Select interactions intentionally omit this cue so the choice stays
+   answer-neutral before the learner responds. */
+.action-rail__target {
+  max-width: 70rem;
+  margin: 5px 0 0;
+  color: #486581;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.action-rail__target span {
+  color: #334e68;
+  font-weight: 800;
+}
+
+.action-rail__hint {
+  max-width: 70rem;
+  margin-top: 8px;
+  color: #334e68;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.action-rail__hint summary {
+  display: list-item;
+  box-sizing: border-box;
+  min-height: 44px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 8px 10px;
+  color: #0f5154;
+  border: 1px solid #75b8ba;
+  border-radius: 5px;
+  background: #f4fbfb;
+  cursor: pointer;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.action-rail__hint summary::marker {
+  color: #0f5154;
+}
+
+.action-rail__hint[open] > summary::marker {
+  color: #176b6f;
+}
+
+.action-rail__hint summary:hover {
+  background: #e8f1f2;
+}
+
+.action-rail__hint summary:focus-visible {
+  outline: 3px solid #c48402;
+  outline-offset: 2px;
+}
+
+.action-rail__hint [data-action-hint-text] {
+  margin: 7px 0 0;
+  padding: 8px 10px;
+  color: #243b53;
+  background: #f8fafc;
+  border-left: 3px solid #75b8ba;
+  overflow-wrap: anywhere;
+}
+
+.action-rail--waiting {
+  background: #fff7d6;
+  border-left-color: #8a6500;
+}
+
+.action-rail--waiting .protocol-kicker {
+  color: #6b4f00;
+}
+
+.action-rail__wait-duration {
+  max-width: 70rem;
+  margin: 6px 0 0;
+  color: #6b4f00;
+  font-size: 0.86rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.protocol-kicker {
+  margin: 0 0 3px;
+  color: #176b6f;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.action-rail-tip,
+.protocol-completion p {
+  margin: 4px 0 0;
+  color: #486581;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.action-rail__primary {
+  display: block;
+  max-width: 70rem;
+  margin: 5px 0 0;
+  color: #102a43;
+  font-size: clamp(1.05rem, 1rem + 0.35vw, 1.25rem);
+  font-weight: 800;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.action-rail__wait-copy {
+  margin: 4px 0 0;
+  color: #486581;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.action-rail__wait-primary {
+  display: block;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.action-rail-tip {
+  color: #334e68;
+  font-style: italic;
+}
+
+.action-rail-acknowledgement {
+  margin: 6px 0 0;
+  color: #22543d;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.action-rail-feedback--correct {
+  margin: 7px 0 0;
+  padding: 6px 8px;
+  color: #22543d;
+  background: #f0fff4;
+  border-left: 3px solid #2f855a;
+  border-radius: 3px;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.action-rail-recovery {
+  margin: 7px 0 0;
+  padding: 6px 8px;
+  color: #8a1c1c;
+  background: #fff0f0;
+  border-left: 3px solid #c53030;
+  border-radius: 3px;
+  font-size: 0.84rem;
+  font-weight: 500;
+}
+
+.action-rail-recovery p {
+  margin: 0;
+}
+
+.action-rail-recovery p + p {
+  margin-top: 4px;
+}
+
+.action-rail-recovery strong {
+  font-weight: 700;
+}
+
+.protocol-completion {
+  border-left: 6px solid #2f855a;
+  background: #f0fff4;
+}
+
+.protocol-completion strong {
+  font-size: 1rem;
+}
+
+.protocol-completion .protocol-kicker {
+  color: #26734d;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.protocol-return-link {
+  flex: 0 0 auto;
+  padding: 9px 12px;
+  color: #ffffff;
+  background: #176b6f;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.protocol-return-link:focus-visible,
+.protocol-return-link:hover {
+  background: #0f5154;
+  outline: 3px solid #8ed1d3;
+  outline-offset: 2px;
+}
+
+/*============================================
+  In-flow value-entry affordances
+
+  TypeInput and SetPointEditor share one compact control language. They live
+  between the scene and guidance rail, preserving the scene as the visual
+  focus while keeping the active learner action in normal reading order.
+============================================*/
+
+.value-entry-panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  color: #102a43;
+  background: #fbfcfd;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.value-entry-label {
+  flex: 0 0 auto;
+  color: #334e68;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.value-entry-input {
+  flex: 0 1 11rem;
+  min-width: 8rem;
+  min-height: 2.5rem;
+  box-sizing: border-box;
+  padding: 6px 9px;
+  color: #102a43;
+  background: #ffffff;
+  border: 1px solid #718aa3;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.value-entry-input[aria-invalid="true"] {
+  border-color: #b42318;
+  box-shadow: inset 0 0 0 1px #b42318;
+}
+
+.value-entry-button {
+  min-height: 2.5rem;
+  padding: 6px 12px;
+  color: #ffffff;
+  background: #176b6f;
+  border: 1px solid #0f5154;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.value-entry-button:hover {
+  background: #0f5154;
+}
+
+.value-entry-button--stepper {
+  min-width: 2.5rem;
+  padding-right: 8px;
+  padding-left: 8px;
+  color: #102a43;
+  background: #e8f1f2;
+  border-color: #75b8ba;
+  font-size: 1.1rem;
+}
+
+.value-entry-button--stepper:hover {
+  background: #d3e8e9;
+}
+
+.value-entry-input:focus-visible,
+.value-entry-button:focus-visible,
+.outline-steps:focus-visible {
+  outline: 3px solid #c48402;
+  outline-offset: 2px;
+}
+
+.value-entry-feedback {
+  flex: 1 1 15rem;
+  margin: 0;
+  padding: 5px 8px;
+  color: #8a1c1c;
+  background: #fff0f0;
+  border-left: 3px solid #c53030;
+  border-radius: 3px;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+/* Narrow layout: return ownership of vertical space to the document. The
+   scene panel remains the local scrollport for an emitted minimum interaction
+   frame, so that frame cannot widen the document or strand the lower regions. */
+@media (max-width: 920px) {
+  .protocol-page-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto auto auto;
+    grid-template-areas:
+      "header"
+      "scene"
+      "controls"
+      "guidance"
+      "outline";
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .scene-panel {
+    /* The narrow grid row must not collapse before its emitted interaction
+       frame and paired label-safe frame can be locally scrolled. */
+    min-block-size: max(calc(var(--scene-min-frame-inline-size) * 9 / 16), 0px);
+    align-items: start;
+    justify-items: start;
+  }
+
+  .protocol-header {
+    gap: 10px;
+    padding: 8px 12px;
+  }
+
+  .protocol-header-statuses {
+    gap: 8px;
+  }
+
+  .protocol-session-status {
+    max-width: 7rem;
+    text-align: right;
+    white-space: normal;
+  }
+
+  .outline-panel {
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 12px;
+    border-top: 1px solid #d8e0e8;
+    border-left: 0;
+    overflow: hidden;
+  }
+
+  .outline-heading {
+    flex: 0 0 auto;
+    padding: 0;
+    white-space: nowrap;
+  }
+
+  .outline-progress-copy {
+    flex: 0 0 auto;
+    max-width: 8.5rem;
+    padding: 0;
+    margin: 0;
+    border-bottom: 0;
+    line-height: 1.3;
+  }
+
+  .outline-steps {
+    flex: 1 1 auto;
+    flex-direction: row;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 2px 0;
+    scrollbar-color: #75b8ba #e8f1f2;
+    scrollbar-width: thin;
+  }
+
+  .outline-step-card {
+    flex: 0 0 min(13rem, 44vw);
+    min-height: 2.6rem;
+    padding: 6px 8px;
+  }
+
+  .action-rail,
+  .protocol-completion {
+    min-height: 0;
+    padding: 10px 12px;
+  }
+
+  .scene-panel {
+    padding: 6px;
+    min-width: 0;
+    overflow: auto;
+  }
+
+  .scene-panel-inner {
+    /* Keep the authored minimum frame inside this element's local scrollport;
+       max() preserves the normal fluid frame when no minimum is emitted. */
+    width: max(100%, var(--scene-min-frame-inline-size));
+  }
+
+  .value-entry-panel {
+    gap: 7px;
+    padding: 9px 12px;
+  }
+
+  .value-entry-feedback {
+    flex-basis: 100%;
+  }
+}
+
+/* zone: grouping container for placement items within a zone */
+[data-zone] {
+  position: absolute;
+  /* zone bounds set by inline style via _x, _top, _visualWidth, _height */
+}
+
+/* placement: individual scene object item */
+[data-placement-name] {
+  position: absolute;
+  /* placement bounds set by inline style via _x, _top, _visualWidth, _height */
+}
+
+/* depth ordering: back -> mid -> front */
+[data-depth="back"] {
+  z-index: 1;
+}
+
+[data-depth="mid"] {
+  z-index: 2;
+}
+
+[data-depth="front"] {
+  z-index: 3;
+}
+
+/* SVG inline sizing: respect aspect ratio without scaling transforms */
+[data-placement-name] svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/*============================================
+  Interaction affordance: baseline + ring rules
+
+  Baseline: every [data-item-id] element is a clickable scene object.
+  cursor: pointer gives a universal "this is clickable" cue.
+  A static outline on :hover / :focus-visible reinforces the cue
+  without distracting from the scene content.
+
+  Ring rules: consumed once the renderer emits the canonical affordance state
+  on each interaction envelope or exact subpart surface.
+    active    -- directed target for a click/drag/adjust/type gesture:
+                 3px solid orange (#9e6507)
+    candidate -- one of several selectable objects for a select gesture:
+                 3px dashed blue (#2563eb)
+    none      -- no active step or this object is not involved:
+                 no ring (rule intentionally absent)
+
+  outline is used (not border or box-shadow) because outline is not
+  clipped by overflow:hidden on ancestor containers, ensuring the ring
+  is always visible even inside tightly-bounded placement cards.
+
+  No @keyframes, no animation, no transition-based motion. All static.
+============================================*/
+
+/* The transparent interaction envelope is the one delegated whole-object hit
+   target. Artwork keeps its layout box; the envelope supplies a 44px core. */
+[data-interaction-envelope] {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: max(100%, var(--scene-interaction-hit-core, 44px));
+  height: max(100%, var(--scene-interaction-hit-core, 44px));
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  background: transparent;
+}
+
+/* Baseline: pointer cursor for every delegated hit target. */
+[data-item-id] {
+  cursor: pointer;
+}
+
+/* Baseline: faint static hover outline */
+/* :focus-visible is inert under the current pointer-only scope (tabIndex removed from scene items); kept as reversible infrastructure */
+[data-item-id]:hover,
+[data-item-id]:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
+}
+
+/* Active ring: directed target for click/drag/adjust/type. */
+[data-interaction-envelope][data-interaction-envelope-kind="active"] {
+  outline: 3px solid #9e6507;
+  outline-offset: 3px;
+}
+
+/* Candidate ring: selectable objects for a select gesture. */
+[data-interaction-envelope][data-interaction-envelope-kind="candidate"] {
+  outline: 3px dashed #2563eb;
+  outline-offset: 3px;
+}
+
+/* Structured-object subpart targets share the generated SVG viewBox with the
+   base art. The surface is inert for whole-object interactions, then its exact
+   declaration-owned shapes accept clicks only for an active dotted target. */
+.subpart-hit-surface {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.subpart-hit-target {
+  fill: transparent;
+  pointer-events: none;
+}
+
+.subpart-hit-surface[data-subpart-hits-enabled="true"] .subpart-hit-target {
+  pointer-events: all;
+}
+
+.subpart-hit-target[data-subpart-affordance="active"] {
+  fill: rgba(158, 101, 7, 0.2);
+  stroke: #9e6507;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.subpart-hit-target[data-subpart-affordance="candidate"] {
+  fill: rgba(37, 99, 235, 0.14);
+  stroke: #2563eb;
+  stroke-width: 2;
+  stroke-dasharray: 3 2;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Render-layer status for a semantic TimedWait equipment phase. */
+.scene-item-timed-wait {
+  position: absolute;
+  left: 50%;
+  bottom: -2.25rem;
+  z-index: 4;
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+  min-width: max-content;
+  max-width: 15rem;
+  padding: 0.3rem 0.55rem;
+  color: #172033;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #fff7d6;
+  border: 1px solid #8a6500;
+  border-radius: 0.4rem;
+  box-shadow: 0 2px 5px rgba(23, 32, 51, 0.2);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/*============================================
+  Launcher shell styles
+  Scoped under .launcher-root. These rules must not target scene
+  internals (.scene, [data-item-id], SVG elements) per
+  docs/specs/INTERFACE_VOCABULARY.md.
+============================================*/
+
+.launcher-root {
+  --launcher-ink: #102a43;
+  --launcher-muted: #526d82;
+  --launcher-line: #cbd8e3;
+  --launcher-surface: #ffffff;
+  --launcher-accent: #0f766e;
+  --launcher-accent-soft: #e4f4f1;
+  --launcher-experiment: #9a6700;
+  --launcher-experiment-soft: #fff4d6;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--launcher-ink);
+  background:
+    radial-gradient(circle at 86% 0%, rgba(23, 115, 105, 0.12), transparent 26rem),
+    linear-gradient(180deg, #f7fbfb 0%, #eef4f6 52%, #f8fafc 100%);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.launcher-root *,
+.launcher-root *::before,
+.launcher-root *::after {
+  box-sizing: border-box;
+}
+
+.launcher-header {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px 16px;
+}
+
+.launcher-title {
+  font-size: clamp(2.1rem, 4vw, 3.25rem);
+  font-weight: 750;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+  margin: 0 0 12px;
+  color: var(--launcher-ink);
+}
+
+.launcher-subtitle {
+  max-width: 44rem;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--launcher-muted);
+  margin: 0;
+}
+
+/* The two catalog paths stay visible before the workflow cards, so a first
+   viewport with several workflows still offers direct access to practice. */
+.launcher-path-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 16px;
+}
+
+.launcher-path-nav a {
+  padding: 7px 11px;
+  color: #075985;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid #9dc4d0;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.launcher-path-nav a:focus-visible {
+  outline: 3px solid #075985;
+  outline-offset: 3px;
+}
+
+.launcher-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 24px 72px;
+}
+
+.cluster-section {
+  margin-bottom: 18px;
+}
+
+.cluster-section:last-child {
+  margin-bottom: 0;
+}
+
+.protocol-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 14px;
+}
+
+.protocol-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 13.25rem;
+  padding: 18px 19px 17px;
+  overflow: hidden;
+  background: var(--launcher-surface);
+  border: 1px solid var(--launcher-line);
+  border-radius: 14px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 2px 5px rgba(16, 42, 67, 0.05);
+  transition:
+    transform 160ms ease-out,
+    box-shadow 160ms ease-out,
+    border-color 160ms ease-out;
+}
+
+.protocol-card::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  content: "";
+  background: var(--launcher-accent);
+}
+
+.protocol-card:focus-visible {
+  outline: 3px solid #075985;
+  outline-offset: 3px;
+}
+
+.protocol-card-header {
+  display: flex;
+  flex-direction: column;
+}
+
+.protocol-card-title {
+  font-size: 1.12rem;
+  font-weight: 720;
+  color: var(--launcher-ink);
+  line-height: 1.28;
+}
+
+.protocol-card-hook {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--launcher-muted);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.launcher-tier {
+  margin-bottom: 54px;
+}
+
+.launcher-tier:last-child {
+  margin-bottom: 0;
+}
+
+.tier-heading-group {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 6px;
+  max-width: 44rem;
+  margin-bottom: 20px;
+}
+
+.tier-heading {
+  font-size: clamp(1.45rem, 2.4vw, 1.8rem);
+  font-weight: 740;
+  letter-spacing: -0.025em;
+  line-height: 1.18;
+  margin: 0;
+  color: var(--launcher-ink);
+}
+
+.tier-description {
+  margin: 0;
+  color: var(--launcher-muted);
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+/* Sequence-runner card grid: larger minimum width to make them prominent. */
+.protocol-card-grid-runners {
+  grid-template-columns: repeat(auto-fill, minmax(21rem, 1fr));
+  gap: 18px;
+}
+
+.protocol-card-meta {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+.protocol-card-steps,
+.protocol-card-kind {
+  align-self: flex-start;
+  font-family:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.protocol-card-kind {
+  padding: 4px 7px;
+  color: #0f5c56;
+  background: var(--launcher-accent-soft);
+  border-radius: 999px;
+}
+
+.protocol-card-steps {
+  color: var(--launcher-muted);
+  background: #edf3f6;
+  padding: 4px 7px;
+  border-radius: 6px;
+  letter-spacing: 0.01em;
+}
+
+.protocol-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  color: #075985;
+  font-size: 0.9rem;
+  font-weight: 720;
+  line-height: 1.35;
+}
+
+.protocol-card-cta::after {
+  content: "\2192";
+  font-size: 1.08em;
+  transition: transform 160ms ease-out;
+}
+
+.protocol-card[data-protocol-type="sequence_runner"] {
+  min-height: 12.75rem;
+  padding: 18px 20px 17px;
+  background: linear-gradient(135deg, #fffaf0 0%, #ffffff 62%);
+  border-color: #e5ca91;
+}
+
+.protocol-card[data-protocol-type="sequence_runner"]::before {
+  width: 6px;
+  background: var(--launcher-experiment);
+}
+
+.protocol-card[data-protocol-type="sequence_runner"] .protocol-card-title {
+  font-size: 1.3rem;
+  color: #6b4400;
+}
+
+.protocol-card[data-protocol-type="sequence_runner"] .protocol-card-kind {
+  color: #744b00;
+  background: var(--launcher-experiment-soft);
+}
+
+.protocol-card[data-protocol-type="sequence_runner"] .protocol-card-steps {
+  color: #744b00;
+  background: #fff1c9;
+}
+
+.launcher-tier-minis {
+  padding-top: 4px;
+  border-top: 1px solid var(--launcher-line);
+}
+
+.launcher-tier-minis .tier-heading-group {
+  margin-top: 30px;
+  margin-bottom: 18px;
+}
+
+.cluster-disclosure {
+  --cluster-accent: #2c7a7b;
+  --cluster-soft: #e6f4f1;
+  overflow: clip;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid var(--launcher-line);
+  border-radius: 12px;
+}
+
+.cluster-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 3.75rem;
+  padding: 14px 17px;
+  color: var(--launcher-ink);
+  cursor: pointer;
+  list-style: none;
+}
+
+.cluster-summary::-webkit-details-marker {
+  display: none;
+}
+
+.cluster-summary::before {
+  width: 0.55rem;
+  height: 0.55rem;
+  flex: 0 0 auto;
+  margin-right: -7px;
+  content: "";
+  border: solid var(--cluster-accent);
+  border-width: 0 2px 2px 0;
+  transform: rotate(-45deg);
+  transition: transform 150ms ease-out;
+}
+
+.cluster-disclosure[open] .cluster-summary {
+  background: var(--cluster-soft);
+}
+
+.cluster-disclosure[open] .cluster-summary::before {
+  transform: translateY(-2px) rotate(45deg);
+}
+
+.cluster-summary:focus-visible {
+  outline: 3px solid #075985;
+  outline-offset: -3px;
+}
+
+.cluster-heading {
+  flex: 1 1 auto;
+  margin: 0;
+  color: var(--launcher-ink);
+  font-size: 1.1rem;
+  font-weight: 730;
+  line-height: 1.25;
+}
+
+.cluster-toggle-copy {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 8px;
+  color: #486579;
+  font-size: 0.79rem;
+  font-weight: 650;
+  text-align: right;
+}
+
+.cluster-toggle-state {
+  color: #075985;
+}
+
+.cluster-toggle-hide {
+  display: none;
+}
+
+.cluster-disclosure[open] .cluster-toggle-show {
+  display: none;
+}
+
+.cluster-disclosure[open] .cluster-toggle-hide {
+  display: inline;
+}
+
+.cluster-disclosure .protocol-card-grid {
+  padding: 16px;
+}
+
+.cluster-section[data-cluster="sdspage"] .cluster-disclosure {
+  --cluster-accent: #4c51bf;
+  --cluster-soft: #eeeefe;
+}
+
+.cluster-section[data-cluster="routine_passage"] .cluster-disclosure {
+  --cluster-accent: #667a2b;
+  --cluster-soft: #f0f5e3;
+}
+
+.cluster-section[data-cluster="drug_treatment"] .cluster-disclosure,
+.cluster-section[data-cluster="plate_drug_treatment"] .cluster-disclosure {
+  --cluster-accent: #805ad5;
+  --cluster-soft: #f4efff;
+}
+
+.cluster-section[data-cluster="mtt"] .cluster-disclosure {
+  --cluster-accent: #c05621;
+  --cluster-soft: #fff0e8;
+}
+
+.cluster-section .protocol-card::before {
+  background: var(--cluster-accent, var(--launcher-accent));
+}
+
+.launcher-empty-state {
+  max-width: 42rem;
+  padding: 28px;
+  color: var(--launcher-muted);
+  background: var(--launcher-surface);
+  border: 1px dashed #93a9b9;
+  border-radius: 12px;
+}
+
+.launcher-empty-heading {
+  margin: 0 0 7px;
+  color: var(--launcher-ink);
+  font-size: 1.2rem;
+  font-weight: 720;
+}
+
+.launcher-empty-body {
+  margin: 0;
+  line-height: 1.55;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .protocol-card:hover {
+    transform: translateY(-3px);
+    border-color: #7aa3a0;
+    box-shadow: 0 12px 24px rgba(16, 42, 67, 0.12);
+  }
+
+  .protocol-card:hover .protocol-card-cta::after {
+    transform: translateX(3px);
+  }
+
+  .protocol-card[data-protocol-type="sequence_runner"]:hover {
+    border-color: #ce9d3f;
+    box-shadow: 0 12px 24px rgba(116, 75, 0, 0.14);
+  }
+
+  .cluster-summary:hover {
+    background: #f2f7f7;
+  }
+
+  .cluster-disclosure[open] .cluster-summary:hover {
+    background: var(--cluster-soft);
+  }
+}
+
+@media (max-width: 680px) {
+  .launcher-header {
+    padding: 28px 18px 14px;
+  }
+
+  .launcher-main {
+    padding: 16px 18px 48px;
+  }
+
+  .protocol-card-grid,
+  .protocol-card-grid-runners {
+    grid-template-columns: 1fr;
+  }
+
+  .protocol-card[data-protocol-type="sequence_runner"] {
+    min-height: 12.75rem;
+  }
+
+  .cluster-summary {
+    align-items: flex-start;
+    min-height: 0;
+  }
+
+  .cluster-toggle-copy {
+    max-width: 8rem;
+    font-size: 0.72rem;
+    line-height: 1.35;
+  }
+
+  .cluster-disclosure .protocol-card-grid {
+    padding: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .protocol-card,
+  .protocol-card-cta::after,
+  .cluster-summary::before {
+    transition: none;
+  }
+}
+
+/*============================================
+  Complete equipment review through the production SVG host
+============================================*/
+
+.equipment-review-body {
+  min-height: 100%;
+  background: #e7eef0;
+}
+
+.equipment-review-page {
+  --equipment-ink: #172f35;
+  --equipment-muted: #4d676e;
+  --equipment-line: #a9bec3;
+  --equipment-surface: #f8fbfb;
+  --equipment-accent: #176b6f;
+  --equipment-dom: #285b8e;
+  --equipment-img: #6b4a24;
+  --equipment-card-size: 260px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: clamp(18px, 3vw, 44px);
+  color: var(--equipment-ink);
+  background: linear-gradient(160deg, rgba(118, 171, 177, 0.2), transparent 28rem), #e7eef0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.equipment-review-header {
+  max-width: 76rem;
+  margin-inline: auto;
+}
+
+.equipment-review-kicker {
+  margin: 0 0 0.45rem;
+  color: var(--equipment-accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.equipment-review-header h1 {
+  max-width: 18ch;
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+.equipment-review-intro {
+  max-width: 70ch;
+  margin: 1rem 0 0;
+  color: var(--equipment-muted);
+  font-size: clamp(1rem, 2vw, 1.18rem);
+  line-height: 1.55;
+}
+
+.equipment-review-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin: 1.4rem 0 0;
+}
+
+.equipment-review-summary div {
+  min-width: 7rem;
+  padding: 0.65rem 0.85rem;
+  background: rgba(248, 251, 251, 0.78);
+  border: 1px solid var(--equipment-line);
+  border-radius: 10px;
+}
+
+.equipment-review-summary dt {
+  color: var(--equipment-muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.equipment-review-summary dd {
+  margin: 0.15rem 0 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.equipment-review-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(10rem, 1fr));
+  gap: 0.8rem;
+  max-width: 76rem;
+  margin: 2rem auto 0;
+  padding: 1rem;
+  background: rgba(248, 251, 251, 0.92);
+  border: 1px solid var(--equipment-line);
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(23, 47, 53, 0.08);
+}
+
+.equipment-review-control {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--equipment-muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.equipment-review-control input,
+.equipment-review-control select {
+  min-width: 0;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 0.65rem 0.75rem;
+  color: var(--equipment-ink);
+  background: #ffffff;
+  border: 1px solid #819aa0;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+.equipment-review-control input:focus-visible,
+.equipment-review-control select:focus-visible {
+  outline: 3px solid #075985;
+  outline-offset: 2px;
+}
+
+.equipment-review-size-control input {
+  padding-inline: 0;
+  accent-color: var(--equipment-accent);
+}
+
+.equipment-review-result-line {
+  max-width: 76rem;
+  margin: 1.2rem auto 0.65rem;
+  color: var(--equipment-muted);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.equipment-review-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--equipment-card-size)), 1fr));
+  gap: 1rem;
+  max-width: 100rem;
+  margin-inline: auto;
+}
+
+.equipment-review-card {
+  align-self: start;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--equipment-surface);
+  border: 1px solid var(--equipment-line);
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(23, 47, 53, 0.08);
+}
+
+.equipment-review-art {
+  display: grid;
+  min-height: var(--equipment-card-size);
+  padding: 1rem;
+  place-items: center;
+  background: #eef7f8;
+  border-bottom: 1px solid var(--equipment-line);
+}
+
+.equipment-review-art > * {
+  width: 100%;
+  height: var(--equipment-card-size);
+}
+
+.equipment-review-page[data-backdrop="dark"] .equipment-review-art {
+  background: #173039;
+}
+
+.equipment-review-page[data-backdrop="checker"] .equipment-review-art {
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(45deg, #cbd8db 25%, transparent 25%),
+    linear-gradient(-45deg, #cbd8db 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #cbd8db 75%),
+    linear-gradient(-45deg, transparent 75%, #cbd8db 75%);
+  background-position:
+    0 0,
+    0 12px,
+    12px -12px,
+    -12px 0;
+  background-size: 24px 24px;
+}
+
+.equipment-review-copy {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.9rem 1rem 1rem;
+}
+
+.equipment-review-copy h2 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.25;
+  text-transform: capitalize;
+}
+
+.equipment-review-mode {
+  width: fit-content;
+  padding: 0.24rem 0.5rem;
+  border: 1px solid currentcolor;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.equipment-review-mode--dom-svg {
+  color: var(--equipment-dom);
+  background: #e8f2fb;
+}
+
+.equipment-review-mode--img {
+  color: var(--equipment-img);
+  background: #f7efe4;
+}
+
+.equipment-review-copy code {
+  overflow-wrap: anywhere;
+  color: var(--equipment-muted);
+  font-size: 0.72rem;
+}
+
+.equipment-review-empty {
+  padding: 2rem;
+  background: var(--equipment-surface);
+  border: 1px dashed var(--equipment-line);
+  border-radius: 12px;
+}
+
+.svg-load-error {
+  color: #a40e26;
+  font-family: monospace;
+  font-size: 0.82rem;
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .equipment-review-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .equipment-review-page {
+    padding: 16px;
+  }
+
+  .equipment-review-controls {
+    grid-template-columns: 1fr;
+  }
+}

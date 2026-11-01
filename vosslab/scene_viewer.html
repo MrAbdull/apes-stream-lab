@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scene Viewer</title>
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+      /* Minimal viewer layout: center the scene panel on the page. */
+      body {
+        margin: 0;
+        padding: 16px;
+        background: #e8e0cc;
+        overflow: hidden;
+        min-height: 100vh;
+        box-sizing: border-box;
+      }
+
+      /* Reuse .scene-panel-inner aspect-lock so PNG geometry matches the
+         real protocol host render. The inner element enforces 16:9; #scene-root
+         fills it 100% x 100% per style.css rules. */
+      .scene-panel-inner {
+        width: 100%;
+      }
+
+      .scene-viewer-content {
+        display: grid;
+        gap: 10px;
+        --scene-min-interaction-width: 0px;
+        --scene-min-interaction-height: 0px;
+        min-inline-size: var(--scene-min-frame-inline-size);
+      }
+
+      .scene-viewer-scrollport {
+        width: 100%;
+        height: calc(100vh - 32px);
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      Scene viewer host.
+      #scene-root and its sibling #scene-annotation-root are present; #shell-root
+      and window.__PROTOCOL_NAME__ are absent. dist_entry.tsx / route() uses that
+      host shape and reads ?scene=<name> to dispatch to mount_scene_viewer.
+    -->
+    <div class="scene-viewer-scrollport">
+      <div class="scene-viewer-content">
+        <div class="scene-panel-inner">
+          <div id="scene-root"></div>
+        </div>
+        <div id="scene-annotation-root"></div>
+      </div>
+    </div>
+    <script type="module" src="./scene_viewer.js"></script>
+  </body>
+</html>

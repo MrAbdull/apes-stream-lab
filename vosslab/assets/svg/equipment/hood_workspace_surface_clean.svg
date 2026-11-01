@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 106 64" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="bsc_back" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fbffff"/><stop offset="1" stop-color="#bfd9de"/></linearGradient>
+    <linearGradient id="bsc_deck" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#edf8f8"/><stop offset="1" stop-color="#aac8cc"/></linearGradient>
+  </defs>
+  <path d="M9 8Q9 4 14 4H92Q97 4 97 8V52Q97 58 91 58H15Q9 58 9 52Z" fill="#d1e1e4" stroke="#607b82" stroke-width="1.05"/>
+  <path d="M14 10Q14 8 17 8H89Q92 8 92 10V42H14Z" fill="url(#bsc_back)" stroke="#91afb5" stroke-width=".75"/>
+  <path d="M17 12H89V18H17Z" fill="#aecbd1"/><path d="M20 15H86" stroke="#effafb" stroke-width=".7" stroke-dasharray="2 1.4"/>
+  <path d="M14 18Q18 20 21 25V44H14Z" fill="#bed5d9"/><path d="M92 18Q88 20 85 25V44H92Z" fill="#abc7cd"/>
+  <path d="M17 39H89V44H17Z" fill="#6e8d94"/><path d="M20 40.5H86" stroke="#ccdde0" stroke-width=".55" stroke-dasharray="1.2 1.1"/>
+  <path d="M16 44H90L85 54Q84 56 81 56H25Q22 56 21 54Z" fill="url(#bsc_deck)" stroke="#78979d" stroke-width=".85" stroke-linejoin="round"/>
+  <path d="M23 48H83" stroke="#ffffff" stroke-width=".9" opacity=".95"/><path d="M25 52.5H81" stroke="#6e8990" stroke-width=".85" stroke-dasharray="1.6 1"/>
+  <!-- The clean state keeps the same cabinet and deck; only a small wiped sheen changes. -->
+  <path d="M43 48.6 48.2 53M48.4 48.4 53.6 52.8" stroke="#fff" stroke-width=".7" stroke-linecap="round" opacity=".9"/>
+  <path d="M15 58H91" stroke="#a8c0c5" stroke-width="1" stroke-linecap="round"/>
+  <g id="overlay_root"/>
+  <path id="anchor_label" fill="none" stroke="none" display="none" d="M14 59L92 59L92 63L14 63Z"/>
+  <path id="anchor_error" fill="none" stroke="none" display="none" d="M85 11L93 11L93 19L85 19Z"/>
+</svg>

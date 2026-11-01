@@ -15,7 +15,7 @@ It works on laptops and iPads, with no installs, no accounts and no server.
 | Watershed Science (Stream Health) | Open | Kick-net macroinvertebrates, water tests, water-quality index, pollution-source mystery |
 | Biodiversity Field Station | Open | Quadrat sampling in three habitats, species richness, Simpson's index, invasive species, conservation plan |
 | Life Science Lab | Open | Food webs and trophic cascades (10% rule), natural selection by camouflage, photosynthesis and light (Elodea bubble counts) |
-| Cell Biology Bench | Open (external) | VossLab's cell-culture protocol simulator, opened in a new tab |
+| Cell Biology Bench | Open | VossLab's cell-culture and SDS-PAGE protocol simulator, hosted in `vosslab/` |
 | Eutrophication Lake, Coral Reef & Ocean, Climate & Carbon, Soil & Farm, Renewable Energy | Planned | Portals show "coming soon" |
 
 Controls everywhere: W A S D or the arrow keys (or the joystick on iPad) to move, Shift to run, Space to jump, drag to look,

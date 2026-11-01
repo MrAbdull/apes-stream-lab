@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="angry_professor_title angry_professor_desc">
+  <title id="angry_professor_title">Instructor cue</title>
+  <desc id="angry_professor_desc">A focused instructor with glasses and a lab coat.</desc>
+  <g id="svga-group-wrapper" stroke="#263548" stroke-linecap="round" stroke-linejoin="round">
+    <g id="svga-group-humanwrap">
+      <g id="svga-group-humanbody-back">
+        <path d="M31 194c4-31 24-48 45-52h48c21 4 41 21 45 52" fill="#6daeb9" stroke-width="5"/>
+      </g>
+      <g id="svga-group-clothes-single">
+        <path d="M70 142h60l16 52H54z" fill="#f8fbf5" stroke-width="4"/>
+        <path d="M130 142l16 52h-13l-14-45z" fill="#d7e6eb" stroke="none"/>
+        <path d="m76 145 24 30 24-30" fill="none" stroke="#6daeb9" stroke-width="4"/>
+        <path d="M92 168h16" fill="none" stroke="#d18955" stroke-width="4"/>
+      </g>
+      <g id="svga-group-hair-back">
+        <path d="M62 91c-5-34 13-59 38-59s43 25 38 59" fill="#45556a" stroke-width="5"/>
+      </g>
+      <g id="svga-group-humanbody-front">
+        <path d="M64 80c0-26 15-43 36-43s36 17 36 43v25c0 26-15 43-36 43s-36-17-36-43z" fill="#dca27f" stroke-width="4"/>
+        <path d="M76 117c7 6 15 9 24 9s17-3 24-9" fill="none" stroke="#b46d55" stroke-width="3"/>
+      </g>
+      <g id="svga-group-hair-front">
+        <path d="M63 79c2-29 17-46 38-46 22 0 35 16 37 42-10-8-22-14-37-14-13 0-26 6-38 18z" fill="#45556a" stroke-width="5"/>
+        <path d="M74 58c12-8 28-10 44-5" fill="none" stroke="#6d7e91" stroke-width="4"/>
+      </g>
+      <g id="svga-group-glasses-single" fill="#dceff2" fill-opacity=".7" stroke-width="4">
+        <rect x="69" y="78" width="25" height="19" rx="7"/>
+        <rect x="106" y="78" width="25" height="19" rx="7"/>
+        <path d="M94 87h12M63 84h6M131 84h6" fill="none"/>
+      </g>
+      <g id="svga-group-eyes-single" fill="#263548" stroke="none">
+        <circle cx="83" cy="87" r="3"/>
+        <circle cx="117" cy="87" r="3"/>
+      </g>
+      <g id="svga-group-expression-single" fill="none" stroke-width="4">
+        <path d="m72 74 17 4M111 78l17-4"/>
+        <path d="M91 123q9-8 18 0"/>
+      </g>
+    </g>
+  </g>
+</svg>

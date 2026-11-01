@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 214 308">
+  <g id="bottom_tape" stroke="#294657" stroke-linejoin="round">
+    <path d="M37 274h132l-7 16H44z" fill="#d88943" stroke-width="3"/>
+    <path d="M40 276h126l-4 5H44z" fill="#f0c94b" stroke="none"/>
+    <path d="M51 285h18m12 0h18m12 0h18m12 0h18" fill="none" stroke="#fff3cf" stroke-linecap="round" stroke-width="2" opacity=".9"/>
+  </g>
+</svg>
