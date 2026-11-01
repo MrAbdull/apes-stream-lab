@@ -67,3 +67,6 @@ span.hm { width: auto; height: auto; }
   .slip .small { font-size: 11px; color: #444; margin: 6px 0 0; }
 }
 @media (max-width: 760px) { .share-grid { grid-template-columns: 1fr; } .task-key { columns: 1; } }
+.link-box { font-size: .8rem; font-family: ui-monospace, Menlo, monospace; color: var(--muted); }
+.copy-box { width: min(640px, 92vw); text-align: left; }
+.copy-box textarea { width: 100%; font-family: ui-monospace, Menlo, monospace; font-size: .85rem; }

@@ -23,7 +23,14 @@ function toast(msg) {
 }
 
 async function copy(text) {
-  try { await navigator.clipboard.writeText(text); toast('Copied'); } catch { prompt('Copy this:', text); }
+  try { await navigator.clipboard.writeText(text); toast('Copied'); return; } catch { /* blocked */ }
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+  document.body.appendChild(ta); ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch { /* blocked */ }
+  ta.remove();
+  if (ok) toast('Copied'); else prompt('Your browser blocked copying. Select this and copy it:', text);
 }
 
 function studentLink(code) {

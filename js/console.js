@@ -25,8 +25,25 @@ function toast(msg) {
   toast.t = setTimeout(() => t.classList.remove('show'), Math.min(9000, 2600 + msg.length * 55));
 }
 
+// Some browsers (and in-app browsers) block the clipboard; fall back to the old copy
+// command, and if that fails too, show the text selected so it can be copied by hand.
 async function copy(text) {
-  try { await navigator.clipboard.writeText(text); toast('Copied'); } catch { prompt('Copy this:', text); }
+  try { await navigator.clipboard.writeText(text); toast('Copied'); return; } catch { /* blocked */ }
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+  document.body.appendChild(ta); ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch { /* blocked */ }
+  ta.remove();
+  if (ok) { toast('Copied'); return; }
+  const d = document.createElement('div');
+  d.className = 'qr-full';
+  d.innerHTML = `<div class="copy-box"><h2>Copy this link</h2><p>Your browser blocked automatic copying. The link is selected below: press ${/Mac|iPhone|iPad/.test(navigator.platform) ? '⌘' : 'Ctrl'}+C to copy it.</p>
+    <textarea readonly rows="5"></textarea><div class="row"><button class="primary big">Done</button></div></div>`;
+  document.body.appendChild(d);
+  const box = $('textarea', d);
+  box.value = text; box.focus(); box.select();
+  $('button', d).onclick = () => d.remove();
 }
 
 async function sha(text) {
@@ -189,6 +206,7 @@ function renderClass(body, cls) {
           <p class="hint">Students scan the QR code or open the link once on their device, pick their name and type their PIN.</p>
           <div id="qr" class="qr"></div>
           <div class="row"><button class="primary" id="copy-link">Copy class link</button><button class="secondary" id="show-qr">Show QR full screen</button></div>
+          <label class="hint">Or select the link here:<input class="link-box" readonly value="${esc(link)}"></label>
         </div>
         <div>
           <h3>2. Later: lab code</h3>
@@ -230,6 +248,7 @@ function renderClass(body, cls) {
   $('#end-clear').onclick = () => update({ end: 0 }, 'Timer removed.');
   $('#stream').onchange = (e) => update({ stream: e.target.value.trim().toUpperCase() }, 'Saved. Students need the new class link for this.');
   $('#copy-link').onclick = () => copy(link);
+  $('.link-box', body).onfocus = (e) => e.target.select();
   $('#show-qr').onclick = () => showBigQR(link, cls.name);
   drawQR($('#qr'), link, 220);
   $$('[data-repin]', body).forEach((b) => (b.onclick = () => {
